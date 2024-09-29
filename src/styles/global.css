@@ -1,6 +1,6 @@
 /* Light mode styles */
 :root {
-  --bg-color: #ffffff;
+  --bg-color: #1a1a1a;
   --text-color: #333333;
 }
 
@@ -12,5 +12,4 @@
 
 body {
   background-color: var(--bg-color);
-  color: var(--text-color);
 }
