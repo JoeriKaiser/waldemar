@@ -1,0 +1,16 @@
+/* Light mode styles */
+:root {#304243
+  --bg-color: #ffffff;
+  --text-color: #333333;
+}
+
+/* Dark mode styles */
+.dark {
+  --bg-color: #1a1a1a;
+  --text-color: #ffffff;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}

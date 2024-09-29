@@ -1,0 +1,49 @@
+---
+import Logo from "./Logo.astro";
+const currentPath = Astro.url.pathname;
+const topLevelPath = currentPath.split("/")[1];
+
+const navigation = [
+  {
+    label: "About",
+    url: "/about",
+  },
+];
+---
+
+<header>
+  <div class="center">
+    <nav id="nav">
+      <Logo />
+      <div class="links">
+        {
+          navigation.map((item) => (
+            <a
+              href={item.url}
+              data-fathom="nav-link"
+              class={topLevelPath === item.url.split("/")[1] ? "active" : ""}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+  }
+  .center {
+    box-sizing: content-box;
+    margin-inline: auto;
+    width: calc(100% - (var(--space-xl) * 2));
+    max-inline-size: 800px;
+    padding-inline: var(--space-xl);
+  }
+</style>

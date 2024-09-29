@@ -1,0 +1,37 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content";
+
+import MdxLayout from "../layouts/MdxLayout.astro";
+
+export interface Props {
+  page: CollectionEntry<"pages">;
+}
+
+export async function getStaticPaths() {
+  const pages = await getCollection("pages");
+
+  return pages.map((page) => ({
+    params: { slug: page.slug },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const { data, render } = page;
+const { Content } = await render();
+---
+
+<MdxLayout
+  title={data.title}
+  description={data.description}
+>
+  <Content />
+</MdxLayout>
+
+
+<style is:global>
+  @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+  * {
+    font-family: "Lexend", sans-serif;
+  }
+</style>

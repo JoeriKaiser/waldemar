@@ -1,0 +1,38 @@
+---
+import Header from "../components/Header/Header.astro";
+import ArticleHeader from "../components/ArticleHeader/ArticleHeader.astro";
+import BaseLayout from "./BaseLayout.astro";
+import viewTransition from "../utils/viewTransitions";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout
+  title={title}
+>
+  <main transition:animate={viewTransition}> 
+    <article class="center" itemscope itemtype="https://schema.org/BlogPosting">
+      <ArticleHeader
+      title={title}
+      />
+      <section>
+        <slot />
+      </section>
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  .center {
+    box-sizing: content-box;
+    margin-inline: auto;
+    width: calc(100% - (var(--space-xl) * 2));
+    max-inline-size: 800px;
+    padding-inline: var(--space-xl);
+  }
+</style>

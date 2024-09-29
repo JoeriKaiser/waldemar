@@ -1,0 +1,32 @@
+---
+import { ViewTransitions } from "astro:transitions";
+import Header from "../components/Header/Header.astro";
+
+import "../styles/global.css";
+const { title } = Astro.props;
+
+const pageTitle =
+  Astro.url.pathname === "/" ? title : `${title} · Joeri Kaiser`;
+---
+
+<!doctype html>
+<html lang="en" transition:animate="none">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#304243" />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content="#111111"
+    />
+    <title>{pageTitle}</title>
+    <ViewTransitions />
+  </head>
+  <body>
+    <Header />
+    <slot />
+  </body>
+</html>
