@@ -7,6 +7,8 @@ export interface Props {
   page: CollectionEntry<"pages">;
 }
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const pages = await getCollection("pages");
 
@@ -21,16 +23,12 @@ const { data, render } = page;
 const { Content } = await render();
 ---
 
-<MdxLayout
-  title={data.title}
-  description={data.description}
->
+<MdxLayout title={data.title} description={data.description}>
   <Content />
 </MdxLayout>
 
-
 <style is:global>
-  @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+  @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
   * {
     font-family: "Lexend", sans-serif;
   }

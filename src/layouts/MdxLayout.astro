@@ -12,14 +12,10 @@ interface Props {
 const { title, description } = Astro.props;
 ---
 
-<BaseLayout
-  title={title}
->
-  <main transition:animate={viewTransition}> 
+<BaseLayout title={title}>
+  <main transition:animate={viewTransition}>
     <article class="center" itemscope itemtype="https://schema.org/BlogPosting">
-      <ArticleHeader
-      title={title}
-      />
+      <ArticleHeader title={title} />
       <section>
         <slot />
       </section>

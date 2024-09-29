@@ -9,7 +9,6 @@ export default [
       ecmaVersion: 2021,
     },
     plugins: ["vue", "@typescript-eslint"],
-    rules: {
-    },
+    rules: {},
   },
 ];

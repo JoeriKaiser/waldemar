@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image } from "astro:assets";
 import base from "../../../public/images/base.png";
 import overlay from "../../../public/images/overlay.png";
 ---
@@ -11,13 +11,18 @@ import overlay from "../../../public/images/overlay.png";
   </div>
   <div class="description">
     <h2>Hi there! I'm Joeri</h2>
-    <p>I'm an enthusiastic web developer passionate about crafting engaging and intuitive user experiences</p>
+    <p>
+      I'm an enthusiastic web developer passionate about crafting engaging and
+      intuitive user experiences
+    </p>
   </div>
 </div>
 
 <script>
-  const overlayImg = document.querySelector('.overlay');
-  overlayImg?.addEventListener('click', () => overlayImg.classList.toggle('fade-in'));
+  const overlayImg = document.querySelector(".overlay");
+  overlayImg?.addEventListener("click", () =>
+    overlayImg.classList.toggle("fade-in"),
+  );
 </script>
 
 <style>
@@ -38,7 +43,8 @@ import overlay from "../../../public/images/overlay.png";
     flex-shrink: 0;
   }
 
-  .base, .overlay {
+  .base,
+  .overlay {
     position: absolute;
     top: 0;
     left: 0;
