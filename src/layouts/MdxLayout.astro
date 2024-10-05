@@ -15,7 +15,7 @@ const { title, description } = Astro.props;
 <BaseLayout title={title}>
   <main transition:animate={viewTransition}>
     <article class="center" itemscope itemtype="https://schema.org/BlogPosting">
-      <ArticleHeader title={title} />
+      <ArticleHeader title="" />
       <section>
         <slot />
       </section>
@@ -23,12 +23,73 @@ const { title, description } = Astro.props;
   </main>
 </BaseLayout>
 
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const details = document.querySelector("details")!;
+    details.addEventListener("toggle", (e) => {
+      const content = details.querySelector("div.details-content");
+      if (!content) return;
+
+      if (details.open) {
+        content.animate(
+          [
+            { maxHeight: "0", opacity: 0 },
+            { maxHeight: "1000px", opacity: 1 },
+          ],
+          {
+            duration: 300,
+            easing: "ease-out",
+          },
+        );
+      } else {
+        content.animate(
+          [
+            { maxHeight: "1000px", opacity: 1 },
+            { maxHeight: "0", opacity: 0 },
+          ],
+          {
+            duration: 300,
+            easing: "ease-in",
+          },
+        );
+      }
+    });
+  });
+</script>
+
 <style>
+  /* ... (keep existing styles) */
   .center {
     box-sizing: content-box;
     margin-inline: auto;
     width: calc(100% - (var(--space-xl) * 2));
     max-inline-size: 800px;
     padding-inline: var(--space-xl);
+  }
+  :global(details) {
+    margin-top: 2rem;
+    border: 1px solid var(--gray-5);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  :global(summary) {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0.5rem;
+    background-color: var(--gray-2);
+    transition: background-color 0.3s ease;
+  }
+
+  :global(summary:hover) {
+    background-color: var(--gray-3);
+  }
+
+  :global(.details-content) {
+    padding: 0.5rem;
+  }
+
+  :global(details[open] summary) {
+    border-bottom: 1px solid var(--gray-5);
   }
 </style>
