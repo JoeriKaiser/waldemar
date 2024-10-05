@@ -1,5 +1,6 @@
 /* Light mode styles */
 :root {
+  --secondary-color: #8483c8;
   --bg-color: #1a1a1a;
   --text-color: #333333;
 }

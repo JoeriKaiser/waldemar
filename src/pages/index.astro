@@ -4,6 +4,19 @@ import Jumbo from "../components/Jumbo/Jumbo.astro";
 import "../styles/theme.css";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import viewTransition from "../utils/viewTransitions";
+import { getCollection } from "astro:content";
+import Preview from "../components/ProjectTimeline/Preview.astro";
+
+const projects = await getCollection("project");
+export interface Dates {
+  start: string;
+  end: string;
+}
+export interface Project {
+  title: string;
+  description: string;
+  dates: Dates;
+}
 ---
 
 <BaseLayout title="Joeri Kaiser">
@@ -21,6 +34,7 @@ import viewTransition from "../utils/viewTransitions";
           ></path></svg
         >
       </div>
+      {projects.map((project) => <Preview project={project} />)}
     </section>
   </main>
 </BaseLayout>
