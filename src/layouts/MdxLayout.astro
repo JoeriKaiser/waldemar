@@ -15,7 +15,6 @@ const { title, description } = Astro.props;
 <BaseLayout title={title}>
   <main transition:animate={viewTransition}>
     <article class="center" itemscope itemtype="https://schema.org/BlogPosting">
-      <ArticleHeader title="" />
       <section>
         <slot />
       </section>
