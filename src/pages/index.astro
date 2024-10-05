@@ -4,12 +4,19 @@ import Jumbo from "../components/Jumbo/Jumbo.astro";
 import "../styles/theme.css";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import viewTransition from "../utils/viewTransitions";
+import type { Project } from "../components/ProjectTimeline/ProjectTimeline.astro";
+
+import ProjectTimeline from "../components/ProjectTimeline/ProjectTimeline.astro";
 ---
 
 <BaseLayout title="Joeri Kaiser">
   <main view-transition:animate={viewTransition}>
     <section class="main-section">
       <Jumbo />
+      <h2>TODO embed tetris game</h2>
+      <button id="startTetris">Start Tetris</button>
+      <div id="tetrisContainer"></div>
+      <ProjectTimeline />
       <div class="continue">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -39,7 +46,7 @@ import viewTransition from "../utils/viewTransitions";
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    min-height: calc(100svh - var(--space-3xl) * 1.8);
+    /* min-height: calc(100svh - var(--space-3xl) * 1.8); */
   }
 
   .continue {
@@ -64,3 +71,19 @@ import viewTransition from "../utils/viewTransitions";
     font-family: "Lexend", sans-serif;
   }
 </style>
+
+<script>
+  import { TetrisGame } from "../utils/tetris";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("tetrisContainer");
+    const startButton = document.getElementById("startTetris");
+
+    if (container && startButton) {
+      const tetris = new TetrisGame(container);
+      startButton.addEventListener("click", () => {
+        tetris.startGame();
+      });
+    }
+  });
+</script>
