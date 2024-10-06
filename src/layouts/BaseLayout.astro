@@ -29,6 +29,21 @@ const pageTitle =
   <body>
     <Header />
     <slot />
+    <Footer />
   </body>
-  <Footer />
 </html>
+
+<style is:global lang="scss">
+body {
+  min-height: 95vh;
+  margin: 0;
+}
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+</style>
