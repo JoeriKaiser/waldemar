@@ -1,5 +1,4 @@
 ---
-import Layout from "../layouts/Layout.astro";
 import Jumbo from "../components/Jumbo/Jumbo.astro";
 import "../styles/theme.css";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -8,6 +7,9 @@ import { getCollection } from "astro:content";
 import Preview from "../components/ProjectTimeline/Preview.astro";
 
 const projects = await getCollection("project");
+const sortedProjects = projects.sort((a, b) => {
+  return a.data.order - b.data.order;
+});
 export interface Dates {
   start: string;
   end: string;
@@ -16,6 +18,7 @@ export interface Project {
   title: string;
   description: string;
   dates: Dates;
+  order: number;
 }
 ---
 
@@ -34,7 +37,7 @@ export interface Project {
           ></path></svg
         >
       </div>
-      {projects.map((project) => <Preview project={project} />)}
+      {sortedProjects.map((project) => <Preview project={project} />)}
     </section>
   </main>
 </BaseLayout>
