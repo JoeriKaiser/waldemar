@@ -22,10 +22,8 @@ const { Content } = await render();
       console.log(imageSrc);
       return (
         <div class="media">
-          <Image
+          <img
             class="img"
-            width={1000}
-            height={500}
             src={imageSrc}
             alt={img.alt}
             loading="lazy"
@@ -108,7 +106,7 @@ const { Content } = await render();
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: fit-content;
+    max-width: 100%;
     margin-inline: auto;
     overflow: hidden;
     border-radius: 5px;
@@ -124,10 +122,11 @@ const { Content } = await render();
       animation-timeline: view();
     }
 
-    img,
-    video {
-      width: auto;
-      max-width: 100%;
+    img {
+      width: 100%;
+      height: auto;
+      max-width: 1000px;
+      object-fit: cover;
     }
 
     & + .media {
