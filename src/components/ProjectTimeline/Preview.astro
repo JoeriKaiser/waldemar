@@ -11,7 +11,7 @@ const { project } = Astro.props;
 
 const { data, render } = project;
 
-const { title, img, timeline } = data;
+const { name, img, timeline } = data;
 const { Content } = await render();
 ---
 
@@ -22,12 +22,7 @@ const { Content } = await render();
       console.log(imageSrc);
       return (
         <div class="media">
-          <img
-            class="img"
-            src={imageSrc}
-            alt={img.alt}
-            loading="lazy"
-          />
+          <img class="img" src={imageSrc} alt={img.alt} loading="lazy" />
         </div>
       );
     })
@@ -38,7 +33,7 @@ const { Content } = await render();
         `${formatDate(new Date(timeline.start))} - ${!timeline.end ? "Current" : formatDate(new Date(timeline.end))}`
       }</time
     >
-    <h2>{title}</h2>
+    <h2>{name}</h2>
     <Content />
   </div>
 </div>
