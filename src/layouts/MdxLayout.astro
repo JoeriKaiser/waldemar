@@ -1,15 +1,12 @@
 ---
-import Header from "../components/Header/Header.astro";
-import ArticleHeader from "../components/ArticleHeader/ArticleHeader.astro";
 import BaseLayout from "./BaseLayout.astro";
 import viewTransition from "../utils/viewTransitions";
 
 interface Props {
   title: string;
-  description: string;
 }
 
-const { title, description } = Astro.props;
+const { title } = Astro.props;
 ---
 
 <BaseLayout title={title}>
@@ -38,7 +35,7 @@ const { title, description } = Astro.props;
           {
             duration: 300,
             easing: "ease-out",
-          },
+          }
         );
       } else {
         content.animate(
@@ -49,7 +46,7 @@ const { title, description } = Astro.props;
           {
             duration: 300,
             easing: "ease-in",
-          },
+          }
         );
       }
     });

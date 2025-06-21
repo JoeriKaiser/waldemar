@@ -3,12 +3,11 @@ import { ViewTransitions } from "astro:transitions";
 import Header from "../components/Header/Header.astro";
 import "../styles/theme.css";
 
+import Footer from "../components/Footer/Footer.astro";
 import "../styles/global.css";
-import Footer from '../components/Footer/Footer.astro';
 const { title } = Astro.props;
 
-const pageTitle =
-  Astro.url.pathname === "/" ? title : `${title} · Joeri Kaiser`;
+const pageTitle = Astro.url.pathname === "/" ? title : `${title} · Joeri Kaiser`;
 ---
 
 <!doctype html>
@@ -20,11 +19,7 @@ const pageTitle =
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
     <meta name="theme-color" content="#304243" />
-    <meta
-      name="theme-color"
-      media="(prefers-color-scheme: dark)"
-      content="#111111"
-    />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111111" />
     <title>{pageTitle}</title>
     <ViewTransitions />
   </head>
@@ -36,16 +31,16 @@ const pageTitle =
 </html>
 
 <style is:global lang="scss">
-body {
-  min-height: 95vh;
-  margin: 0;
-}
-body {
-  display: flex;
-  flex-direction: column;
-}
+  body {
+    min-height: 95vh;
+    margin: 0;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+  }
 
-main {
-  flex: 1;
-}
+  main {
+    flex: 1;
+  }
 </style>

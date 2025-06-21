@@ -1,24 +1,14 @@
 ---
+import { getCollection, type CollectionEntry } from "astro:content";
 import Jumbo from "../components/Jumbo/Jumbo.astro";
+import Preview from "../components/ProjectTimeline/Preview.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import viewTransition from "../utils/viewTransitions";
-import { getCollection } from "astro:content";
-import Preview from "../components/ProjectTimeline/Preview.astro";
 
-const projects = await getCollection("project");
+const projects: Array<CollectionEntry<"project">> = await getCollection("project");
 const sortedProjects = projects.sort((a, b) => {
   return a.data.order - b.data.order;
 });
-export interface Dates {
-  start: string;
-  end: string;
-}
-export interface Project {
-  title: string;
-  description: string;
-  dates: Dates;
-  order: number;
-}
 ---
 
 <BaseLayout title="Joeri Kaiser">
@@ -26,11 +16,7 @@ export interface Project {
     <section class="main-section">
       <Jumbo />
       <div class="continue">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          width="40px"
-          fill="currentColor"
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40px" fill="currentColor"
           ><path
             d="M11.9999 13.1714L16.9497 8.22168L18.3639 9.63589L11.9999 15.9999L5.63599 9.63589L7.0502 8.22168L11.9999 13.1714Z"
           ></path></svg

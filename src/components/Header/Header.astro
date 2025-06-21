@@ -18,10 +18,7 @@ const navigation = [
       <div class="links">
         {
           navigation.map((item) => (
-            <a
-              href={item.url}
-              class={topLevelPath === item.url.split("/")[1] ? "active" : ""}
-            >
+            <a href={item.url} class={topLevelPath === item.url.split("/")[1] ? "active" : ""}>
               {item.label}
             </a>
           ))
