@@ -1,16 +1,16 @@
 /* Light mode styles */
 :root {
-	--secondary-color: #8483c8;
-	--bg-color: #1a1a1a;
-	--text-color: #333333;
+  --secondary-color: #8483c8;
+  --bg-color: #1a1a1a;
+  --text-color: #333333;
 }
 
 /* Dark mode styles */
 .dark {
-	--bg-color: #1a1a1a;
-	--text-color: #ffffff;
+  --bg-color: #1a1a1a;
+  --text-color: #ffffff;
 }
 
 body {
-	background-color: var(--bg-color);
+  background-color: var(--bg-color);
 }
