@@ -5,10 +5,13 @@ import Preview from "../components/ProjectTimeline/Preview.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import viewTransition from "../utils/viewTransitions";
 
-const projects: Array<CollectionEntry<"project">> = await getCollection("project");
-const sortedProjects = projects.sort((a, b) => {
-  return a.data.order - b.data.order;
-});
+type Project = CollectionEntry<"project">;
+
+const projects: Array<Project> = await getCollection(
+  "project",
+  (project: Project) => project.data.isActive
+);
+const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <BaseLayout title="Joeri Kaiser">

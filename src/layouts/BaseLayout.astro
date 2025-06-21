@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 import Header from "../components/Header/Header.astro";
 import "../styles/theme.css";
 
@@ -21,7 +21,7 @@ const pageTitle = Astro.url.pathname === "/" ? title : `${title} · Joeri Kaiser
     <meta name="theme-color" content="#304243" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111111" />
     <title>{pageTitle}</title>
-    <ViewTransitions />
+    <ClientRouter />
   </head>
   <body>
     <Header />
