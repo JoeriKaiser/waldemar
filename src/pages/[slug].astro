@@ -7,7 +7,7 @@ export const prerender = true;
 export async function getStaticPaths() {
   const pages: Array<CollectionEntry<"pages">> = await getCollection("pages");
   return pages.map((page) => ({
-    params: { slug: page.slug },
+    params: { slug: page.data.slug },
     props: { page },
   }));
 }
