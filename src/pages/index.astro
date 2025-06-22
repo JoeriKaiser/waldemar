@@ -3,7 +3,6 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import Jumbo from "../components/Jumbo/Jumbo.astro";
 import Preview from "../components/ProjectTimeline/Preview.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import viewTransition from "../utils/viewTransitions";
 
 type Project = CollectionEntry<"project">;
 
@@ -11,21 +10,43 @@ const projects: Array<Project> = await getCollection(
   "project",
   (project: Project) => project.data.isActive
 );
+
 const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <BaseLayout title="Joeri Kaiser">
-  <main view-transition:animate={viewTransition}>
+  <main>
     <section class="main-section">
-      <Jumbo />
-      <div class="continue">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40px" fill="currentColor"
-          ><path
-            d="M11.9999 13.1714L16.9497 8.22168L18.3639 9.63589L11.9999 15.9999L5.63599 9.63589L7.0502 8.22168L11.9999 13.1714Z"
-          ></path></svg
-        >
+      <div transition:name="hero-section">
+        <Jumbo />
       </div>
-      {sortedProjects.map((project) => <Preview project={project} />)}
+
+      <div class="continue" transition:name="continue-arrow">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="40px"
+          fill="currentColor"
+        >
+          <path
+            d="M11.9999 13.1714L16.9497 8.22168L18.3639 9.63589L11.9999 15.9999L5.63599 9.63589L7.0502 8.22168L11.9999 13.1714Z"
+          ></path>
+        </svg>
+      </div>
+
+      <div class="projects-container" transition:name="projects-list">
+        {
+          sortedProjects.map((project, index) => (
+            <div
+              class="project-item"
+              transition:name={`project-${project.slug}`}
+              style={`animation-delay: ${index * 0.1}s`}
+            >
+              <Preview project={project} />
+            </div>
+          ))
+        }
+      </div>
     </section>
   </main>
 </BaseLayout>
@@ -40,6 +61,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
     font-size: 20px;
     line-height: 1.6;
   }
+
   .main-section {
     display: flex;
     flex-direction: column;
@@ -53,7 +75,32 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
     align-items: center;
     margin-top: auto;
     color: var(--gray-10);
+    transition: transform 0.3s ease;
   }
+
+  .continue:hover {
+    transform: translateY(5px);
+  }
+
+  .projects-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .project-item {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   h1 {
     font-size: 4rem;
     font-weight: 700;
@@ -61,11 +108,51 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
     text-align: center;
     margin-bottom: 1em;
   }
+
+  [transition:name="hero-section"] {
+    view-transition-name: hero-section;
+  }
+
+  [transition:name="continue-arrow"] {
+    view-transition-name: continue-arrow;
+  }
+
+  [transition:name="projects-list"] {
+    view-transition-name: projects-list;
+  }
 </style>
 
 <style is:global>
   @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
+
   * {
     font-family: "Lexend", sans-serif;
+  }
+
+  ::view-transition-old(hero-section),
+  ::view-transition-new(hero-section) {
+    animation-duration: 0.5s;
+  }
+
+  ::view-transition-old(hero-section) {
+    animation-name: scale-out;
+  }
+
+  ::view-transition-new(hero-section) {
+    animation-name: scale-in;
+  }
+
+  @keyframes scale-out {
+    to {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      transform: scale(1.05);
+      opacity: 0;
+    }
   }
 </style>

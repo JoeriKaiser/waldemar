@@ -1,12 +1,10 @@
 ---
 import { ClientRouter } from "astro:transitions";
-import Header from "../components/Header/Header.astro";
-import "../styles/theme.css";
-
 import Footer from "../components/Footer/Footer.astro";
+import Header from "../components/Header/Header.astro";
 import "../styles/global.css";
+import "../styles/theme.css";
 const { title } = Astro.props;
-
 const pageTitle = Astro.url.pathname === "/" ? title : `${title} · Joeri Kaiser`;
 ---
 
@@ -24,9 +22,17 @@ const pageTitle = Astro.url.pathname === "/" ? title : `${title} · Joeri Kaiser
     <ClientRouter />
   </head>
   <body>
-    <Header />
-    <slot />
-    <Footer />
+    <div transition:persist="header">
+      <Header />
+    </div>
+
+    <div transition:name="main-content" transition:animate="slide">
+      <slot />
+    </div>
+
+    <div transition:persist="footer">
+      <Footer />
+    </div>
   </body>
 </html>
 
@@ -34,13 +40,47 @@ const pageTitle = Astro.url.pathname === "/" ? title : `${title} · Joeri Kaiser
   body {
     min-height: 95vh;
     margin: 0;
-  }
-  body {
     display: flex;
     flex-direction: column;
   }
 
   main {
     flex: 1;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes slide-from-right {
+    from {
+      transform: translateX(30px);
+    }
+  }
+
+  @keyframes slide-to-left {
+    to {
+      transform: translateX(-30px);
+    }
+  }
+
+  ::view-transition-old(slide) {
+    animation:
+      180ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+      600ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+  }
+
+  ::view-transition-new(slide) {
+    animation:
+      420ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+      600ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
   }
 </style>
