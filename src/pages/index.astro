@@ -37,11 +37,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
       <div class="projects-container" transition:name="projects-list">
         {
           sortedProjects.map((project, index) => (
-            <div
-              class="project-item"
-              transition:name={`project-${project.slug}`}
-              style={`animation-delay: ${index * 0.1}s`}
-            >
+            <div class="project-item" style={`animation-delay: ${index * 0.1}s`}>
               <Preview project={project} />
             </div>
           ))
