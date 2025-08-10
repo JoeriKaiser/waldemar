@@ -15,13 +15,13 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <BaseLayout title="Joeri Kaiser">
-  <main>
+  <main class="main-content-area">
     <section class="main-section">
       <div transition:name="hero-section">
         <Jumbo />
       </div>
 
-      <div class="continue" transition:name="continue-arrow">
+      <a href="#projects-list-start" class="continue" transition:name="continue-arrow" aria-label="Scroll to projects section">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -32,9 +32,9 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
             d="M11.9999 13.1714L16.9497 8.22168L18.3639 9.63589L11.9999 15.9999L5.63599 9.63589L7.0502 8.22168L11.9999 13.1714Z"
           ></path>
         </svg>
-      </div>
+      </a>
 
-      <div class="projects-container" transition:name="projects-list">
+      <div id="projects-list-start" class="projects-container" transition:name="projects-list">
         {
           sortedProjects.map((project, index) => (
             <div class="project-item" style={`animation-delay: ${index * 0.1}s`}>
@@ -48,11 +48,12 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 </BaseLayout>
 
 <style>
-  main {
+  .main-content-area {
     margin: auto;
     padding: 1rem;
-    width: 800px;
-    max-width: calc(100% - 2rem);
+    box-sizing: content-box; /* Ensure padding is included in width calculation */
+    width: calc(100% - (var(--space-xl) * 2)); /* Use global space variable */
+    max-inline-size: 800px; /* Use logical property for max-width */
     color: white;
     font-size: 20px;
     line-height: 1.6;
@@ -62,7 +63,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    min-height: calc(100svh - var(--space-3xl) * 1.8);
+    min-height: calc(100svh - var(--space-3xl) * 1.8); /* Keep this as it is, assuming it works for your design */
   }
 
   .continue {
@@ -72,6 +73,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
     margin-top: auto;
     color: var(--gray-10);
     transition: transform 0.3s ease;
+    text-decoration: none; /* Remove underline from link */
   }
 
   .continue:hover {
@@ -119,12 +121,6 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
 </style>
 
 <style is:global>
-  @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
-
-  * {
-    font-family: "Lexend", sans-serif;
-  }
-
   ::view-transition-old(hero-section),
   ::view-transition-new(hero-section) {
     animation-duration: 0.5s;

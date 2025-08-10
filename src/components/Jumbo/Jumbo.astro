@@ -1,13 +1,13 @@
 ---
 import { Image } from "astro:assets";
-import base from "../../../public/images/base.png";
-import overlay from "../../../public/images/overlay.png";
+import overlay from "../../assets/images/overlay.png";
+import svg from "../../assets/images/svg.svg";
 ---
 
 <div class="container">
-  <div class="image-container" id="imageContainer">
-    <Image src={base} alt="Base Image" class="base" />
-    <Image src={overlay} alt="Overlay Image" class="overlay" />
+  <div class="image-container">
+    <Image src={svg} alt="Stylized portrait of Joeri Kaiser - base layer" class="base" />
+    <Image src={overlay} alt="Stylized portrait of Joeri Kaiser - overlay effect" class="overlay" />
   </div>
   <div class="description">
     <h2>Hi there! I'm Joeri</h2>
@@ -20,7 +20,7 @@ import overlay from "../../../public/images/overlay.png";
 </div>
 
 <script>
-  const overlayImg = document.querySelector(".overlay");
+  const overlayImg = document.querySelector(".image-container .overlay");
   overlayImg?.addEventListener("click", () => overlayImg.classList.toggle("fade-in"));
 </script>
 
@@ -35,9 +35,13 @@ import overlay from "../../../public/images/overlay.png";
   }
 
   .image-container {
+    --image-size-desktop: 300px;
+    --image-size-tablet: 200px;
+    --image-size-mobile: 150px;
+
     position: relative;
-    width: 300px;
-    height: 300px;
+    width: var(--image-size-desktop);
+    height: var(--image-size-desktop);
     cursor: pointer;
     flex-shrink: 0;
   }
@@ -91,11 +95,9 @@ import overlay from "../../../public/images/overlay.png";
     }
 
     .image-container {
-      position: relative;
-      width: 200px;
-      height: 200px;
+      width: var(--image-size-tablet);
+      height: var(--image-size-tablet);
       max-width: 100%;
-      flex-shrink: 0;
     }
 
     .description h2 {
@@ -117,15 +119,8 @@ import overlay from "../../../public/images/overlay.png";
     }
 
     .image-container {
-      position: relative;
-      width: 150px;
-      height: 150px;
-      flex-shrink: 0;
-    }
-
-    .image-container img {
-      max-width: 100%;
-      max-height: 100%;
+      width: var(--image-size-mobile);
+      height: var(--image-size-mobile);
     }
   }
 </style>

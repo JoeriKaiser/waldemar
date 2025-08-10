@@ -2,14 +2,14 @@
 const currentYear = new Date().getFullYear();
 
 const socialLinks = [
-  {
-    name: "GitHub",
-    url: "https://github.com/JoeriKaiser",
-  },
-  {
-    name: "LinkedIn",
-    url: "https://www.linkedin.com/in/joeri-kaiser",
-  },
+	{
+		name: "GitHub",
+		url: "https://github.com/JoeriKaiser",
+	},
+	{
+		name: "LinkedIn",
+		url: "https://www.linkedin.com/in/joeri-kaiser",
+	},
 ];
 
 const email = "joeri.waldemar@gmail.com";
@@ -19,19 +19,21 @@ const email = "joeri.waldemar@gmail.com";
   <div class="footer-content">
     <div class="footer-column">
       <h3>Connect</h3>
-      <div class="social-links">
+      <ul class="link-list">
         {
           socialLinks.map((link) => (
-            <a href={link.url} target="_blank" rel="noopener noreferrer">
-              {link.name}
-            </a>
+            <li>
+              <a href={link.url} target="_blank" rel="noopener noreferrer">
+                {link.name}
+              </a>
+            </li>
           ))
         }
-      </div>
+      </ul>
     </div>
     <div class="footer-column">
       <h3>Contact</h3>
-      <a href={`mailto:${email}`} class="email-button"> Email Me </a>
+      <a href={`mailto:${email}`} class="link-list-item"> Email Me </a>
     </div>
   </div>
   <div class="copyright">
@@ -45,7 +47,7 @@ const email = "joeri.waldemar@gmail.com";
     margin: 0 auto;
     width: 100%;
     max-width: 800px;
-    padding: var(--space-l) var(--space-xl);
+    padding: var(--space-l) var(--space-m);
     text-align: center;
     position: relative;
 
@@ -88,7 +90,10 @@ const email = "joeri.waldemar@gmail.com";
     }
   }
 
-  .social-links {
+  .link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
@@ -110,16 +115,7 @@ const email = "joeri.waldemar@gmail.com";
     }
   }
 
-  .email-button {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    text-align: left;
-    box-sizing: content-box;
-    margin-inline: auto;
-    width: calc(100% - (var(--space-xl) * 2));
-    max-inline-size: 800px;
-    padding-inline: var(--space-xl);
+  .link-list-item {
     color: lightslategray;
     text-decoration: underline;
     transition: color 0.3s ease;

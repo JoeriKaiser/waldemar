@@ -1,13 +1,11 @@
 ---
 import Logo from "./Logo.astro";
-const currentPath = Astro.url.pathname;
-const topLevelPath = currentPath.split("/")[1];
 
 const navigation = [
-  {
-    label: "About",
-    url: "/about",
-  },
+	{
+		label: "About",
+		url: "/about",
+	},
 ];
 ---
 
@@ -15,15 +13,17 @@ const navigation = [
   <div class="center">
     <nav id="nav">
       <Logo />
-      <div class="links">
+      <ul class="links">
         {
           navigation.map((item) => (
-            <a href={item.url} class={topLevelPath === item.url.split("/")[1] ? "active" : ""}>
-              {item.label}
-            </a>
+            <li>
+              <a href={item.url}>
+                {item.label}
+              </a>
+            </li>
           ))
         }
-      </div>
+      </ul>
     </nav>
   </div>
 </header>
@@ -49,6 +49,9 @@ const navigation = [
     display: flex;
     align-items: stretch;
     gap: var(--space-2xs);
+    list-style: none;
+    padding: 0;
+    margin: 0;
 
     a {
       text-decoration: none;

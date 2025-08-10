@@ -1,68 +1,71 @@
 ---
+import { Image } from "astro:assets";
 import { type CollectionEntry, render } from "astro:content";
+import "../../styles/preview.css";
 import { formatDate } from "../../utils/time";
 
 interface Props {
-  project: CollectionEntry<"project">;
+	project: CollectionEntry<"project">;
 }
 
+type ImageType = Pick<
+	CollectionEntry<"project">["data"]["img"][0],
+	"src" | "alt"
+>;
+
 const { project } = Astro.props;
-
 const { data } = project;
-
 const { name, img, timeline } = data;
 const { Content } = await render(project);
+
+const optimizedImages =
+	img?.map((image: ImageType) => ({
+		...image,
+		src: image.src.startsWith("/") ? image.src : `/${image.src}`,
+	})) || [];
 ---
 
-<div class="project">
-  {
-    img?.map((img: { src: string; alt: string }) => {
-      const imageSrc = img.src.startsWith("/") ? img.src : `/${img.src}`;
-      console.log(imageSrc);
-      return (
-        <div class="media">
-          <img class="img" src={imageSrc} alt={img.alt} loading="lazy" />
+<div class="project-timeline-item">
+  {optimizedImages.length > 0 && (
+    <div class="media-container">
+      {optimizedImages.map((image: ImageType) => (
+        <div class="media-wrapper">
+          <div class="image-frame">
+            <Image
+              src={image.src}
+              alt={image.alt}
+              width={800}
+              height={600}
+              loading="lazy"
+              class="project-image"
+            />
+            <div class="image-overlay"></div>
+          </div>
         </div>
-      );
-    })
-  }
-  <div class="sticky">
-    <time
-      >{
-        `${formatDate(new Date(timeline.start))} - ${!timeline.end ? "Current" : formatDate(new Date(timeline.end))}`
-      }</time
-    >
-    <h2>{name}</h2>
-    <Content />
+      ))}
+    </div>
+  )}
+  
+  <div class="sticky-content">
+    <div class="timeline-badge">
+      <time class="timeline-date">
+        {`${formatDate(new Date(timeline.start))} - ${!timeline.end ? "Current" : formatDate(new Date(timeline.end))}`}
+      </time>
+    </div>
+    <h2 class="project-title">{name}</h2>
+    <div class="project-description">
+      <Content />
+    </div>
   </div>
 </div>
 
 <style lang="scss">
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  @keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-
-    to {
-      opacity: 0;
-    }
-  }
-
-  .project {
+  .project-timeline-item {
     padding-top: var(--space-2xl);
-
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    
     @supports (animation-timeline: view()) {
       &:not(:last-of-type) {
         animation: fadeOut linear forwards;
@@ -71,41 +74,22 @@ const { Content } = await render(project);
       }
     }
   }
-
-  .sticky {
-    padding-block: var(--space-2xl);
-    position: sticky;
-    bottom: 0;
-    align-self: flex-end;
-    flex-basis: 100%;
-    background-image: linear-gradient(to top, #1a1a1a 40%, transparent);
+  
+  .media-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
   }
-
-  .sticky time {
-    text-shadow: 0 0 24px #1a1a1a;
-  }
-
-  .sticky h2 {
-    margin-block: var(--space-xs) var(--space-s);
-    text-shadow: 0 0 32px var(--gray-1);
-  }
-
-  .sticky :global(p) {
-    font-size: var(--step-1);
-    line-height: var(--line-height-snug);
-    text-shadow: 0 0 32px #1a1a1a;
-  }
-
-  .media {
+  
+  .media-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
     max-width: 100%;
     margin-inline: auto;
     overflow: hidden;
-    border-radius: 5px;
     transform-origin: top center;
-
+    
     @supports (animation-timeline: view()) {
       animation:
         fadeIn ease-in-out both,
@@ -115,21 +99,171 @@ const { Content } = await render(project);
         contain 90% cover 100%;
       animation-timeline: view();
     }
+  }
 
-    img {
-      width: 100%;
-      height: auto;
-      max-width: 1000px;
-      object-fit: cover;
-    }
-
-    & + .media {
-      margin-top: var(--space-xl);
+  .image-frame {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 1000px;
+    width: 100%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover {
+      transform: translateY(-4px) scale(1.02);
+      
+      .image-overlay {
+        opacity: 0.3;
+      }
+      
+      .project-image {
+        transform: scale(1.05);
+      }
     }
   }
 
-  time {
+  .image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0.05) 50%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+  
+  .project-image {
+    width: 100%;
+    height: auto;
+    max-width: 1000px;
+    max-height: 600px;
+    object-fit: cover;
+    aspect-ratio: 4/3;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    display: block;
+  }
+  
+  .sticky-content {
+    padding-block: var(--space-2xl);
+    position: sticky;
+    bottom: 0;
+    align-self: flex-end;
+    flex-basis: 100%;
+    background-image: linear-gradient(to top, #1a1a1a 50%, transparent);
+    // backdrop-filter: blur(8px);
+  }
+
+  .timeline-badge {
+    margin-bottom: var(--space-s);
+    
+    .timeline-date {
+      color: var(--secondary-color, #8483c8);
+      opacity: 0.9;
+      text-shadow: 0 0 24px #1a1a1a;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+      
+      &::before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: var(--secondary-color, #8483c8);
+        border-radius: 50%;
+        margin-right: 0.5rem;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .project-title {
+    margin-block: var(--space-xs) var(--space-s);
+    text-shadow: 0 0 3px var(--gray-1, #f8f9fa);
+    font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+    font-weight: 700;
     color: white;
-    opacity: 0.75;
+    line-height: 1.2;
+  }
+
+  .project-description {
+    :global(p) {
+      font-size: var(--step-1);
+      line-height: var(--line-height-snug);
+      text-shadow: 0 0 32px #1a1a1a;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 1rem;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    
+    :global(strong) {
+      color: var(--secondary-color, #8483c8);
+      font-weight: 600;
+    }
+    
+    :global(em) {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    :global(a) {
+      color: var(--secondary-color, #8483c8);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        border-bottom-color: var(--secondary-color, #8483c8);
+        text-shadow: 0 0 8px var(--secondary-color, #8483c8);
+      }
+    }
+    
+    :global(ul) {
+      padding-left: 1.5rem;
+      margin: 1rem 0;
+      
+      li {
+        margin-bottom: 0.5rem;
+        color: rgba(255, 255, 255, 0.85);
+        text-shadow: 0 0 24px #1a1a1a;
+        
+        &::marker {
+          color: var(--secondary-color, #8483c8);
+        }
+      }
+    }
+    
+    :global(code) {
+      background: rgba(132, 131, 200, 0.2);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.9em;
+      color: var(--secondary-color, #8483c8);
+      border: 1px solid rgba(132, 131, 200, 0.3);
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .sticky-content {
+      padding-block: var(--space-l);
+    }
+    
+    .project-title {
+      font-size: clamp(1.3rem, 4vw, 2rem);
+    }
+    
+    .project-description :global(p) {
+      font-size: 1rem;
+    }
   }
 </style>
