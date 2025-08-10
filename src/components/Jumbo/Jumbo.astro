@@ -1,12 +1,12 @@
 ---
 import { Image } from "astro:assets";
+import base from "../../assets/images/base.png";
 import overlay from "../../assets/images/overlay.png";
-import svg from "../../assets/images/svg.svg";
 ---
 
 <div class="container">
   <div class="image-container">
-    <Image src={svg} alt="Stylized portrait of Joeri Kaiser - base layer" class="base" />
+    <Image src={base} alt="Stylized portrait of Joeri Kaiser - base layer" class="base" />
     <Image src={overlay} alt="Stylized portrait of Joeri Kaiser - overlay effect" class="overlay" />
   </div>
   <div class="description">
