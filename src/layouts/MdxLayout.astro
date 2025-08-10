@@ -24,10 +24,9 @@ document.addEventListener("astro:page-load", () => {
   const detailsElements = document.querySelectorAll("details");
   
   detailsElements.forEach((details) => {
-    const content = details.querySelector("div.details-content");
+    const content = details.querySelector("div.details-content") as HTMLElement;
     if (!content) return;
     
-    // Set initial state
     if (!details.open) {
       content.style.maxHeight = "0";
       content.style.opacity = "0";
@@ -35,21 +34,20 @@ document.addEventListener("astro:page-load", () => {
     
     details.addEventListener("toggle", () => {
       if (details.open) {
-        // Opening animation
         content.style.display = "block";
         const scrollHeight = content.scrollHeight;
         
         content.animate([
           { 
             maxHeight: "0", 
-            opacity: 0, 
+            opacity: "0", 
             transform: "translateY(-8px)",
             paddingTop: "0",
             paddingBottom: "0"
           },
           { 
             maxHeight: scrollHeight + "px", 
-            opacity: 1, 
+            opacity: "1", 
             transform: "translateY(0)",
             paddingTop: "1.5rem",
             paddingBottom: "1.5rem"
@@ -60,20 +58,19 @@ document.addEventListener("astro:page-load", () => {
           fill: "forwards"
         });
       } else {
-        // Closing animation
         const scrollHeight = content.scrollHeight;
         
         const animation = content.animate([
           { 
             maxHeight: scrollHeight + "px", 
-            opacity: 1, 
+            opacity: "1", 
             transform: "translateY(0)",
             paddingTop: "1.5rem",
             paddingBottom: "1.5rem"
           },
           { 
             maxHeight: "0", 
-            opacity: 0, 
+            opacity: "0", 
             transform: "translateY(-8px)",
             paddingTop: "0",
             paddingBottom: "0"
@@ -104,7 +101,6 @@ document.addEventListener("astro:page-load", () => {
     line-height: 1.7;
   }
 
-  // Enhanced typography
   :global(.intro) {
     text-align: center;
     margin-bottom: 3rem;
@@ -129,7 +125,6 @@ document.addEventListener("astro:page-load", () => {
     }
   }
 
-  // Enhanced details/summary styling
   :global(details) {
     margin-top: 2rem;
     border: 1px solid var(--gray-4);
@@ -216,7 +211,6 @@ document.addEventListener("astro:page-load", () => {
       margin: 0;
     }
     
-    // Add some nice styling for any content inside
     strong {
       color: var(--accent);
       font-weight: 600;
@@ -228,7 +222,6 @@ document.addEventListener("astro:page-load", () => {
     }
   }
 
-  // Enhanced list styling
   :global(ul) {
     padding-left: 1.5rem;
     margin: 1.5rem 0;
@@ -241,7 +234,6 @@ document.addEventListener("astro:page-load", () => {
         color: var(--accent);
       }
       
-      // Custom bullet points
       &:before {
         content: "";
         position: absolute;
@@ -256,7 +248,6 @@ document.addEventListener("astro:page-load", () => {
     }
   }
 
-  // Enhanced heading styles
   :global(h2) {
     color: var(--gray-9);
     font-weight: 700;
@@ -277,7 +268,6 @@ document.addEventListener("astro:page-load", () => {
     }
   }
 
-  // Enhanced paragraph spacing
   :global(p) {
     margin-bottom: 1.25rem;
     color: var(--gray-7);
@@ -287,7 +277,6 @@ document.addEventListener("astro:page-load", () => {
     }
   }
 
-  // Responsive design
   @media (max-width: 768px) {
     .center {
       width: calc(100% - 2rem);
