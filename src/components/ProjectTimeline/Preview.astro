@@ -18,15 +18,11 @@ const { data } = project;
 const { name, img, timeline } = data;
 const { Content } = await render(project);
 
-const optimizedImages = await Promise.all(
-	img?.map(async (image: ImageType) => {
-		const imageModule = await import(image.src);
-		return {
-			...image,
-			src: imageModule.default,
-		};
-	}) || [],
-);
+const optimizedImages =
+	img?.map((image: ImageType) => ({
+		...image,
+		src: image.src.startsWith("/") ? image.src : `/${image.src}`,
+	})) || [];
 ---
 
 <div class="project-timeline-item">
