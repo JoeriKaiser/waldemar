@@ -34,14 +34,10 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
         </svg>
       </a>
 
-      <div id="projects-list-start" class="projects-container" transition:name="projects-list">
-        {
-          sortedProjects.map((project, index) => (
-            <div class="project-item" style={`animation-delay: ${index * 0.1}s`}>
-              <Preview project={project} />
-            </div>
-          ))
-        }
+      <div id="projects-list-start" class="projects-container">
+        {sortedProjects.map((project, index) => (
+          <Preview project={project} />
+        ))}
       </div>
     </section>
   </main>

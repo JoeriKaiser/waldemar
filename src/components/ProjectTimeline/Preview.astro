@@ -18,11 +18,13 @@ const { data } = project;
 const { name, img, timeline } = data;
 const { Content } = await render(project);
 
-const optimizedImages =
-	img?.map((image: ImageType) => ({
-		...image,
-		src: image.src.startsWith("/") ? image.src : `/${image.src}`,
-	})) || [];
+const optimizedImages = img?.map((image: ImageType) => {
+  const needsSlash = typeof image.src === 'string' && !image.src.startsWith("/");
+  return {
+    ...image,
+    src: needsSlash ? `/${image.src}` : image.src,
+  };
+}) || [];
 ---
 
 <div class="project-timeline-item">
