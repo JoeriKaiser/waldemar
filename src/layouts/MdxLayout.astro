@@ -12,7 +12,7 @@ const { title } = Astro.props;
 <BaseLayout title={title}>
   <main transition:animate={viewTransition}>
     <article class="center" itemscope itemtype="https://schema.org/WebPage">
-      <section>
+      <section transition:name="hero-section">
         <slot />
       </section>
     </article>
