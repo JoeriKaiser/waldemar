@@ -2,16 +2,13 @@
 import { ClientRouter } from "astro:transitions";
 import Footer from "../components/Footer/Footer.astro";
 import Header from "../components/Header/Header.astro";
-import "../styles/global.css";
+import "../styles/tailwind.css";
+import "../styles/tokens.css";
+import "../styles/layer.css";
 import "../styles/theme.css";
-
-interface Props {
-	title: string;
-}
-
+interface Props { title: string; }
 const { title } = Astro.props;
-const pageTitle =
-	Astro.url.pathname === "/" ? title : `${title} · Joeri Kaiser`;
+const pageTitle = Astro.url.pathname === "/" ? title : `${title} · Joeri Kaiser`;
 ---
 
 <!doctype html>
@@ -49,18 +46,7 @@ const pageTitle =
   </body>
 </html>
 
-<style is:global lang="scss">
-  body {
-    min-height: 95vh;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  main {
-    flex: 1;
-  }
-
+<style is:global>
   :root {
     --vt-fade-duration-old: 180ms;
     --vt-fade-duration-new: 420ms;
@@ -105,9 +91,5 @@ const pageTitle =
     animation:
       var(--vt-fade-duration-new) var(--vt-ease-out-cubic) var(--vt-fade-delay-new) both fade-in,
       var(--vt-slide-duration) var(--vt-ease-out-cubic) both slide-from-right;
-  }
-
-  * {
-    font-family: "Lexend", sans-serif;
   }
 </style>

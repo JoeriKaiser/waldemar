@@ -1,0 +1,71 @@
+@import "tailwindcss/theme";
+@plugin "@tailwindcss/typography";
+
+
+@layer base {
+  html {
+    color-scheme: dark light;
+  }
+  body {
+    @apply min-h-[95vh] m-0 flex flex-col overflow-y-scroll;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: "Lexend", ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+@theme {
+  --color-secondary: var(--color-secondary);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+}
+
+@layer utilities {
+  .container-center {
+    box-sizing: content-box;
+    margin-inline: auto;
+    width: calc(100% - (var(--space-xl) * 2));
+    max-inline-size: 800px;
+  }
+
+  .card {
+    background: var(--gray-1);
+    border: 1px solid var(--gray-3);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+  }
+
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgb(0 0 0 / 0.14);
+    border-color: var(--color-secondary);
+  }
+
+  .link-underline {
+    text-decoration: underline;
+    color: lightslategray;
+    transition: color 0.3s ease;
+  }
+  .link-underline:hover {
+    color: var(--color-secondary);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0);
+    white-space: nowrap; border-width: 0;
+  }
+}
+
+
+	@layer components {
+	  .prose-article {
+	    @apply prose prose-invert max-w-none;
+	  }
+	}

@@ -15,119 +15,35 @@ const socialLinks = [
 const email = "joeri.waldemar@gmail.com";
 ---
 
-<footer class="center">
-  <div class="footer-content">
-    <div class="footer-column">
-      <h3>Connect</h3>
-      <ul class="link-list">
-        {
-          socialLinks.map((link) => (
-            <li>
-              <a href={link.url} target="_blank" rel="noopener noreferrer">
-                {link.name}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
+<footer class="container-center text-center">
+  <div class="relative before:content-[''] before:absolute before:top-0 before:left-1/2 before:-translate-x-1/2 before:w-full before:h-px before:bg-[var(--color-text)] before:opacity-20">
+    <div class="bg-[var(--color-bg)] text-[var(--color-text)] py-[var(--space-l)]">
+      <div class="flex justify-center max-w-[800px] mx-auto gap-[var(--space-l)] max-sm:flex-col">
+        <div class="flex-1">
+          <h3 class="text-[1.2rem] mb-[var(--space-s)]">Connect</h3>
+          <ul class="list-none p-0 m-0 flex flex-col gap-[var(--space-xs)] text-left container-center">
+            {socialLinks.map((link) => (
+              <li>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link-underline"
+                >
+                  {link.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="flex-1">
+          <h3 class="text-[1.2rem] mb-[var(--space-s)]">Contact</h3>
+          <a href={`mailto:${email}`} class="link-underline">Email Me</a>
+        </div>
+      </div>
+      <div class="mt-[var(--space-l)] text-center text-[0.9rem]">
+        &copy; {currentYear} Joeri Kaiser. Made with Astro ❤️
+      </div>
     </div>
-    <div class="footer-column">
-      <h3>Contact</h3>
-      <a href={`mailto:${email}`} class="link-list-item"> Email Me </a>
-    </div>
-  </div>
-  <div class="copyright">
-    &copy; {currentYear} Joeri Kaiser. Made with Astro ❤️
   </div>
 </footer>
-
-<style lang="scss">
-  .center {
-    box-sizing: border-box;
-    margin: 0 auto;
-    width: 100%;
-    max-width: 800px;
-    padding: var(--space-l) var(--space-m);
-    text-align: center;
-    position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      height: 1px;
-      background-color: white;
-    }
-  }
-
-  footer {
-    background-color: var(--gray-1);
-    color: var(--gray-8);
-    padding: var(--space-l) var(--space-m);
-  }
-
-  .footer-content {
-    display: flex;
-    justify-content: center;
-    max-width: 800px;
-    margin: 0 auto;
-
-    @media (max-width: 600px) {
-      flex-direction: column;
-      gap: var(--space-l);
-    }
-  }
-
-  .footer-column {
-    flex: 1;
-
-    h3 {
-      font-size: 1.2rem;
-      margin-bottom: var(--space-s);
-    }
-  }
-
-  .link-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    text-align: left;
-    box-sizing: content-box;
-    margin-inline: auto;
-    width: calc(100% - (var(--space-xl) * 2));
-    max-inline-size: 800px;
-    padding-inline: var(--space-xl);
-
-    a {
-      color: lightslategray;
-      text-decoration: underline;
-      transition: color 0.3s ease;
-
-      &:hover {
-        color: var(--accent-color);
-      }
-    }
-  }
-
-  .link-list-item {
-    color: lightslategray;
-    text-decoration: underline;
-    transition: color 0.3s ease;
-
-    &:hover {
-      color: var(--accent-color);
-    }
-  }
-
-  .copyright {
-    margin-top: var(--space-l);
-    text-align: center;
-    font-size: 0.9rem;
-  }
-</style>

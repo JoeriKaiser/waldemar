@@ -4,123 +4,33 @@ import base from "../../assets/images/base.png";
 import overlay from "../../assets/images/overlay.png";
 ---
 
-<div class="container">
-  <div class="image-container">
-    <Image src={base} alt="Stylized portrait of Joeri Kaiser - base layer" class="base" />
-    <Image src={overlay} alt="Stylized portrait of Joeri Kaiser - overlay effect" class="overlay" />
+<div class="flex flex-wrap justify-center items-start gap-4 p-4">
+  <div
+    class="relative cursor-pointer shrink-0"
+    style="
+      --image-size-desktop: 300px;
+      --image-size-tablet: 200px;
+      --image-size-mobile: 150px;
+      width: var(--image-size-desktop);
+      height: var(--image-size-desktop);
+    "
+  >
+    <Image src={base} alt="Stylized portrait - base" class="absolute inset-0 w-full h-full scale-[0.96]" />
+    <Image
+      src={overlay}
+      alt="Stylized portrait - overlay"
+      class="absolute inset-0 w-full h-full opacity-0 transition-opacity duration-500 ease-in-out overlay"
+    />
   </div>
-  <div class="description">
-    <h2>Hi there! I'm Joeri</h2>
-    <p>
-      I'm an enthusiastic web developer passionate about crafting engaging and intuitive user
-      experiences
-    </p>
-    <p>Welcome to my personal website / blog ? soon ?</p>
+  <div class="self-center flex-1 max-w-[500px] text-center p-4">
+    <h2 class="text-left text-2xl mb-2 md:text-3xl">Hi there! I'm Joeri</h2>
+    <p class="text-left leading-relaxed">I'm an enthusiastic web developer passionate about crafting engaging and intuitive user experiences</p>
+    <p class="text-left leading-relaxed">Welcome to my personal website / blog ? soon ?</p>
   </div>
 </div>
 
 <script>
-  const overlayImg = document.querySelector(".image-container .overlay");
-  overlayImg?.addEventListener("click", () => overlayImg.classList.toggle("fade-in"));
+  const overlayImg = document.querySelector(".overlay");
+  overlayImg?.addEventListener("click", () => overlayImg.classList.toggle("opacity-100"));
 </script>
 
-<style>
-  .container {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 1rem;
-  }
-
-  .image-container {
-    --image-size-desktop: 300px;
-    --image-size-tablet: 200px;
-    --image-size-mobile: 150px;
-
-    position: relative;
-    width: var(--image-size-desktop);
-    height: var(--image-size-desktop);
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .base,
-  .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transition: opacity 0.5s ease-in-out;
-  }
-
-  .base {
-    transform: scale(0.96);
-  }
-
-  .overlay {
-    opacity: 0;
-  }
-
-  .fade-in {
-    opacity: 1;
-  }
-
-  .description {
-    align-self: center;
-    flex: 1;
-    max-width: 500px;
-    text-align: center;
-    padding: 1rem;
-  }
-
-  .description h2 {
-    text-align: left;
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .description p {
-    text-align: left;
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-
-  @media (max-width: 768px) {
-    .container {
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .image-container {
-      width: var(--image-size-tablet);
-      height: var(--image-size-tablet);
-      max-width: 100%;
-    }
-
-    .description h2 {
-      font-size: 1.5rem;
-    }
-
-    .description p {
-      font-size: 0.9rem;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .description h2 {
-      font-size: 1.25rem;
-    }
-
-    .description p {
-      font-size: 0.8rem;
-    }
-
-    .image-container {
-      width: var(--image-size-mobile);
-      height: var(--image-size-mobile);
-    }
-  }
-</style>
