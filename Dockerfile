@@ -20,8 +20,10 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
 
+COPY package.json ./
+RUN bun install --production --frozen-lockfile
+
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package.json ./package.json
 
 EXPOSE 3000
 
