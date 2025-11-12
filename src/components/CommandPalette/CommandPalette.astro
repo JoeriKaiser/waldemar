@@ -104,13 +104,13 @@
     const overlay = document.getElementById("cmdk-overlay");
     const backdrop = document.getElementById("cmdk-backdrop");
     const panel = document.getElementById("cmdk-panel");
-    const input = document.getElementById("cmdk-input");
+    const input = document.getElementById("cmdk-input") as HTMLInputElement;
     const list = document.getElementById("cmdk-list");
 
     let openState = false;
     let selected = 0;
     let items = [];
-    let prevActive = null;
+    let prevActive: HTMLElement | null = null;
 
     const staticItems = [
       { label: "Home", url: "/", meta: "Page" },
@@ -138,7 +138,8 @@
 
     items = [...projectItems, ...staticItems];
 
-    const render = (rows) => {
+    const render = (rows: Array<{ label: string; url: string; meta: string }>) => {
+      if (!list) return;
       list.innerHTML = "";
       rows.forEach((row, i) => {
         const li = document.createElement("li");
@@ -158,7 +159,7 @@
     };
 
     const updateSelection = () => {
-      const children = Array.from(list.children);
+      const children = Array.from(list?.children ?? []);
       children.forEach((el, i) => {
         el.setAttribute("aria-selected", String(i === selected));
         if (i === selected) {
@@ -167,8 +168,8 @@
       });
     };
 
-    const normalize = (s) => s.toLowerCase();
-    const filter = (q) => {
+    const normalize = (s: string) => s.toLowerCase();
+    const filter = (q: string) => {
       const n = normalize(q);
       if (!n) {
         return items.slice(0, 30);
@@ -176,7 +177,7 @@
       return items.filter((it) => normalize(it.label).includes(n)).slice(0, 30);
     };
 
-    const navigate = (url) => {
+    const navigate = (url: string) => {
       close();
       if (url.startsWith("http")) {
         window.open(url, "_blank", "noopener,noreferrer");
@@ -187,8 +188,9 @@
 
     const open = () => {
       if (openState) return;
+      if (!overlay || !backdrop || !panel || !input) return;
       openState = true;
-      prevActive = document.activeElement;
+      prevActive = document.activeElement as HTMLElement;
       overlay.hidden = false;
       requestAnimationFrame(() => {
         backdrop.style.opacity = "1";
@@ -203,6 +205,7 @@
 
     const close = () => {
       if (!openState) return;
+      if (!overlay || !backdrop || !panel) return;
       openState = false;
       backdrop.style.opacity = "0";
       panel.style.opacity = "0";
@@ -216,7 +219,7 @@
     };
 
     window.addEventListener("open-command-palette", open);
-    backdrop.addEventListener("click", close);
+    backdrop?.addEventListener("click", close);
     window.addEventListener("keydown", (e) => {
       if (!openState && (e.key === "Escape" || e.key === "Esc")) return;
       if (openState && e.key === "Escape") {
@@ -232,7 +235,7 @@
     });
 
     input.addEventListener("keydown", (e) => {
-      const rows = Array.from(list.children);
+      const rows = Array.from(list?.children ?? []);
       if (e.key === "ArrowDown") {
         e.preventDefault();
         selected = Math.min(rows.length - 1, selected + 1);
@@ -243,7 +246,7 @@
         updateSelection();
       } else if (e.key === "Enter") {
         e.preventDefault();
-        const el = rows[selected];
+        const el = rows[selected] as HTMLElement;
         if (el) {
           const url = el.dataset.url || "/";
           navigate(url);

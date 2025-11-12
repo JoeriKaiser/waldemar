@@ -154,17 +154,11 @@ const isActive = (itemUrl: string) => {
 
   document.addEventListener("astro:page-load", () => {
     const btn = document.getElementById("cmdk-button");
-    const kbd = document.getElementById("cmdk-kbd");
     const header = document.querySelector("[data-header]");
     const nav = document.querySelector("[data-nav]");
     const mobileBtn = document.getElementById("mobile-menu-btn");
     const mobileMenu = document.getElementById("mobile-menu");
     const mobileOverlay = document.getElementById("mobile-menu-overlay");
-
-    const isMac = navigator.platform.toUpperCase().includes("MAC");
-    if (kbd) {
-      kbd.textContent = isMac ? "⌘K" : "⌃K";
-    }
 
     const open = () => {
       window.dispatchEvent(new CustomEvent("open-command-palette"));
@@ -174,7 +168,7 @@ const isActive = (itemUrl: string) => {
 
     const onKey = (e: KeyboardEvent) => {
       const hasKey = e.key?.toLowerCase() === "k";
-      if ((isMac && e.metaKey && hasKey) || (!isMac && e.ctrlKey && hasKey)) {
+      if ((e.metaKey && hasKey) || (e.ctrlKey && hasKey)) {
         e.preventDefault();
         open();
       }
@@ -211,12 +205,12 @@ const isActive = (itemUrl: string) => {
       onScroll();
     }
 
-    const normalizePath = (p) => {
+    const normalizePath = (p: string) => {
       if (!p) return "/";
       return p !== "/" && p.endsWith("/") ? p.slice(0, -1) : p;
     };
 
-    const computeActive = (href) => {
+    const computeActive = (href: string) => {
       const u = new URL(href, window.location.origin);
       const currentPath = normalizePath(window.location.pathname);
       const itemPath = normalizePath(u.pathname);

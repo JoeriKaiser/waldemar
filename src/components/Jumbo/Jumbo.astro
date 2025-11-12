@@ -98,9 +98,9 @@ import overlay from "../../assets/images/overlay.png";
         "radial-gradient(circle at center, #000 0, transparent 100%)"
       );
 
-    if (tiltContainer && overlayLayer && supportsMask) {
+    if (tiltContainer instanceof HTMLElement && overlayLayer && supportsMask) {
       const maxRadius = 110;
-      const update = (e) => {
+      const update = (e: any) => {
         const r = tiltContainer.getBoundingClientRect();
         const x = ((e.clientX ?? e.touches?.[0]?.clientX) - r.left) / r.width;
         const y = ((e.clientY ?? e.touches?.[0]?.clientY) - r.top) / r.height;
@@ -108,7 +108,7 @@ import overlay from "../../assets/images/overlay.png";
         tiltContainer.style.setProperty("--spot-x", x * 100 + "%");
         tiltContainer.style.setProperty("--spot-y", y * 100 + "%");
       };
-      const show = (e) => {
+      const show = (e: any) => {
         update(e);
         tiltContainer.style.setProperty("--spot-visible", "1");
         tiltContainer.style.setProperty("--spot-radius", maxRadius + "px");
@@ -153,7 +153,7 @@ import overlay from "../../assets/images/overlay.png";
         gsap.to(orb, { y: -6, yoyo: true, repeat: -1, duration: 2.6, ease: "sine.inOut" });
       }
 
-      if (tiltContainer && tiltEl) {
+      if (tiltContainer && tiltEl instanceof HTMLElement) {
         let rx = 0,
           ry = 0,
           raf = 0;
@@ -161,7 +161,7 @@ import overlay from "../../assets/images/overlay.png";
           raf = 0;
           tiltEl.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
         };
-        const onMove = (e) => {
+        const onMove = (e: any) => {
           const r = tiltContainer.getBoundingClientRect();
           const cx = r.left + r.width / 2;
           const cy = r.top + r.height / 2;
@@ -183,16 +183,8 @@ import overlay from "../../assets/images/overlay.png";
         tiltContainer.addEventListener("pointermove", onMove);
         tiltContainer.addEventListener("pointerleave", onLeave);
 
-        if (orb) {
-          tiltContainer.addEventListener("pointermove", (e) => {
-            const r = tiltContainer.getBoundingClientRect();
-            const x = ((e.clientX ?? e.touches?.[0]?.clientX) - r.left) / r.width - 0.5;
-            const y = ((e.clientY ?? e.touches?.[0]?.clientY) - r.top) / r.height - 0.5;
-            gsap.to(orb, { x: x * 36, y: y * 36, duration: 0.3, ease: "power2.out" });
-          });
-        }
       }
-    } else if (tiltEl) {
+    } else if (tiltEl instanceof HTMLElement) {
       tiltEl.style.transform = "translateZ(0)";
     }
 
@@ -202,7 +194,7 @@ import overlay from "../../assets/images/overlay.png";
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        const particles = [];
+        const particles: Array<{ x: number; y: number; r: number; vx: number; vy: number; n: number }> = [];
         const baseCount = 90;
 
         const init = () => {
@@ -232,13 +224,13 @@ import overlay from "../../assets/images/overlay.png";
         const resize = () => requestAnimationFrame(init);
         window.addEventListener("resize", resize, { passive: true });
 
-        let mx = null,
-          my = null,
+        let mx: any = null,
+          my: any = null,
           active = false,
           rafId = 0,
           t = 0;
 
-        const onMove = (e) => {
+        const onMove = (e: any) => {
           const r = canvas.getBoundingClientRect();
           const dpr = Math.min(2, window.devicePixelRatio || 1);
           const cx = e.clientX ?? e.touches?.[0]?.clientX;

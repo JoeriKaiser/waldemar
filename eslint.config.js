@@ -52,7 +52,6 @@ export default [
 
   {
     ignores: [
-      ".vercel/**",
       "dist/**",
       "node_modules/**",
       ".astro/**",

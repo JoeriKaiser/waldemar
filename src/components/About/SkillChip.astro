@@ -75,7 +75,7 @@ const { skills, compact = false } = Astro.props;
     const { gsap } = await import("gsap");
 
     roots.forEach((root) => {
-      const chips = Array.from(root.querySelectorAll("[data-chip]"));
+      const chips = Array.from(root.querySelectorAll("[data-chip]")) as Array<HTMLElement>;
 
       gsap.from(chips, {
         y: 6,
