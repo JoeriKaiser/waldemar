@@ -6,69 +6,66 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 type Project = CollectionEntry<"project">;
 
-const projects: Array<Project> = await getCollection(
-  "project",
-  (project: Project) => project.data.isActive
-);
+const projects = await getCollection("project");
+const activeProjects: Array<Project> = projects.filter((project) => project.data.isActive);
 
-const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
+const sortedProjects = activeProjects.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <BaseLayout title="Joeri Kaiser">
-  <main class="container-center text-white text-[20px] leading-6">
-    <section class="flex flex-col gap-4 min-h-[calc(100svh-var(--space-3xl)*1.8)]">
+  <main class="text-white">
+    <section class="container-wide min-h-[calc(100svh-120px)] py-[var(--space-2xl)]">
       <div transition:name="hero-section">
         <Jumbo />
       </div>
+    </section>
 
-      <a
-        href="#projects-list-start"
-        class="flex justify-center items-center mt-auto text-[var(--gray-9)] transition-transform duration-300 hover:translate-y-1 no-underline"
-        transition:name="continue-arrow"
-        aria-label="Scroll to projects section"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          width="40px"
-          fill="currentColor"
-        >
-          <path
-            d="M11.9999 13.1714L16.9497 8.22168L18.3639 9.63589L11.9999 15.9999L5.63599 9.63589L7.0502 8.22168L11.9999 13.1714Z"
-          ></path>
-        </svg>
-      </a>
+    <section class="container-center">
+      <div class="flex items-center justify-between gap-4 mb-[var(--space-xl)]">
+        <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-[var(--gray-1)]">
+          Selected projects
+        </h2>
+        <a href="#projects-list-start" class="btn btn-ghost"> Jump to list </a>
+      </div>
 
-      <div id="projects-list-start" class="flex flex-col gap-4">
-        {sortedProjects.map((project, index) => (
-          <Preview project={project} />
-        ))}
+      <a id="projects-list-start" class="sr-only">Projects list start</a>
+      <div class="flex flex-col gap-6">
+        {sortedProjects.map((project) => <Preview project={project} />)}
       </div>
     </section>
   </main>
 </BaseLayout>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    try {
+      const items = Array.from(document.querySelectorAll(".project-timeline-item")).map((el) => {
+        const id = el.getAttribute("id") || "";
+        const title = el.querySelector(".project-title")?.textContent || "";
+        return { name: title.trim(), url: `/#${id}` };
+      });
+      window.__PROJECTS = items;
+    } catch {}
+  });
+</script>
 
 <style is:global>
   ::view-transition-old(hero-section),
   ::view-transition-new(hero-section) {
     animation-duration: 0.5s;
   }
-
   ::view-transition-old(hero-section) {
     animation-name: scale-out;
   }
-
   ::view-transition-new(hero-section) {
     animation-name: scale-in;
   }
-
   @keyframes scale-out {
     to {
       transform: scale(0.95);
       opacity: 0;
     }
   }
-
   @keyframes scale-in {
     from {
       transform: scale(1.05);

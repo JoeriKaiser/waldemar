@@ -1,10 +1,11 @@
 :root {
-  /* Colors */
   --color-bg: #1a1a1a;
   --color-text: #ffffff;
   --color-secondary: #8483c8;
+  --accent: var(--color-secondary);
+  --accent-dark: #605fb3;
+  --accent-light: #9d9cd8;
 
-  /* Gray scale borrowed from your usage */
   --gray-1: #f8f9fa;
   --gray-3: #dee2e6;
   --gray-4: #ced4da;
@@ -14,7 +15,6 @@
   --gray-8: #343a40;
   --gray-9: #212529;
 
-  /* Spacing and radius */
   --space-xs: 0.5rem;
   --space-s: clamp(0.5rem, 0.413rem + 0.4348vw, 0.75rem);
   --space-l: clamp(1rem, 0.8261rem + 0.8696vw, 1.5rem);
@@ -25,7 +25,6 @@
   --radius-md: 8px;
   --radius-lg: 12px;
 
-  /* Typography */
   --step-1: clamp(1rem, 0.95rem + 0.25vw, 1.25rem);
   --line-snug: 1.3;
 }

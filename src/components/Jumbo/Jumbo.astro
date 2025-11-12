@@ -4,33 +4,414 @@ import base from "../../assets/images/base.png";
 import overlay from "../../assets/images/overlay.png";
 ---
 
-<div class="flex flex-wrap justify-center items-start gap-4 p-4">
-  <div
-    class="relative cursor-pointer shrink-0"
-    style="
-      --image-size-desktop: 300px;
-      --image-size-tablet: 200px;
-      --image-size-mobile: 150px;
-      width: var(--image-size-desktop);
-      height: var(--image-size-desktop);
-    "
-  >
-    <Image src={base} alt="Stylized portrait - base" class="absolute inset-0 w-full h-full scale-[0.96]" />
-    <Image
-      src={overlay}
-      alt="Stylized portrait - overlay"
-      class="absolute inset-0 w-full h-full opacity-0 transition-opacity duration-500 ease-in-out overlay"
-    />
+<section class="w-full" data-jumbo-root>
+  <div class="grid items-center gap-6 md:grid-cols-2" style="min-height: clamp(420px, 60vh, 680px)">
+    <div class="order-2 md:order-1 flex flex-col gap-4 p-4">
+      <h1 class="text-left text-[clamp(2rem,5vw,3.25rem)] leading-tight font-extrabold">
+        Building applications that work
+        <span
+          class="bg-gradient-to-br from-[var(--accent-light)] to-[var(--accent-dark)] bg-clip-text text-transparent"
+          >reliably</span
+        >
+        and feel
+        <span
+          class="bg-gradient-to-br from-[var(--accent-light)] to-[var(--accent-dark)] bg-clip-text text-transparent"
+          >great</span
+        >
+      </h1>
+      <p class="text-left text-[1.1rem] text-[var(--gray-5)]">
+        I'm Joeri, a full-stack developer focused on solid architecture and smooth experiences.
+      </p>
+      <div class="flex flex-wrap gap-3 pt-2">
+        <a href="#projects-list-start" class="btn btn-primary" data-magnetic>View projects</a>
+        <button id="open-cmdk" class="btn btn-ghost gap-2" data-magnetic>
+          Quick open
+          <span class="kbd">K</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="order-1 md:order-2 relative flex items-center justify-center p-4">
+      <div
+        class="relative cursor-pointer shrink-0 rounded-[16px] overflow-hidden"
+        data-tilt-container
+        style="
+          --spot-x: 50%;
+          --spot-y: 50%;
+          --spot-radius: 0px;
+          --spot-visible: 0;
+          width: var(--image-size-desktop);
+          height: var(--image-size-desktop);
+          perspective: 900px;
+          transform-style: preserve-3d;
+          touch-action: pan-y;
+        "
+      >
+        <canvas class="absolute inset-0 pointer-events-none z-10" id="particles"></canvas>
+
+        <div class="absolute inset-0 will-change-transform image-tilt">
+          <Image
+            src={base}
+            alt="Stylized portrait - base"
+            class="absolute inset-0 w-full h-full scale-[0.96]"
+          />
+          <div
+            class="orb-3d absolute w-24 h-24 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-radial from-[var(--accent)] to-transparent opacity-80 blur-sm"
+          >
+          </div>
+          <div class="absolute inset-0 z-20 pointer-events-none overlay-mask-layer">
+            <Image
+              src={overlay}
+              alt="Stylized portrait - overlay"
+              class="overlay absolute inset-0 w-full h-full pointer-events-none"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="self-center flex-1 max-w-[500px] text-center p-4">
-    <h2 class="text-left text-2xl mb-2 md:text-3xl">Hi there! I'm Joeri</h2>
-    <p class="text-left leading-relaxed">I'm an enthusiastic web developer passionate about crafting engaging and intuitive user experiences</p>
-    <p class="text-left leading-relaxed">Welcome to my personal website / blog ? soon ?</p>
-  </div>
-</div>
+</section>
 
 <script>
-  const overlayImg = document.querySelector(".overlay");
-  overlayImg?.addEventListener("click", () => overlayImg.classList.toggle("opacity-100"));
+  document.addEventListener("astro:page-load", async () => {
+    const root = document.querySelector("[data-jumbo-root]");
+    if (!root) return;
+
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const tiltContainer = root.querySelector("[data-tilt-container]");
+    const tiltEl = tiltContainer?.querySelector(".image-tilt");
+    const orb = root.querySelector(".orb-3d");
+    const overlayLayer = root.querySelector(".overlay-mask-layer");
+    const cmdk = root.querySelector("#open-cmdk");
+
+    cmdk?.addEventListener("click", () =>
+      window.dispatchEvent(new CustomEvent("open-command-palette"))
+    );
+
+    const supportsMask =
+      CSS?.supports?.(
+        "mask-image",
+        "radial-gradient(circle at center, #000 0, transparent 100%)"
+      ) ||
+      CSS?.supports?.(
+        "-webkit-mask-image",
+        "radial-gradient(circle at center, #000 0, transparent 100%)"
+      );
+
+    if (tiltContainer && overlayLayer && supportsMask) {
+      const maxRadius = 110;
+      const update = (e) => {
+        const r = tiltContainer.getBoundingClientRect();
+        const x = ((e.clientX ?? e.touches?.[0]?.clientX) - r.left) / r.width;
+        const y = ((e.clientY ?? e.touches?.[0]?.clientY) - r.top) / r.height;
+        if (x == null || y == null) return;
+        tiltContainer.style.setProperty("--spot-x", x * 100 + "%");
+        tiltContainer.style.setProperty("--spot-y", y * 100 + "%");
+      };
+      const show = (e) => {
+        update(e);
+        tiltContainer.style.setProperty("--spot-visible", "1");
+        tiltContainer.style.setProperty("--spot-radius", maxRadius + "px");
+      };
+      const hide = () => {
+        tiltContainer.style.setProperty("--spot-visible", "0");
+        tiltContainer.style.setProperty("--spot-radius", "0px");
+      };
+      tiltContainer.addEventListener("pointerenter", show);
+      tiltContainer.addEventListener("pointermove", update);
+      tiltContainer.addEventListener("pointerleave", hide);
+      tiltContainer.addEventListener("touchstart", show, { passive: true });
+      tiltContainer.addEventListener("touchmove", update, { passive: true });
+      tiltContainer.addEventListener("touchend", hide);
+    } else if (tiltContainer && overlayLayer && !supportsMask) {
+      const on = () => overlayLayer.classList.add("overlay-fallback-visible");
+      const off = () => overlayLayer.classList.remove("overlay-fallback-visible");
+      tiltContainer.addEventListener("pointerenter", on);
+      tiltContainer.addEventListener("pointerleave", off);
+      tiltContainer.addEventListener("touchstart", on);
+      tiltContainer.addEventListener("touchend", off);
+    }
+
+    if (!prefersReduced) {
+      const { gsap } = await import("gsap");
+      const media = tiltContainer;
+      const textTargets = root.querySelectorAll("h1, p, .btn");
+      if (media || textTargets.length) {
+        const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+        if (media) tl.from(media, { y: 18, opacity: 0, duration: 0.5 });
+        if (textTargets.length)
+          tl.from(
+            textTargets,
+            { y: 10, opacity: 0, stagger: 0.06, duration: 0.45 },
+            media ? "-=0.2" : 0
+          );
+      }
+
+      if (orb) {
+        gsap.set(orb, { transformPerspective: 900, force3D: true });
+        gsap.to(orb, { rotateY: 360, duration: 16, repeat: -1, ease: "none" });
+        gsap.to(orb, { y: -6, yoyo: true, repeat: -1, duration: 2.6, ease: "sine.inOut" });
+      }
+
+      if (tiltContainer && tiltEl) {
+        let rx = 0,
+          ry = 0,
+          raf = 0;
+        const apply = () => {
+          raf = 0;
+          tiltEl.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+        };
+        const onMove = (e) => {
+          const r = tiltContainer.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          const x = ((e.clientX ?? e.touches?.[0]?.clientX) - cx) / (r.width / 2);
+          const y = ((e.clientY ?? e.touches?.[0]?.clientY) - cy) / (r.height / 2);
+          if (x == null || y == null) return;
+          const max = 10;
+          ry = x * max;
+          rx = -y * max;
+          if (!raf) raf = requestAnimationFrame(apply);
+        };
+        const onLeave = () => {
+          rx = 0;
+          ry = 0;
+          tiltEl.style.transition = "transform 180ms ease-out";
+          tiltEl.style.transform = "rotateX(0deg) rotateY(0deg) translateZ(0)";
+          setTimeout(() => (tiltEl.style.transition = ""), 200);
+        };
+        tiltContainer.addEventListener("pointermove", onMove);
+        tiltContainer.addEventListener("pointerleave", onLeave);
+
+        if (orb) {
+          tiltContainer.addEventListener("pointermove", (e) => {
+            const r = tiltContainer.getBoundingClientRect();
+            const x = ((e.clientX ?? e.touches?.[0]?.clientX) - r.left) / r.width - 0.5;
+            const y = ((e.clientY ?? e.touches?.[0]?.clientY) - r.top) / r.height - 0.5;
+            gsap.to(orb, { x: x * 36, y: y * 36, duration: 0.3, ease: "power2.out" });
+          });
+        }
+      }
+    } else if (tiltEl) {
+      tiltEl.style.transform = "translateZ(0)";
+    }
+
+    if (!prefersReduced) {
+      const canvas = root.querySelector("#particles");
+      if (canvas instanceof HTMLCanvasElement) {
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        const particles = [];
+        const baseCount = 90;
+
+        const init = () => {
+          const parent = canvas.parentElement;
+          if (!parent) return;
+          const r = parent.getBoundingClientRect();
+          const dpr = Math.min(2, window.devicePixelRatio || 1);
+          canvas.width = Math.floor(r.width * dpr);
+          canvas.height = Math.floor(r.height * dpr);
+          canvas.style.width = r.width + "px";
+          canvas.style.height = r.height + "px";
+          particles.length = 0;
+          const count = Math.max(36, Math.floor((baseCount * r.width * r.height) / (400 * 400)));
+          for (let i = 0; i < count; i++) {
+            particles.push({
+              x: Math.random() * canvas.width,
+              y: Math.random() * canvas.height,
+              r: Math.random() * 1.6 + 0.6,
+              vx: (Math.random() - 0.5) * 0.16,
+              vy: (Math.random() - 0.5) * 0.16,
+              n: Math.random() * 1000,
+            });
+          }
+        };
+
+        init();
+        const resize = () => requestAnimationFrame(init);
+        window.addEventListener("resize", resize, { passive: true });
+
+        let mx = null,
+          my = null,
+          active = false,
+          rafId = 0,
+          t = 0;
+
+        const onMove = (e) => {
+          const r = canvas.getBoundingClientRect();
+          const dpr = Math.min(2, window.devicePixelRatio || 1);
+          const cx = e.clientX ?? e.touches?.[0]?.clientX;
+          const cy = e.clientY ?? e.touches?.[0]?.clientY;
+          if (cx == null || cy == null) return;
+          mx = (cx - r.left) * dpr;
+          my = (cy - r.top) * dpr;
+          active = true;
+        };
+        const onLeave = () => (active = false);
+
+        canvas.addEventListener("pointermove", onMove, { passive: true });
+        canvas.addEventListener("touchmove", onMove, { passive: true });
+        canvas.addEventListener("pointerleave", onLeave);
+        canvas.addEventListener("touchend", onLeave);
+
+        const tick = () => {
+          rafId = requestAnimationFrame(tick);
+          if (!canvas.width || !canvas.height) return;
+          t += 0.0035;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          const repel = 80;
+          const link = 60;
+
+          for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            p.n += 0.003;
+            p.vx += Math.cos(p.n + t) * 0.002;
+            p.vy += Math.sin(p.n - t) * 0.002;
+
+            if (active && mx != null && my != null) {
+              const dx = p.x - mx;
+              const dy = p.y - my;
+              const d = Math.hypot(dx, dy);
+              if (d > 0 && d < repel) {
+                const f = (repel - d) / repel;
+                const s = 0.04;
+                p.vx += (dx / d) * f * s;
+                p.vy += (dy / d) * f * s;
+              }
+            }
+
+            p.vx *= 0.985;
+            p.vy *= 0.985;
+            p.x += p.vx;
+            p.y += p.vy;
+
+            if (p.x < -10) p.x = canvas.width + 10;
+            else if (p.x > canvas.width + 10) p.x = -10;
+            if (p.y < -10) p.y = canvas.height + 10;
+            else if (p.y > canvas.height + 10) p.y = -10;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(141,140,240,0.24)";
+            ctx.fill();
+
+            for (let j = i + 1; j < particles.length; j++) {
+              const q = particles[j];
+              const dx2 = q.x - p.x;
+              const dy2 = q.y - p.y;
+              const d2 = Math.hypot(dx2, dy2);
+              if (d2 < link) {
+                const a = 0.16 * (1 - d2 / link);
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(q.x, q.y);
+                ctx.strokeStyle = `rgba(141,140,240,${a})`;
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+              }
+            }
+          }
+        };
+
+        tick();
+
+        document.addEventListener(
+          "visibilitychange",
+          () => {
+            if (document.hidden) cancelAnimationFrame(rafId);
+            else tick();
+          },
+          { passive: true }
+        );
+      }
+    }
+
+    const magneticButtons = root.querySelectorAll("[data-magnetic]");
+    if (!prefersReduced && magneticButtons.length) {
+      const { gsap } = await import("gsap");
+      magneticButtons.forEach((btn) => {
+        if (!(btn instanceof HTMLElement)) return;
+        btn.addEventListener("mouseenter", () =>
+          gsap.to(btn, { scale: 1.02, duration: 0.18, ease: "power2.out" })
+        );
+        btn.addEventListener("mouseleave", () =>
+          gsap.to(btn, { scale: 1, x: 0, y: 0, duration: 0.18, ease: "power2.out" })
+        );
+        btn.addEventListener("mousemove", (e) => {
+          const r = btn.getBoundingClientRect();
+          const x = (e.clientX - (r.left + r.width / 2)) / 10;
+          const y = (e.clientY - (r.top + r.height / 2)) / 10;
+          gsap.to(btn, { x, y, duration: 0.28, ease: "power2.out" });
+        });
+      });
+    }
+  });
 </script>
 
+<style>
+  :root {
+    --image-size-desktop: 340px;
+    --accent: #8d8cf0;
+    --accent-dark: #5b59d6;
+    --gray-5: #7a7a7a;
+  }
+
+  .orb-3d {
+    transform-style: preserve-3d;
+    box-shadow: 0 0 28px rgba(132, 131, 200, 0.3);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orb-3d {
+      animation: none;
+    }
+  }
+
+  .overlay-mask-layer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .overlay-mask-layer .overlay {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    filter: blur(1px);
+    opacity: 0;
+    transition: opacity 0.18s ease-out;
+  }
+
+  @supports (
+    (mask-image: radial-gradient(circle at center, #000 0, transparent 100%)) or
+      (-webkit-mask-image: radial-gradient(circle at center, #000 0, transparent 100%))
+  ) {
+    .overlay-mask-layer .overlay {
+      opacity: var(--spot-visible, 0);
+      mask-image: radial-gradient(
+        circle at var(--spot-x, 50%) var(--spot-y, 50%),
+        #000 0,
+        #000 calc(var(--spot-radius, 0px) * 0.65),
+        transparent var(--spot-radius, 0px)
+      );
+      mask-repeat: no-repeat;
+      mask-size: 100% 100%;
+      -webkit-mask-image: radial-gradient(
+        circle at var(--spot-x, 50%) var(--spot-y, 50%),
+        #000 0,
+        #000 calc(var(--spot-radius, 0px) * 0.65),
+        transparent var(--spot-radius, 0px)
+      );
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-size: 100% 100%;
+    }
+  }
+
+  .overlay-fallback-visible .overlay {
+    opacity: 1 !important;
+  }
+</style>

@@ -2,10 +2,14 @@
 import { type CollectionEntry, getCollection, render } from "astro:content";
 import MdxLayout from "../layouts/MdxLayout.astro";
 
+interface Props {
+  page: CollectionEntry<"pages">;
+}
+
 export const prerender = true;
 
 export async function getStaticPaths() {
-  const pages: Array<CollectionEntry<"pages">> = await getCollection("pages");
+  const pages = await getCollection("pages");
   return pages.map((page) => ({
     params: { slug: page.data.slug },
     props: { page },

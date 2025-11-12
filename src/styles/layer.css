@@ -1,6 +1,5 @@
-@import "tailwindcss/theme";
+@import 'tailwindcss/theme';
 @plugin "@tailwindcss/typography";
-
 
 @layer base {
   html {
@@ -10,7 +9,7 @@
     @apply min-h-[95vh] m-0 flex flex-col overflow-y-scroll;
     background: var(--color-bg);
     color: var(--color-text);
-    font-family: "Lexend", ui-sans-serif, system-ui, sans-serif;
+    font-family: 'Lexend', ui-sans-serif, system-ui, sans-serif;
   }
 }
 
@@ -27,6 +26,13 @@
     margin-inline: auto;
     width: calc(100% - (var(--space-xl) * 2));
     max-inline-size: 800px;
+  }
+
+  .container-wide {
+    box-sizing: content-box;
+    margin-inline: auto;
+    width: calc(100% - (var(--space-xl) * 2));
+    max-inline-size: 1100px;
   }
 
   .card {
@@ -54,18 +60,82 @@
     color: var(--color-secondary);
   }
 
+  .glass {
+    backdrop-filter: saturate(140%) blur(10px);
+    background: color-mix(in oklab, #000 14%, transparent);
+    border: 1px solid color-mix(in oklab, #fff 12%, transparent);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition:
+      transform 0.15s ease,
+      background 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease,
+      opacity 0.2s ease;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 600;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn-primary {
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--accent) 85%, white) 0%,
+      var(--accent) 100%
+    );
+    color: var(--color-bg);
+    border-color: color-mix(in oklab, var(--accent) 70%, black);
+  }
+  .btn-primary:hover {
+    opacity: 0.95;
+  }
+  .btn-ghost {
+    background: color-mix(in oklab, #fff 4%, transparent);
+    color: var(--color-text);
+    border-color: color-mix(in oklab, #fff 10%, transparent);
+  }
+  .btn-ghost:hover {
+    background: color-mix(in oklab, #fff 8%, transparent);
+  }
+
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 6px;
+    padding: 0 0.35rem;
+    height: 1.55rem;
+    font-size: 0.8rem;
+    line-height: 1;
+    border: 1px solid color-mix(in oklab, #fff 16%, transparent);
+    background: color-mix(in oklab, #000 22%, transparent);
+    color: color-mix(in oklab, #fff 90%, var(--color-text));
+  }
+
   .sr-only {
     position: absolute;
-    width: 1px; height: 1px;
-    padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0,0,0,0);
-    white-space: nowrap; border-width: 0;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
   }
 }
 
-
-	@layer components {
-	  .prose-article {
-	    @apply prose prose-invert max-w-none;
-	  }
-	}
+@layer components {
+  .prose-article {
+    @apply prose prose-invert max-w-none;
+  }
+}

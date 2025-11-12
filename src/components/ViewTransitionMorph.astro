@@ -1,0 +1,60 @@
+<div id="transition-morph" class="fixed inset-0 z-[9999] pointer-events-none" aria-hidden="true">
+  <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <path id="morph-path" d="M0,0 L100,0 L100,100 L0,100 Z" fill="var(--accent)"></path>
+  </svg>
+</div>
+
+<style>
+  #transition-morph {
+    opacity: 0;
+    visibility: hidden;
+  }
+</style>
+
+<script>
+  const morph = document.getElementById("transition-morph");
+  const path = document.getElementById("morph-path");
+
+  if (morph && path && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.addEventListener("astro:before-swap", () => {
+      morph.style.visibility = "visible";
+      morph.style.opacity = "1";
+
+      import("gsap").then(({ gsap }) => {
+        const tl = gsap.timeline();
+        tl.to(path, {
+          d: "M50,0 Q100,20 100,50 Q100,80 50,100 Q0,80 0,50 Q0,20 50,0 Z",
+          duration: 0.4,
+          ease: "power2.inOut",
+        }).to(path, {
+          d: "M100,0 L100,0 L100,100 L100,100 Z",
+          duration: 0.4,
+          ease: "power2.inOut",
+        });
+      });
+    });
+
+    document.addEventListener("astro:after-swap", () => {
+      if (!morph || !path) return;
+
+      import("gsap").then(({ gsap }) => {
+        const tl = gsap.timeline();
+        tl.to(path, {
+          d: "M50,0 Q0,20 0,50 Q0,80 50,100 Q100,80 100,50 Q100,20 50,0 Z",
+          duration: 0.4,
+          ease: "power2.inOut",
+        }).to(path, {
+          d: "M0,0 L100,0 L100,100 L0,100 Z",
+          duration: 0.4,
+          ease: "power2.inOut",
+          onComplete: () => {
+            morph.style.opacity = "0";
+            setTimeout(() => {
+              morph.style.visibility = "hidden";
+            }, 300);
+          },
+        });
+      });
+    });
+  }
+</script>

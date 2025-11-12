@@ -1,0 +1,254 @@
+---
+
+---
+
+<div id="cmdk-overlay" hidden>
+  <div id="cmdk-backdrop"></div>
+  <div id="cmdk-panel" role="dialog" aria-modal="true">
+    <div class="cmdk-header">
+      <input
+        id="cmdk-input"
+        type="text"
+        placeholder="Search projects, pages…"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="Search"
+      />
+    </div>
+    <ul id="cmdk-list" role="listbox"></ul>
+  </div>
+</div>
+
+<style>
+  #cmdk-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+  }
+  #cmdk-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / 0.5);
+    opacity: 0;
+    transition: opacity 160ms ease;
+  }
+  #cmdk-panel {
+    position: absolute;
+    left: 50%;
+    top: 12%;
+    transform: translateX(-50%) scale(0.98);
+    width: min(720px, calc(100% - 2rem));
+    border-radius: 12px;
+    border: 1px solid color-mix(in oklab, #fff 10%, transparent);
+    background: color-mix(in oklab, #000 25%, transparent);
+    backdrop-filter: blur(16px) saturate(140%);
+    color: var(--color-text);
+    box-shadow: 0 20px 50px rgb(0 0 0 / 0.35);
+    opacity: 0;
+    transition:
+      transform 160ms ease,
+      opacity 160ms ease;
+  }
+  .cmdk-header {
+    padding: 0.75rem 0.9rem;
+    border-bottom: 1px solid color-mix(in oklab, #fff 10%, transparent);
+  }
+  #cmdk-input {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border-radius: 10px;
+    border: 1px solid color-mix(in oklab, #fff 12%, transparent);
+    background: color-mix(in oklab, #000 20%, transparent);
+    color: var(--color-text);
+    outline: none;
+    font-size: 1rem;
+  }
+  #cmdk-input::placeholder {
+    color: color-mix(in oklab, #fff 50%, transparent);
+  }
+  #cmdk-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.35rem;
+    max-height: min(50vh, 480px);
+    overflow: auto;
+  }
+  #cmdk-list li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.7rem;
+    border-radius: 8px;
+    cursor: pointer;
+    color: color-mix(in oklab, #fff 92%, transparent);
+  }
+  #cmdk-list li[aria-selected="true"] {
+    background: color-mix(in oklab, var(--accent) 18%, transparent);
+    color: var(--color-text);
+  }
+  #cmdk-list .meta {
+    font-size: 0.85rem;
+    color: color-mix(in oklab, #fff 60%, transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #cmdk-backdrop,
+    #cmdk-panel {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const overlay = document.getElementById("cmdk-overlay");
+    const backdrop = document.getElementById("cmdk-backdrop");
+    const panel = document.getElementById("cmdk-panel");
+    const input = document.getElementById("cmdk-input");
+    const list = document.getElementById("cmdk-list");
+
+    let openState = false;
+    let selected = 0;
+    let items = [];
+    let prevActive = null;
+
+    const staticItems = [
+      { label: "Home", url: "/", meta: "Page" },
+      { label: "Projects", url: "/#projects-list-start", meta: "Page" },
+      { label: "About", url: "/about", meta: "Page" },
+      {
+        label: "GitHub",
+        url: "https://github.com/JoeriKaiser",
+        meta: "External",
+      },
+      {
+        label: "LinkedIn",
+        url: "https://www.linkedin.com/in/joeri-kaiser",
+        meta: "External",
+      },
+    ];
+
+    const projects =
+      (window.__PROJECTS && Array.isArray(window.__PROJECTS) && window.__PROJECTS) || [];
+    const projectItems = projects.map((p) => ({
+      label: p.name,
+      url: p.url,
+      meta: "Project",
+    }));
+
+    items = [...projectItems, ...staticItems];
+
+    const render = (rows) => {
+      list.innerHTML = "";
+      rows.forEach((row, i) => {
+        const li = document.createElement("li");
+        li.setAttribute("role", "option");
+        li.setAttribute("aria-selected", String(i === selected));
+        li.dataset.url = row.url;
+        li.innerHTML = `<span>${row.label}</span>`;
+        li.addEventListener("mousemove", () => {
+          selected = i;
+          updateSelection();
+        });
+        li.addEventListener("click", () => {
+          navigate(row.url);
+        });
+        list.appendChild(li);
+      });
+    };
+
+    const updateSelection = () => {
+      const children = Array.from(list.children);
+      children.forEach((el, i) => {
+        el.setAttribute("aria-selected", String(i === selected));
+        if (i === selected) {
+          el.scrollIntoView({ block: "nearest" });
+        }
+      });
+    };
+
+    const normalize = (s) => s.toLowerCase();
+    const filter = (q) => {
+      const n = normalize(q);
+      if (!n) {
+        return items.slice(0, 30);
+      }
+      return items.filter((it) => normalize(it.label).includes(n)).slice(0, 30);
+    };
+
+    const navigate = (url) => {
+      close();
+      if (url.startsWith("http")) {
+        window.open(url, "_blank", "noopener,noreferrer");
+      } else {
+        window.location.href = url;
+      }
+    };
+
+    const open = () => {
+      if (openState) return;
+      openState = true;
+      prevActive = document.activeElement;
+      overlay.hidden = false;
+      requestAnimationFrame(() => {
+        backdrop.style.opacity = "1";
+        panel.style.opacity = "1";
+        panel.style.transform = "translateX(-50%) scale(1)";
+        input.focus();
+      });
+      const q = input.value || "";
+      selected = 0;
+      render(filter(q));
+    };
+
+    const close = () => {
+      if (!openState) return;
+      openState = false;
+      backdrop.style.opacity = "0";
+      panel.style.opacity = "0";
+      panel.style.transform = "translateX(-50%) scale(0.98)";
+      setTimeout(() => {
+        overlay.hidden = true;
+      }, 160);
+      if (prevActive && prevActive.focus) {
+        prevActive.focus();
+      }
+    };
+
+    window.addEventListener("open-command-palette", open);
+    backdrop.addEventListener("click", close);
+    window.addEventListener("keydown", (e) => {
+      if (!openState && (e.key === "Escape" || e.key === "Esc")) return;
+      if (openState && e.key === "Escape") {
+        e.preventDefault();
+        close();
+      }
+    });
+
+    input.addEventListener("input", () => {
+      const q = input.value;
+      selected = 0;
+      render(filter(q));
+    });
+
+    input.addEventListener("keydown", (e) => {
+      const rows = Array.from(list.children);
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        selected = Math.min(rows.length - 1, selected + 1);
+        updateSelection();
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        selected = Math.max(0, selected - 1);
+        updateSelection();
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        const el = rows[selected];
+        if (el) {
+          const url = el.dataset.url || "/";
+          navigate(url);
+        }
+      }
+    });
+  });
+</script>

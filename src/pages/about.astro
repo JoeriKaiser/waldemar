@@ -1,0 +1,70 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CategorizedSkills from "../components/About/CategorizedSkills.astro";
+
+const pageTitle = "About";
+---
+
+<BaseLayout title={pageTitle}>
+  <main class="text-white">
+    <article
+      class="container-center p-4 prose-article"
+      itemscope
+      itemtype="https://schema.org/WebPage"
+    >
+      <section transition:name="hero-section">
+        <div class="intro">
+          <h2>Hi, I'm Joeri</h2>
+          <p class="tagline">Web Developer | Former Bartender | Always Learning</p>
+        </div>
+
+        <CategorizedSkills />
+
+        <h2>Quick Facts</h2>
+        <ul>
+          <li>🌍 Born in the Netherlands, raised in France</li>
+          <li>💻 27-year-old web developer</li>
+          <li>🍸 Former bartender turned coder</li>
+          <li>🚀 Passionate about making the web more alive</li>
+        </ul>
+
+        <p>
+          My journey into tech might not be the most conventional, but it's been a path of growth,
+          curiosity, and persistence.
+        </p>
+
+        <details>
+          <summary>More About My Journey</summary>
+          <div class="details-content">
+            <p>
+              Born in the Netherlands, I moved to France at a young age with my family. Growing up,
+              I gladly followed the family tradition and enrolled in catering school. My early
+              career began in hospitality, first working as a waiter, and eventually becoming a
+              passionate bartender and even trying some mixology. It taught me a lot about
+              adaptability and working under pressure – skills I still use today.
+            </p>
+            <p>
+              But even while I was pouring drinks and serving tables, my true passion was elsewhere:
+              coding. I spent my spare time tinkering with WordPress sites for acquaintances and
+              exploring Minecraft plugins, booting up the PC whenever I could. When the pandemic
+              hit, it felt like the right time for a change (I wasn't the only one!). That's when I
+              decided to fully pursue what I had been doing on the side for years.
+            </p>
+            <p>
+              I enrolled in several courses on Udemy and later joined a coding bootcamp in my local
+              city, sharpening my skills in HTML, CSS, JavaScript and discovering new things I
+              didn't even know existed. I felt overwhelmed but still curious at the challenge. By
+              2022, I had landed my first internship as a web developer. A year later, I was
+              thrilled to be hired full-time by the same company.
+            </p>
+            <p>
+              Now, I'm continuing to grow my skills, staying curious, and pushing the boundaries of
+              what I can do as a developer. Whether it's building interfaces or back-end solutions,
+              I'm excited making the web more alive.
+            </p>
+          </div>
+        </details>
+      </section>
+    </article>
+  </main>
+</BaseLayout>

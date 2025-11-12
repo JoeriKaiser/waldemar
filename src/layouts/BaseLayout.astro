@@ -2,17 +2,22 @@
 import { ClientRouter } from "astro:transitions";
 import Footer from "../components/Footer/Footer.astro";
 import Header from "../components/Header/Header.astro";
+import CommandPalette from "../components/CommandPalette/CommandPalette.astro";
 import "../styles/tailwind.css";
 import "../styles/tokens.css";
 import "../styles/layer.css";
 import "../styles/theme.css";
-interface Props { title: string; }
+import ViewTransitionMorph from "../components/ViewTransitionMorph.astro";
+
+interface Props {
+  title: string;
+}
 const { title } = Astro.props;
 const pageTitle = Astro.url.pathname === "/" ? title : `${title} · Joeri Kaiser`;
 ---
 
 <!doctype html>
-<html lang="en" transition:animate="none">
+<html lang="en" transition:animate="none" data-no-hero-transition>
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -31,18 +36,19 @@ const pageTitle = Astro.url.pathname === "/" ? title : `${title} · Joeri Kaiser
   </head>
   <body>
     <ClientRouter />
+    <ViewTransitionMorph />
 
     <div transition:persist="header">
       <Header />
     </div>
 
-    <div transition:name="main-content">
-      <slot />
-    </div>
+    <slot />
 
     <div transition:persist="footer">
       <Footer />
     </div>
+
+    <CommandPalette />
   </body>
 </html>
 
@@ -62,19 +68,16 @@ const pageTitle = Astro.url.pathname === "/" ? title : `${title} · Joeri Kaiser
       opacity: 0;
     }
   }
-
   @keyframes fade-out {
     to {
       opacity: 0;
     }
   }
-
   @keyframes slide-from-right {
     from {
       transform: translateX(var(--vt-slide-offset));
     }
   }
-
   @keyframes slide-to-left {
     to {
       transform: translateX(calc(-1 * var(--vt-slide-offset)));
@@ -86,10 +89,87 @@ const pageTitle = Astro.url.pathname === "/" ? title : `${title} · Joeri Kaiser
       var(--vt-fade-duration-old) var(--vt-ease-in-cubic) both fade-out,
       var(--vt-slide-duration) var(--vt-ease-out-cubic) both slide-to-left;
   }
-
   ::view-transition-new(slide) {
     animation:
       var(--vt-fade-duration-new) var(--vt-ease-out-cubic) var(--vt-fade-delay-new) both fade-in,
       var(--vt-slide-duration) var(--vt-ease-out-cubic) both slide-from-right;
+  }
+
+  ::view-transition-old(main-content) {
+    animation: var(--vt-fade-duration-old) var(--vt-ease-in-cubic) both fade-out;
+  }
+  ::view-transition-new(main-content) {
+    animation: var(--vt-fade-duration-new) var(--vt-ease-out-cubic) var(--vt-fade-delay-new) both
+      fade-in;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fadeOutUp {
+    to {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fadeOutDown {
+    to {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: -10%;
+    background:
+      radial-gradient(
+        800px 800px at 20% 20%,
+        color-mix(in oklab, var(--accent) 12%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        900px 900px at 80% 10%,
+        color-mix(in oklab, #7dd3fc 10%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        900px 900px at 60% 90%,
+        color-mix(in oklab, #a78bfa 10%, transparent),
+        transparent 60%
+      );
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.35;
+    filter: blur(20px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(slide),
+    ::view-transition-new(slide),
+    ::view-transition-old(main-content),
+    ::view-transition-new(main-content),
+    ::view-transition-old(hero-section),
+    ::view-transition-new(hero-section) {
+      animation: none !important;
+    }
   }
 </style>

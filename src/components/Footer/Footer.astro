@@ -2,48 +2,279 @@
 const currentYear = new Date().getFullYear();
 
 const socialLinks = [
-	{
-		name: "GitHub",
-		url: "https://github.com/JoeriKaiser",
-	},
-	{
-		name: "LinkedIn",
-		url: "https://www.linkedin.com/in/joeri-kaiser",
-	},
+  {
+    name: "GitHub",
+    url: "https://github.com/JoeriKaiser",
+    icon: "M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z",
+  },
+  {
+    name: "LinkedIn",
+    url: "https://www.linkedin.com/in/joeri-kaiser",
+    icon: "M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z",
+  },
 ];
 
 const email = "joeri.waldemar@gmail.com";
 ---
 
-<footer class="container-center text-center">
-  <div class="relative before:content-[''] before:absolute before:top-0 before:left-1/2 before:-translate-x-1/2 before:w-full before:h-px before:bg-[var(--color-text)] before:opacity-20">
-    <div class="bg-[var(--color-bg)] text-[var(--color-text)] py-[var(--space-l)]">
-      <div class="flex justify-center max-w-[800px] mx-auto gap-[var(--space-l)] max-sm:flex-col">
-        <div class="flex-1">
-          <h3 class="text-[1.2rem] mb-[var(--space-s)]">Connect</h3>
-          <ul class="list-none p-0 m-0 flex flex-col gap-[var(--space-xs)] text-left container-center">
-            {socialLinks.map((link) => (
+<footer class="mt-32 border-t border-white/10" data-footer>
+  <div class="container-center py-12">
+    <div class="grid md:grid-cols-3 gap-12 mb-12">
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-4">Connect</h3>
+        <ul class="list-none p-0 m-0 flex flex-col gap-3">
+          {
+            socialLinks.map((link) => (
               <li>
                 <a
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="link-underline"
+                  class="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors duration-200 group"
+                  data-social-link
                 >
-                  {link.name}
+                  <svg
+                    class="w-5 h-5 fill-current transition-transform duration-200 group-hover:scale-110"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path d={link.icon} />
+                  </svg>
+                  <span class="relative">
+                    {link.name}
+                    <span class="absolute left-0 -bottom-0.5 w-0 h-px bg-white transition-all duration-200 group-hover:w-full" />
+                  </span>
                 </a>
               </li>
-            ))}
-          </ul>
-        </div>
-        <div class="flex-1">
-          <h3 class="text-[1.2rem] mb-[var(--space-s)]">Contact</h3>
-          <a href={`mailto:${email}`} class="link-underline">Email Me</a>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-4">Contact</h3>
+        <div class="flex flex-col gap-2">
+          <a
+            href={`mailto:${email}`}
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/80 hover:text-white border border-white/10 hover:border-white/20 transition-all duration-200 w-fit"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              ></path>
+            </svg>
+            Email me
+          </a>
+          <button
+            id="copy-email"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/80 hover:text-white border border-white/10 hover:border-white/20 transition-all duration-200 w-fit"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+              ></path>
+            </svg>
+            Copy email
+          </button>
         </div>
       </div>
-      <div class="mt-[var(--space-l)] text-center text-[0.9rem]">
-        &copy; {currentYear} Joeri Kaiser. Made with Astro ❤️
+
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-4">Navigation</h3>
+        <ul class="list-none p-0 m-0 flex flex-col gap-2">
+          <li>
+            <a
+              href="/"
+              class="text-white/60 hover:text-white transition-colors duration-200 inline-block"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a
+              href="/#projects-list-start"
+              class="text-white/60 hover:text-white transition-colors duration-200 inline-block"
+              >Projects</a
+            >
+          </li>
+          <li>
+            <a
+              href="/about"
+              class="text-white/60 hover:text-white transition-colors duration-200 inline-block"
+              >About</a
+            >
+          </li>
+          <li>
+            <button
+              id="back-to-top"
+              class="text-white/60 hover:text-white transition-colors duration-200"
+              >Back to top ↑</button
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pt-8 border-t border-white/10">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-white/60 text-sm">
+          &copy; {currentYear} Joeri Kaiser. All rights reserved.
+        </p>
+
+        <div class="flex items-center gap-2 text-sm text-white/60">
+          <span>Built with</span>
+          <span
+            class="inline-block font-semibold text-white relative overflow-hidden h-5 w-24"
+            data-tech-rotator
+          >
+            <span
+              class="absolute inset-0 flex items-center justify-center transition-all duration-700 ease-in-out"
+              data-tech-current
+            >
+              Astro
+            </span>
+            <span
+              class="absolute inset-0 flex items-center justify-center transition-all duration-700 ease-in-out translate-y-full opacity-0"
+              data-tech-next
+            >
+              TypeScript
+            </span>
+          </span>
+          <span>& ❤️</span>
+        </div>
       </div>
     </div>
   </div>
+
+  <div
+    id="footer-toast"
+    class="fixed left-1/2 -translate-x-1/2 bottom-6 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm opacity-0 pointer-events-none transition-opacity duration-300"
+  >
+    Email copied to clipboard!
+  </div>
 </footer>
+
+<script>
+  import { gsap } from "gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    const copyBtn = document.getElementById("copy-email");
+    const backBtn = document.getElementById("back-to-top");
+    const toast = document.getElementById("footer-toast");
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const showToast = () => {
+      if (!toast) return;
+      toast.style.opacity = "1";
+      toast.style.pointerEvents = "auto";
+
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.pointerEvents = "none";
+      }, 2000);
+    };
+
+    copyBtn?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText("joeri.waldemar@gmail.com");
+        showToast();
+      } catch (err) {
+        console.error("Failed to copy email:", err);
+      }
+    });
+
+    backBtn?.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: prefersReduced ? "auto" : "smooth",
+      });
+    });
+
+    if (!prefersReduced) {
+      const rotator = document.querySelector("[data-tech-rotator]");
+      const currentSpan = document.querySelector("[data-tech-current]");
+      const nextSpan = document.querySelector("[data-tech-next]");
+
+      if (rotator && currentSpan && nextSpan) {
+        const techs = ["Astro", "GSAP", "Tailwind"];
+        let currentIndex = 0;
+
+        const rotateTech = () => {
+          const nextIndex = (currentIndex + 1) % techs.length;
+
+          nextSpan.textContent = techs[nextIndex];
+
+          gsap.to(currentSpan, {
+            y: -20,
+            opacity: 0,
+            duration: 0.7,
+            ease: "power2.inOut",
+          });
+
+          gsap.fromTo(
+            nextSpan,
+            { y: 20, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.7,
+              ease: "power2.inOut",
+              onComplete: () => {
+                // Swap content and reset positions
+                currentSpan.textContent = techs[nextIndex];
+                gsap.set(currentSpan, { y: 0, opacity: 1 });
+                gsap.set(nextSpan, { y: 20, opacity: 0 });
+                currentIndex = nextIndex;
+              },
+            }
+          );
+        };
+
+        setInterval(rotateTech, 4000);
+      }
+    }
+
+    if (!prefersReduced) {
+      const socialLinks = document.querySelectorAll("[data-social-link]");
+
+      socialLinks.forEach((link) => {
+        if (!(link instanceof HTMLElement)) return;
+
+        link.addEventListener("mouseenter", () => {
+          gsap.to(link, {
+            x: 4,
+            duration: 0.3,
+            ease: "power2.out",
+          });
+        });
+
+        link.addEventListener("mouseleave", () => {
+          gsap.to(link, {
+            x: 0,
+            duration: 0.3,
+            ease: "power2.out",
+          });
+        });
+      });
+    }
+  });
+</script>
+
+<style>
+  [data-tech-rotator] {
+    position: relative;
+    display: inline-block;
+  }
+
+  button:focus-visible,
+  a:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+</style>

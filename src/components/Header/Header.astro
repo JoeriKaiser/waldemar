@@ -2,32 +2,397 @@
 import Logo from "./Logo.astro";
 
 const navigation = [
-	{
-		label: "About",
-		url: "/about",
-	},
+  { label: "Home", url: "/" },
+  { label: "Projects", url: "/#projects-list-start" },
+  { label: "About", url: "/about" },
 ];
+
+const normalize = (p: string) => {
+  if (!p) return "/";
+  return p !== "/" && p.endsWith("/") ? p.slice(0, -1) : p;
+};
+
+const currentPath = normalize(Astro.url.pathname);
+
+const isActive = (itemUrl: string) => {
+  const u = new URL(itemUrl, Astro.url);
+  const itemPath = normalize(u.pathname);
+  const hasHash = !!u.hash;
+
+  if (hasHash) {
+    return currentPath === "/" && Astro.url.hash === u.hash;
+  }
+
+  if (itemPath === "/") {
+    return currentPath === "/";
+  }
+
+  return currentPath === itemPath || currentPath.startsWith(itemPath + "/");
+};
 ---
 
-<header class="py-2">
-  <div class="container-center">
-    <nav id="nav" class="flex items-center justify-between gap-[var(--space-s)]">
-      <Logo />
-      <ul class="flex items-stretch gap-1 list-none p-0 m-0">
-        {navigation.map((item) => (
-          <li>
-            <a
-              href={item.url}
-              class="relative no-underline text-[var(--gray-8)] font-medium text-lg transition-colors duration-300 hover:text-[var(--color-secondary)]"
-            >
-              {item.label}
-              <span
-                class="absolute left-0 -bottom-1 h-0.5 w-full bg-[var(--color-secondary)] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"
-              ></span>
-            </a>
-          </li>
-        ))}
+<header class="sticky top-0 z-50 py-4" data-header>
+  <div class="container-wide">
+    <nav
+      id="nav"
+      class="glass rounded-2xl px-4 py-3 flex items-center justify-between gap-4 backdrop-blur-md transition-all duration-300"
+      data-nav
+    >
+      <div class="flex items-center">
+        <Logo />
+      </div>
+
+      <ul class="flex items-center gap-1 list-none p-0 m-0 max-md:hidden">
+        {
+          navigation.map((item) => {
+            const u = new URL(item.url, Astro.url);
+            const isHashLink = !!u.hash;
+            const shouldBeActive = isActive(item.url);
+
+            return (
+              <li>
+                <a
+                  href={item.url}
+                  data-nav-link
+                  data-hash={isHashLink ? u.hash.slice(1) : null}
+                  aria-current={shouldBeActive ? "page" : undefined}
+                  class={`relative no-underline font-medium text-base transition-all duration-200 group outline-none px-4 py-2 rounded-lg hover:bg-white/5 ${
+                    shouldBeActive
+                      ? "text-white"
+                      : "text-white/60 hover:text-white focus-visible:text-white"
+                  }`}
+                >
+                  {item.label}
+                  <span
+                    class={`absolute left-1/2 -translate-x-1/2 bottom-0 h-0.5 bg-white origin-center transition-all duration-300 ${
+                      shouldBeActive ? "w-3/4" : "w-0 group-hover:w-3/4"
+                    }`}
+                    data-nav-indicator
+                  />
+                </a>
+              </li>
+            );
+          })
+        }
       </ul>
+
+      <div class="flex items-center gap-2">
+        <button
+          id="cmdk-button"
+          class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all duration-200"
+          data-magnetic
+        >
+          <span>Search</span>
+          <kbd
+            id="cmdk-kbd"
+            class="px-2 py-0.5 text-xs font-semibold bg-white/10 border border-white/20 rounded"
+          >
+            K
+          </kbd>
+        </button>
+
+        <button
+          class="md:hidden flex flex-col justify-center items-center gap-1.5 p-2 rounded-lg hover:bg-white/5 transition-colors"
+          id="mobile-menu-btn"
+          aria-label="Toggle menu"
+          aria-expanded="false"
+        >
+          <span class="w-5 h-0.5 bg-white transition-all duration-300 origin-center" data-bar-1
+          ></span>
+          <span class="w-5 h-0.5 bg-white transition-all duration-300" data-bar-2></span>
+          <span class="w-5 h-0.5 bg-white transition-all duration-300 origin-center" data-bar-3
+          ></span>
+        </button>
+      </div>
     </nav>
+
+    <div
+      class="md:hidden fixed inset-y-0 right-0 w-64 glass backdrop-blur-xl border-l border-white/10 p-6 transform translate-x-full transition-transform duration-300 z-40"
+      id="mobile-menu"
+      aria-hidden="true"
+    >
+      <ul class="flex flex-col gap-2 list-none p-0 m-0 mt-20">
+        {
+          navigation.map((item) => {
+            const u = new URL(item.url, Astro.url);
+            const isHashLink = !!u.hash;
+            const shouldBeActive = isActive(item.url);
+
+            return (
+              <li>
+                <a
+                  href={item.url}
+                  data-nav-link-mobile
+                  data-hash={isHashLink ? u.hash.slice(1) : null}
+                  aria-current={shouldBeActive ? "page" : undefined}
+                  class={`block py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
+                    shouldBeActive
+                      ? "text-white bg-white/10 border border-white/20"
+                      : "text-white/60 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+
+    <div
+      id="mobile-menu-overlay"
+      class="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-30"
+      aria-hidden="true"
+    >
+    </div>
   </div>
 </header>
+
+<script>
+  import { gsap } from "gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    const btn = document.getElementById("cmdk-button");
+    const kbd = document.getElementById("cmdk-kbd");
+    const header = document.querySelector("[data-header]");
+    const nav = document.querySelector("[data-nav]");
+    const mobileBtn = document.getElementById("mobile-menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const mobileOverlay = document.getElementById("mobile-menu-overlay");
+
+    const isMac = navigator.platform.toUpperCase().includes("MAC");
+    if (kbd) {
+      kbd.textContent = isMac ? "⌘K" : "⌃K";
+    }
+
+    const open = () => {
+      window.dispatchEvent(new CustomEvent("open-command-palette"));
+    };
+
+    btn?.addEventListener("click", open);
+
+    const onKey = (e: KeyboardEvent) => {
+      const hasKey = e.key?.toLowerCase() === "k";
+      if ((isMac && e.metaKey && hasKey) || (!isMac && e.ctrlKey && hasKey)) {
+        e.preventDefault();
+        open();
+      }
+    };
+
+    window.addEventListener("keydown", onKey, { passive: false });
+
+    if (header && nav && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const onScroll = () => {
+        const scrolled = window.pageYOffset > 50;
+
+        if (scrolled) {
+          nav.classList.add(
+            "bg-black/70",
+            "backdrop-blur-xl",
+            "border",
+            "border-white/10",
+            "shadow-lg",
+            "shadow-black/20"
+          );
+        } else {
+          nav.classList.remove(
+            "bg-black/70",
+            "backdrop-blur-xl",
+            "border",
+            "border-white/10",
+            "shadow-lg",
+            "shadow-black/20"
+          );
+        }
+      };
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+
+    const normalizePath = (p) => {
+      if (!p) return "/";
+      return p !== "/" && p.endsWith("/") ? p.slice(0, -1) : p;
+    };
+
+    const computeActive = (href) => {
+      const u = new URL(href, window.location.origin);
+      const currentPath = normalizePath(window.location.pathname);
+      const itemPath = normalizePath(u.pathname);
+      const hasHash = !!u.hash;
+
+      if (hasHash) {
+        return currentPath === "/" && window.location.hash === u.hash;
+      }
+
+      if (itemPath === "/") return currentPath === "/";
+      return currentPath === itemPath || currentPath.startsWith(itemPath + "/");
+    };
+
+    const updateActiveStates = () => {
+      const links = document.querySelectorAll("[data-nav-link], [data-nav-link-mobile]");
+      links.forEach((link) => {
+        if (!(link instanceof HTMLElement)) return;
+
+        const href = link.getAttribute("href") || "";
+        const active = computeActive(href);
+        const indicator = link.querySelector("[data-nav-indicator]");
+
+        if (active) {
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+
+        link.classList.toggle("text-white", active);
+        link.classList.toggle("text-white/60", !active);
+
+        if (indicator) {
+          indicator.classList.toggle("w-3/4", active);
+          indicator.classList.toggle("w-0", !active);
+        }
+      });
+    };
+
+    window.addEventListener("hashchange", updateActiveStates);
+
+    let ticking = false;
+    const onScrollForSections = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const sections = document.querySelectorAll("[id]");
+          const scrollPos = window.pageYOffset + 100;
+
+          sections.forEach((section) => {
+            const top = (section as HTMLElement).offsetTop;
+            const height = (section as HTMLElement).offsetHeight;
+            const id = section.getAttribute("id");
+
+            if (scrollPos >= top && scrollPos < top + height) {
+              const newHash = `#${id}`;
+              if (window.location.hash !== newHash) {
+                history.replaceState(null, "", newHash);
+                updateActiveStates();
+              }
+            }
+          });
+
+          ticking = false;
+        });
+
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScrollForSections, { passive: true });
+    updateActiveStates();
+
+    if (mobileBtn && mobileMenu && mobileOverlay) {
+      let isOpen = false;
+
+      const bar1 = mobileBtn.querySelector("[data-bar-1]");
+      const bar2 = mobileBtn.querySelector("[data-bar-2]");
+      const bar3 = mobileBtn.querySelector("[data-bar-3]");
+
+      const toggleMenu = () => {
+        isOpen = !isOpen;
+
+        mobileBtn.setAttribute("aria-expanded", isOpen.toString());
+        mobileMenu.setAttribute("aria-hidden", (!isOpen).toString());
+        mobileOverlay.setAttribute("aria-hidden", (!isOpen).toString());
+
+        if (isOpen) {
+          mobileMenu.classList.remove("translate-x-full");
+          mobileOverlay.classList.remove("opacity-0", "pointer-events-none");
+          document.body.style.overflow = "hidden";
+
+          if (bar1 && bar2 && bar3) {
+            gsap.to(bar1, { rotation: 45, y: 6, duration: 0.3, ease: "power2.out" });
+            gsap.to(bar2, { opacity: 0, duration: 0.2 });
+            gsap.to(bar3, { rotation: -45, y: -6, duration: 0.3, ease: "power2.out" });
+          }
+        } else {
+          mobileMenu.classList.add("translate-x-full");
+          mobileOverlay.classList.add("opacity-0", "pointer-events-none");
+          document.body.style.overflow = "";
+
+          if (bar1 && bar2 && bar3) {
+            gsap.to(bar1, { rotation: 0, y: 0, duration: 0.3, ease: "power2.out" });
+            gsap.to(bar2, { opacity: 1, duration: 0.2 });
+            gsap.to(bar3, { rotation: 0, y: 0, duration: 0.3, ease: "power2.out" });
+          }
+        }
+      };
+
+      mobileBtn.addEventListener("click", toggleMenu);
+      mobileOverlay.addEventListener("click", toggleMenu);
+
+      const mobileLinks = mobileMenu.querySelectorAll("a");
+      mobileLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          if (isOpen) {
+            toggleMenu();
+          }
+        });
+      });
+    }
+
+    const magneticButtons = document.querySelectorAll("[data-magnetic]");
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!prefersReduced) {
+      magneticButtons.forEach((btn) => {
+        if (!(btn instanceof HTMLElement)) return;
+
+        btn.addEventListener("mouseenter", () => {
+          gsap.to(btn, { scale: 1.05, duration: 0.3, ease: "power2.out" });
+        });
+
+        btn.addEventListener("mousemove", (e: MouseEvent) => {
+          const rect = btn.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const x = (e.clientX - cx) / 8;
+          const y = (e.clientY - cy) / 8;
+
+          gsap.to(btn, {
+            x: x,
+            y: y,
+            duration: 0.3,
+            ease: "power2.out",
+          });
+        });
+
+        btn.addEventListener("mouseleave", () => {
+          gsap.to(btn, {
+            x: 0,
+            y: 0,
+            scale: 1,
+            duration: 0.4,
+            ease: "power2.out",
+          });
+        });
+      });
+    }
+  });
+</script>
+
+<style>
+  [data-nav-link],
+  [data-nav-link-mobile] {
+    position: relative;
+  }
+
+  [data-nav-link]:focus-visible,
+  [data-nav-link-mobile]:focus-visible,
+  #cmdk-button:focus-visible,
+  #mobile-menu-btn:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+  }
+
+  #mobile-menu {
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
+  }
+</style>

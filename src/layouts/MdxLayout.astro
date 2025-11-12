@@ -11,7 +11,11 @@ const { title } = Astro.props;
 
 <BaseLayout title={title}>
   <main transition:animate={viewTransition}>
-    <article class="container-center p-4 prose-article" itemscope itemtype="https://schema.org/WebPage">
+    <article
+      class="container-center p-4 prose-article"
+      itemscope
+      itemtype="https://schema.org/WebPage"
+    >
       <section transition:name="hero-section">
         <slot />
       </section>
@@ -20,221 +24,210 @@ const { title } = Astro.props;
 </BaseLayout>
 
 <script>
-document.addEventListener("astro:page-load", () => {
-  const root = document.querySelector('article[itemscope]');
-  if (!root) return;
+  document.addEventListener("astro:page-load", () => {
+    const root = document.querySelector("article[itemscope]");
+    if (!root) return;
 
-  const intro = root.querySelector(".intro");
-  if (intro instanceof HTMLElement) {
-    intro.classList.add(
-      "text-center",
-      "mb-12",
-      "py-8",
-      "border-b",
-      "border-[var(--gray-4)]"
-    );
-    const h2 = intro.querySelector("h2");
-    if (h2 instanceof HTMLElement) {
-      h2.classList.add(
-        "text-4xl",
-        "font-bold",
-        "mb-2",
-        "bg-gradient-to-br",
-        "from-[var(--accent)]",
-        "to-[var(--accent-dark,#4db6ac)]",
-        "bg-clip-text",
-        "text-transparent"
-      );
+    const intro = root.querySelector(".intro");
+    if (intro instanceof HTMLElement) {
+      intro.classList.add("text-center", "mb-12", "py-8", "border-b", "border-[var(--gray-4)]");
+      const h2 = intro.querySelector("h2");
+      if (h2 instanceof HTMLElement) {
+        h2.classList.add(
+          "text-4xl",
+          "font-bold",
+          "mb-2",
+          "bg-gradient-to-br",
+          "from-[var(--accent)]",
+          "to-[var(--accent-dark,#4db6ac)]",
+          "bg-clip-text",
+          "text-transparent"
+        );
+      }
+      const tagline = intro.querySelector(".tagline");
+      if (tagline instanceof HTMLElement) {
+        tagline.classList.add("text-[1.125rem]", "text-[var(--gray-7)]", "font-medium", "m-0");
+      }
     }
-    const tagline = intro.querySelector(".tagline");
-    if (tagline instanceof HTMLElement) {
-      tagline.classList.add(
-        "text-[1.125rem]",
-        "text-[var(--gray-7)]",
-        "font-medium",
-        "m-0"
-      );
-    }
-  }
 
-  const detailsList = root.querySelectorAll("details");
-  detailsList.forEach((details) => {
-    if (!(details instanceof HTMLElement)) return;
-    details.classList.add(
-      "mt-8",
-      "border",
-      "border-[var(--gray-4)]",
-      "rounded-[12px]",
-      "overflow-hidden",
-      "bg-[var(--gray-1)]",
-      "shadow-sm",
-      "transition-all",
-      "duration-300",
-      "ease-[cubic-bezier(0.4,0,0.2,1)]",
-      "open:shadow-lg"
-    );
-
-    const summary = details.querySelector("summary");
-    if (summary instanceof HTMLElement) {
-      summary.classList.add(
-        "cursor-pointer",
-        "font-semibold",
-        "text-[1.1rem]",
-        "px-6",
-        "py-5",
-        "relative",
-        "select-none",
+    const detailsList = root.querySelectorAll("details");
+    detailsList.forEach((details) => {
+      if (!(details instanceof HTMLElement)) return;
+      details.classList.add(
+        "mt-8",
+        "border",
+        "border-[var(--gray-4)]",
+        "rounded-[12px]",
+        "overflow-hidden",
+        "bg-[var(--gray-1)]",
+        "shadow-sm",
         "transition-all",
         "duration-300",
         "ease-[cubic-bezier(0.4,0,0.2,1)]",
-        "bg-gradient-to-br",
-        "from-[var(--gray-2)]",
-        "to-[var(--gray-3)]",
-        "hover:from-[var(--gray-3)]",
-        "hover:to-[var(--gray-4)]",
-        "text-[var(--gray-9)]",
-        "active:scale-[0.98]",
-        "after:content-['']",
-        "after:absolute",
-        "after:right-6",
-        "after:top-1/2",
-        "after:-translate-y-1/2",
-        "after:border-l-[6px]",
-        "after:border-r-[6px]",
-        "after:border-l-transparent",
-        "after:border-r-transparent",
-        "after:border-t-[8px]",
-        "after:border-t-[var(--gray-8)]",
-        "after:transition-transform",
-        "open:after:rotate-180",
-        "open:bg-gradient-to-br",
-        "open:from-[var(--accent)]",
-        "open:to-[var(--accent-dark,#4db6ac)]",
-        "open:text-white",
-        "open:after:border-t-white"
+        "open:shadow-lg"
       );
-    }
 
-    const content = details.querySelector("div.details-content");
-    if (content instanceof HTMLElement) {
-      content.classList.add(
-        "px-6",
-        "max-h-0",
-        "opacity-0",
-        "overflow-hidden",
-        "bg-[var(--gray-1)]",
-        "text-[1rem]",
-        "leading-[1.6]",
-        "text-[var(--gray-8)]",
-        "hidden"
-      );
-    }
-  });
-
-  const uls = root.querySelectorAll("ul");
-  uls.forEach((ul) => {
-    if (!(ul instanceof HTMLElement)) return;
-    ul.classList.add("pl-6", "my-6", "[&>li]:mb-3", "marker:text-[var(--accent)]");
-  });
-
-  const h2s = root.querySelectorAll("h2");
-  h2s.forEach((h2) => {
-    if (!(h2 instanceof HTMLElement)) return;
-    if (h2.closest(".intro")) return;
-    h2.classList.add(
-      "text-[var(--gray-9)]",
-      "font-bold",
-      "mt-10",
-      "mb-4",
-      "text-[1.75rem]",
-      "relative",
-      "after:content-['']",
-      "after:absolute",
-      "after:-bottom-2",
-      "after:left-0",
-      "after:w-12",
-      "after:h-[3px]",
-      "after:rounded",
-      "after:bg-[linear-gradient(90deg,var(--accent),transparent)]"
-    );
-  });
-
-  const ps = root.querySelectorAll("p");
-  ps.forEach((p) => {
-    if (!(p instanceof HTMLElement)) return;
-    p.classList.add("mb-5", "text-[var(--gray-7)]");
-  });
-
-  const detailsElements = root.querySelectorAll("details");
-  detailsElements.forEach((details) => {
-    const content = details.querySelector("div.details-content");
-    if (!(content instanceof HTMLElement)) return;
-
-    if (!details.open) {
-      content.style.maxHeight = "0";
-      content.style.opacity = "0";
-      content.style.display = "none";
-    } else {
-      content.style.display = "block";
-    }
-
-    details.addEventListener("toggle", () => {
-      if (details.open) {
-        content.style.display = "block";
-        const scrollHeight = content.scrollHeight;
-        content.animate(
-          [
-            {
-              maxHeight: "0",
-              opacity: "0",
-              transform: "translateY(-8px)",
-              paddingTop: "0",
-              paddingBottom: "0",
-            },
-            {
-              maxHeight: scrollHeight + "px",
-              opacity: "1",
-              transform: "translateY(0)",
-              paddingTop: "1.5rem",
-              paddingBottom: "1.5rem",
-            },
-          ],
-          {
-            duration: 350,
-            easing: "cubic-bezier(0.4, 0, 0.2, 1)",
-            fill: "forwards",
-          }
+      const summary = details.querySelector("summary");
+      if (summary instanceof HTMLElement) {
+        summary.classList.add(
+          "cursor-pointer",
+          "font-semibold",
+          "text-[1.1rem]",
+          "px-6",
+          "py-5",
+          "relative",
+          "select-none",
+          "transition-all",
+          "duration-300",
+          "ease-[cubic-bezier(0.4,0,0.2,1)]",
+          "bg-gradient-to-br",
+          "from-[var(--gray-2)]",
+          "to-[var(--gray-3)]",
+          "hover:from-[var(--gray-3)]",
+          "hover:to-[var(--gray-4)]",
+          "text-[var(--gray-9)]",
+          "active:scale-[0.98]",
+          "after:content-['']",
+          "after:absolute",
+          "after:right-6",
+          "after:top-1/2",
+          "after:-translate-y-1/2",
+          "after:border-l-[6px]",
+          "after:border-r-[6px]",
+          "after:border-l-transparent",
+          "after:border-r-transparent",
+          "after:border-t-[8px]",
+          "after:border-t-[var(--gray-8)]",
+          "after:transition-transform",
+          "open:after:rotate-180",
+          "open:bg-gradient-to-br",
+          "open:from-[var(--accent)]",
+          "open:to-[var(--accent-dark,#4db6ac)]",
+          "open:text-white",
+          "open:after:border-t-white"
         );
-      } else {
-        const scrollHeight = content.scrollHeight;
-        const animation = content.animate(
-          [
-            {
-              maxHeight: scrollHeight + "px",
-              opacity: "1",
-              transform: "translateY(0)",
-              paddingTop: "1.5rem",
-              paddingBottom: "1.5rem",
-            },
-            {
-              maxHeight: "0",
-              opacity: "0",
-              transform: "translateY(-8px)",
-              paddingTop: "0",
-              paddingBottom: "0",
-            },
-          ],
-          {
-            duration: 300,
-            easing: "cubic-bezier(0.4, 0, 0.2, 1)",
-            fill: "forwards",
-          }
+      }
+
+      const content = details.querySelector("div.details-content");
+      if (content instanceof HTMLElement) {
+        content.classList.add(
+          "px-6",
+          "max-h-0",
+          "opacity-0",
+          "overflow-hidden",
+          "bg-[var(--gray-1)]",
+          "text-[1rem]",
+          "leading-[1.6]",
+          "text-[var(--gray-8)]",
+          "hidden"
         );
-        animation.addEventListener("finish", () => {
-          content.style.display = "none";
-        });
       }
     });
+
+    const uls = root.querySelectorAll("ul");
+    uls.forEach((ul) => {
+      if (!(ul instanceof HTMLElement)) return;
+      ul.classList.add("pl-6", "my-6", "[&>li]:mb-3", "marker:text-[var(--accent)]");
+    });
+
+    const h2s = root.querySelectorAll("h2");
+    h2s.forEach((h2) => {
+      if (!(h2 instanceof HTMLElement)) return;
+      if (h2.closest(".intro")) return;
+      h2.classList.add(
+        "text-[var(--gray-9)]",
+        "font-bold",
+        "mt-10",
+        "mb-4",
+        "text-[1.75rem]",
+        "relative",
+        "after:content-['']",
+        "after:absolute",
+        "after:-bottom-2",
+        "after:left-0",
+        "after:w-12",
+        "after:h-[3px]",
+        "after:rounded",
+        "after:bg-[linear-gradient(90deg,var(--accent),transparent)]"
+      );
+    });
+
+    const ps = root.querySelectorAll("p");
+    ps.forEach((p) => {
+      if (!(p instanceof HTMLElement)) return;
+      p.classList.add("mb-5", "text-[var(--gray-7)]");
+    });
+
+    const detailsElements = root.querySelectorAll("details");
+    detailsElements.forEach((details) => {
+      const content = details.querySelector("div.details-content");
+      if (!(content instanceof HTMLElement)) return;
+
+      if (!details.open) {
+        content.style.maxHeight = "0";
+        content.style.opacity = "0";
+        content.style.display = "none";
+      } else {
+        content.style.display = "block";
+      }
+
+      details.addEventListener("toggle", () => {
+        if (details.open) {
+          content.style.display = "block";
+          const scrollHeight = content.scrollHeight;
+          content.animate(
+            [
+              {
+                maxHeight: "0",
+                opacity: "0",
+                transform: "translateY(-8px)",
+                paddingTop: "0",
+                paddingBottom: "0",
+              },
+              {
+                maxHeight: scrollHeight + "px",
+                opacity: "1",
+                transform: "translateY(0)",
+                paddingTop: "1.5rem",
+                paddingBottom: "1.5rem",
+              },
+            ],
+            {
+              duration: 350,
+              easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+              fill: "forwards",
+            }
+          );
+        } else {
+          const scrollHeight = content.scrollHeight;
+          const animation = content.animate(
+            [
+              {
+                maxHeight: scrollHeight + "px",
+                opacity: "1",
+                transform: "translateY(0)",
+                paddingTop: "1.5rem",
+                paddingBottom: "1.5rem",
+              },
+              {
+                maxHeight: "0",
+                opacity: "0",
+                transform: "translateY(-8px)",
+                paddingTop: "0",
+                paddingBottom: "0",
+              },
+            ],
+            {
+              duration: 300,
+              easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+              fill: "forwards",
+            }
+          );
+          animation.addEventListener("finish", () => {
+            content.style.display = "none";
+          });
+        }
+      });
+    });
   });
-});
 </script>

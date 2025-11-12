@@ -1,0 +1,95 @@
+---
+import SkillChip from "./SkillChip.astro";
+
+interface Props {
+  compact?: boolean;
+  categories?: ("frontend" | "backend" | "devops")[];
+}
+
+const { compact = false, categories = ["frontend", "backend", "devops"] } = Astro.props;
+
+const skillCategories = {
+  frontend: {
+    title: "Frontend",
+    skills: [
+      { name: "React/Nextjs", color: "#61DAFB" },
+      { name: "React Native", color: "#61DAFB" },
+      { name: "Astro", color: "#FF5D01" },
+      { name: "TypeScript", color: "#3178C6" },
+      { name: "GSAP", color: "#88CE02" },
+      { name: "Tailwind CSS", color: "#06B6D4" },
+    ],
+  },
+  backend: {
+    title: "Backend",
+    skills: [
+      { name: "PHP Symfony", color: "#FFFFFF" },
+      { name: "Go", color: "#00ADD8" },
+      { name: "Node.js", color: "#339933" },
+      { name: "Kotlin", color: "#F18E33" },
+      { name: "PostgreSQL", color: "#4169E1" },
+      { name: "REST", color: "#FF6C37" },
+      { name: "GraphQL", color: "#E10098" },
+    ],
+  },
+  devops: {
+    title: "DevOps & Tools",
+    skills: [
+      { name: "Kubernetes", color: "#326CE5" },
+      { name: "Docker", color: "#2496ED" },
+      { name: "Google Cloud", color: "#4285F4" },
+      { name: "Terraform", color: "#7D9726" },
+      { name: "Expo", color: "#000000" },
+      { name: "Git", color: "#F05032" },
+      { name: "Shell", color: "#89E051" },
+      { name: "Lua", color: "#2C39BD" },
+      { name: "GNU/Linux", color: "#000000" },
+      { name: "Github Actions", color: "#000000" },
+    ],
+  },
+};
+
+const selectedCategories = categories.map((cat) => ({
+  key: cat,
+  ...skillCategories[cat],
+}));
+---
+
+<div class="space-y-8" data-categorized-skills>
+  {
+    selectedCategories.map((category, index) => (
+      <div data-skill-category data-category-index={index}>
+        <h3 class="text-lg font-semibold text-white/70 mb-4">{category.title}</h3>
+        <SkillChip skills={category.skills} compact={compact} />
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.addEventListener("astro:page-load", () => {
+    const categories = document.querySelectorAll("[data-skill-category]");
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReduced || !categories.length) return;
+
+    categories.forEach((category) => {
+      gsap.from(category, {
+        opacity: 0,
+        y: 20,
+        duration: 0.6,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: category,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      });
+    });
+  });
+</script>

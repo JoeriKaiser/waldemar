@@ -1,0 +1,129 @@
+---
+interface Props {
+  skills: Array<{ name: string; color: string }>;
+  compact?: boolean;
+}
+
+const { skills, compact = false } = Astro.props;
+---
+
+<div
+  data-skill-chips
+  class:list={[
+    "grid gap-2",
+    compact
+      ? "[grid-template-columns:repeat(auto-fill,minmax(140px,1fr))]"
+      : "sm:gap-3 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]",
+  ]}
+>
+  {
+    skills.map((s) => (
+      <div
+        data-chip
+        title={s.name}
+        style={`--c:${s.color}`}
+        class:list={[
+          "relative grid grid-cols-[auto_1fr] items-center gap-2 rounded-[12px] overflow-hidden",
+          "border border-[color-mix(in_oklab,#fff_12%,transparent)]",
+          "bg-[color-mix(in_oklab,#000_24%,transparent)]",
+          "text-[color-mix(in_oklab,#fff_92%,transparent)]",
+          "shadow-[0_1px_2px_rgba(0,0,0,0.12)]",
+          "transition-[transform,box-shadow,border-color,background-color] duration-150 ease-out",
+          "will-change-transform",
+          compact ? "h-9 px-2.5 sm:px-3 gap-1.5 sm:gap-2" : "h-10 sm:h-11 px-3 sm:px-3.5 sm:gap-3",
+        ]}
+      >
+        <span
+          class:list={["block rounded-full", compact ? "size-2" : "size-2.5"]}
+          style="
+          background: color-mix(in oklab, var(--c) 80%, white);
+          box-shadow: 0 0 10px color-mix(in oklab, var(--c) 25%, transparent);
+        "
+          aria-hidden="true"
+        />
+        <span class:list={["font-semibold tracking-[0.2px]", compact ? "text-sm" : ""]}>
+          {s.name}
+        </span>
+
+        <span class="sheen pointer-events-none absolute inset-y-0 -left-[35%] w-[35%] opacity-0 -skew-x-[20deg]" />
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .sheen {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-skill-chips] * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("astro:page-load", async () => {
+    const roots = document.querySelectorAll("[data-skill-chips]");
+    if (!roots.length) return;
+
+    const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) return;
+
+    const { gsap } = await import("gsap");
+
+    roots.forEach((root) => {
+      const chips = Array.from(root.querySelectorAll("[data-chip]"));
+
+      gsap.from(chips, {
+        y: 6,
+        opacity: 0,
+        duration: 0.35,
+        stagger: 0.05,
+        ease: "power2.out",
+      });
+
+      chips.forEach((chip) => {
+        const sheen = chip.querySelector(".sheen");
+
+        chip.addEventListener("mouseenter", () => {
+          chip.style.borderColor = "color-mix(in oklab, var(--c) 25%, transparent)";
+          gsap.to(chip, {
+            y: -1,
+            boxShadow: "0 8px 16px rgba(0,0,0,0.12)",
+            duration: 0.18,
+            ease: "power2.out",
+          });
+
+          if (sheen) {
+            gsap.fromTo(
+              sheen,
+              { x: "-50%", opacity: 0.0 },
+              {
+                x: "120%",
+                opacity: 1,
+                duration: 0.6,
+                ease: "power2.out",
+                onComplete: () => {
+                  gsap.to(sheen, { opacity: 0, duration: 0.2, ease: "power1.out" });
+                },
+              }
+            );
+          }
+        });
+
+        chip.addEventListener("mouseleave", () => {
+          chip.style.borderColor = "color-mix(in oklab, #fff 12%, transparent)";
+          gsap.to(chip, {
+            y: 0,
+            boxShadow: "0 1px 2px rgba(0,0,0,0.12)",
+            duration: 0.2,
+            ease: "power2.out",
+          });
+        });
+      });
+    });
+  });
+</script>
