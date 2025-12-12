@@ -1,0 +1,24 @@
+---
+name: FBench
+timeline:
+  start: 2024-12-01
+  end: 2024-12-12
+img:
+  - src: "/images/fbench/fbench-1.svg"
+    alt: FBench Query Editor
+  - src: "/images/fbench/fbench-2.png"
+    alt: FBench Schema Browser
+order: 11
+isActive: true
+techStack:
+  - name: Rust
+    color: "#dea584"
+---
+
+FBench started as a learning project to dive deeper into [Rust](https://rust-lang.org) and [egui](https://github.com/emilk/egui). I wanted a simple, lightweight database explorer that wouldn't feel slow on large datasets
+
+Features a schema browser with row estimates, syntax-highlighted query editor with autocomplete, sortable results with export to CSV/JSON/XML, and support for both [PostgreSQL](https://postgresql.org) and [MySQL](https://mysql.com) which are the main 2 I use.
+
+The async architecture keeps the UI snappy while [SQLx](https://github.com/launchbadge/sqlx) handles queries on a background [Tokio](https://tokio.rs) runtime - no freezing when running heavy queries.
+
+- Source: [FBench](https://github.com/JoeriKaiser/fbench)

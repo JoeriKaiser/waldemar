@@ -274,7 +274,7 @@ const techStack = techStackFromData.map((skill) => ({
   });
 </script>
 
-<style>
+<style is:global>
   .project-item {
     scroll-margin-top: 2rem;
   }
@@ -287,6 +287,29 @@ const techStack = techStackFromData.map((skill) => ({
     --tw-prose-code: rgb(255 255 255 / 0.9);
     --tw-prose-quotes: rgb(255 255 255 / 0.85);
   }
+
+  .prose-invert a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }s
+
+  .prose-invert a:hover {
+    opacity: 0.8;
+  }
+
+  .prose p {
+  margin-bottom: 1.25em;
+}
+
+.prose ul, .prose ol {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.prose li {
+  margin-bottom: 0.5em;
+}
 
   [data-project-image] {
     will-change: transform;
