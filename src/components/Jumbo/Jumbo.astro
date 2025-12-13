@@ -182,7 +182,6 @@ import overlay from "../../assets/images/overlay.png";
         };
         tiltContainer.addEventListener("pointermove", onMove);
         tiltContainer.addEventListener("pointerleave", onLeave);
-
       }
     } else if (tiltEl instanceof HTMLElement) {
       tiltEl.style.transform = "translateZ(0)";
@@ -194,7 +193,14 @@ import overlay from "../../assets/images/overlay.png";
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        const particles: Array<{ x: number; y: number; r: number; vx: number; vy: number; n: number }> = [];
+        const particles: Array<{
+          x: number;
+          y: number;
+          r: number;
+          vx: number;
+          vy: number;
+          n: number;
+        }> = [];
         const baseCount = 90;
 
         const init = () => {
