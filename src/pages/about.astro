@@ -7,11 +7,7 @@ const pageTitle = "About";
 
 <BaseLayout title={pageTitle}>
   <main>
-    <article
-      class="about-page container-center"
-      itemscope
-      itemtype="https://schema.org/WebPage"
-    >
+    <article class="about-page container-center" itemscope itemtype="https://schema.org/WebPage">
       <section class="hero-section" transition:name="hero-section">
         <div class="intro-card">
           <div class="intro-stamps">
@@ -58,36 +54,47 @@ const pageTitle = "About";
           <details class="journey-details">
             <summary class="journey-summary">
               <span>More About My Journey</span>
-              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 9l6 6 6-6"/>
+              <svg
+                class="chevron"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M6 9l6 6 6-6"></path>
               </svg>
             </summary>
             <div class="journey-content">
               <p>
-                Born in the Netherlands, I moved to France at a young age with my family. Growing up,
-                I gladly followed the family tradition and enrolled in catering school. My early
+                Born in the Netherlands, I moved to France at a young age with my family. Growing
+                up, I gladly followed the family tradition and enrolled in catering school. My early
                 career began in hospitality, first working as a waiter, and eventually becoming a
                 passionate bartender and even trying some mixology. It taught me a lot about
                 adaptability and working under pressure – skills I still use today.
               </p>
               <p>
-                But even while I was pouring drinks and serving tables, my true passion was elsewhere:
-                coding. I spent my spare time tinkering with WordPress sites for acquaintances and
-                exploring Minecraft plugins, booting up the PC whenever I could. When the pandemic
-                hit, it felt like the right time for a change (I wasn't the only one!). That's when I
-                decided to fully pursue what I had been doing on the side for years.
+                But even while I was pouring drinks and serving tables, my true passion was
+                elsewhere: coding. I spent my spare time tinkering with WordPress sites for
+                acquaintances and exploring Minecraft plugins, booting up the PC whenever I could.
+                When the pandemic hit, it felt like the right time for a change (I wasn't the only
+                one!). That's when I decided to fully pursue what I had been doing on the side for
+                years.
               </p>
               <p>
-                I enrolled in several courses on Udemy and later joined a coding bootcamp in my local
-                city, sharpening my skills in HTML, CSS, JavaScript and discovering new things I
-                didn't even know existed. I felt overwhelmed but still curious at the challenge. By
-                2022, I had landed my first internship as a web developer. A year later, I was
+                I enrolled in several courses on Udemy and later joined a coding bootcamp in my
+                local city, sharpening my skills in HTML, CSS, JavaScript and discovering new things
+                I didn't even know existed. I felt overwhelmed but still curious at the challenge.
+                By 2022, I had landed my first internship as a web developer. A year later, I was
                 thrilled to be hired full-time by the same company.
               </p>
               <p>
-                Now, I'm continuing to grow my skills, staying curious, and pushing the boundaries of
-                what I can do as a developer. Whether it's building interfaces or back-end solutions,
-                I'm excited making the web more alive.
+                Now, I'm continuing to grow my skills, staying curious, and pushing the boundaries
+                of what I can do as a developer. Whether it's building interfaces or back-end
+                solutions, I'm excited making the web more alive.
               </p>
             </div>
           </details>
@@ -110,11 +117,7 @@ const pageTitle = "About";
 
   /* Intro card */
   .intro-card {
-    background: linear-gradient(
-      175deg,
-      var(--wc-cream) 0%,
-      var(--wc-parchment) 100%
-    );
+    background: linear-gradient(175deg, var(--wc-cream) 0%, var(--wc-parchment) 100%);
     border: 1px solid var(--wc-sand);
     border-radius: var(--radius-lg);
     padding: var(--space-l);
@@ -181,7 +184,8 @@ const pageTitle = "About";
     bottom: -4px;
     width: 40px;
     height: 3px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 4'%3E%3Cpath d='M0 2 Q5 0 10 2 T20 2' stroke='%23c4704b' stroke-width='2' fill='none'/%3E%3C/svg%3E") repeat-x;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 4'%3E%3Cpath d='M0 2 Q5 0 10 2 T20 2' stroke='%23c4704b' stroke-width='2' fill='none'/%3E%3C/svg%3E")
+      repeat-x;
     background-size: 20px 4px;
   }
 

@@ -33,11 +33,7 @@ const isActive = (itemUrl: string) => {
 
 <header class="sticky top-0 z-50 py-4" data-header>
   <div class="container-wide">
-    <nav
-      id="nav"
-      class="nav-pill"
-      data-nav
-    >
+    <nav id="nav" class="nav-pill" data-nav>
       <div class="flex items-center">
         <Logo />
       </div>
@@ -56,10 +52,7 @@ const isActive = (itemUrl: string) => {
                   data-nav-link
                   data-hash={isHashLink ? u.hash.slice(1) : null}
                   aria-current={shouldBeActive ? "page" : undefined}
-                  class:list={[
-                    "nav-link",
-                    { "is-active": shouldBeActive }
-                  ]}
+                  class:list={["nav-link", { "is-active": shouldBeActive }]}
                 >
                   {item.label}
                   <span class="nav-underline" data-nav-indicator />
@@ -71,11 +64,7 @@ const isActive = (itemUrl: string) => {
       </ul>
 
       <div class="flex items-center gap-2">
-        <button
-          id="cmdk-button"
-          class="search-btn"
-          data-magnetic
-        >
+        <button id="cmdk-button" class="search-btn" data-magnetic>
           <span>Search</span>
           <kbd class="kbd max-md:hidden">K</kbd>
         </button>
@@ -94,11 +83,7 @@ const isActive = (itemUrl: string) => {
     </nav>
 
     <!-- Mobile Menu -->
-    <div
-      class="mobile-menu md:hidden"
-      id="mobile-menu"
-      aria-hidden="true"
-    >
+    <div class="mobile-menu md:hidden" id="mobile-menu" aria-hidden="true">
       <ul class="flex flex-col gap-2 list-none p-0 m-0 mt-20">
         {
           navigation.map((item) => {
@@ -113,10 +98,7 @@ const isActive = (itemUrl: string) => {
                   data-nav-link-mobile
                   data-hash={isHashLink ? u.hash.slice(1) : null}
                   aria-current={shouldBeActive ? "page" : undefined}
-                  class:list={[
-                    "mobile-nav-link",
-                    { "is-active": shouldBeActive }
-                  ]}
+                  class:list={["mobile-nav-link", { "is-active": shouldBeActive }]}
                 >
                   {item.label}
                 </a>
@@ -127,12 +109,7 @@ const isActive = (itemUrl: string) => {
       </ul>
     </div>
 
-    <div
-      id="mobile-menu-overlay"
-      class="mobile-overlay md:hidden"
-      aria-hidden="true"
-    >
-    </div>
+    <div id="mobile-menu-overlay" class="mobile-overlay md:hidden" aria-hidden="true"></div>
   </div>
 </header>
 
@@ -392,7 +369,8 @@ const isActive = (itemUrl: string) => {
     transform: translateX(-50%);
     width: 0;
     height: 3px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 4'%3E%3Cpath d='M0 2 Q5 0 10 2 T20 2' stroke='%23c4704b' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") repeat-x;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 4'%3E%3Cpath d='M0 2 Q5 0 10 2 T20 2' stroke='%23c4704b' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")
+      repeat-x;
     background-size: 20px 4px;
     transition: width var(--duration-normal) var(--ease-bounce);
     transform-origin: center;

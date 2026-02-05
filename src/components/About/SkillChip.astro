@@ -22,18 +22,10 @@ const { skills, compact = false } = Astro.props;
         data-chip
         title={s.name}
         style={`--c:${s.color}`}
-        class:list={[
-          "skill-chip",
-          compact ? "skill-chip--compact" : "",
-        ]}
+        class:list={["skill-chip", compact ? "skill-chip--compact" : ""]}
       >
-        <span
-          class="skill-dot"
-          aria-hidden="true"
-        />
-        <span class="skill-name">
-          {s.name}
-        </span>
+        <span class="skill-dot" aria-hidden="true" />
+        <span class="skill-name">{s.name}</span>
         <span class="skill-sheen" />
       </div>
     ))

@@ -36,11 +36,7 @@ const email = "joeri.waldemar@gmail.com";
                     data-social-link
                   >
                     <span class="social-icon">
-                      <svg
-                        class="icon"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
+                      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
                         <path d={link.icon} />
                       </svg>
                     </span>
@@ -56,10 +52,7 @@ const email = "joeri.waldemar@gmail.com";
         <div class="footer-section">
           <h3 class="footer-heading">Get in Touch</h3>
           <div class="contact-buttons">
-            <a
-              href={`mailto:${email}`}
-              class="contact-btn"
-            >
+            <a href={`mailto:${email}`} class="contact-btn">
               <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
@@ -70,10 +63,7 @@ const email = "joeri.waldemar@gmail.com";
               </svg>
               Email me
             </a>
-            <button
-              id="copy-email"
-              class="contact-btn"
-            >
+            <button id="copy-email" class="contact-btn">
               <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
@@ -97,8 +87,17 @@ const email = "joeri.waldemar@gmail.com";
             <li>
               <button id="back-to-top" class="nav-link back-to-top">
                 Back to top
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 19V5M5 12l7-7 7 7"/>
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 19V5M5 12l7-7 7 7"></path>
                 </svg>
               </button>
             </li>
@@ -114,10 +113,7 @@ const email = "joeri.waldemar@gmail.com";
 
         <div class="built-with">
           <span>Crafted with</span>
-          <span
-            class="tech-rotator"
-            data-tech-rotator
-          >
+          <span class="tech-rotator" data-tech-rotator>
             <span class="tech-current" data-tech-current>Astro</span>
             <span class="tech-next" data-tech-next>GSAP</span>
           </span>
@@ -127,9 +123,7 @@ const email = "joeri.waldemar@gmail.com";
   </div>
 
   <!-- Toast notification -->
-  <div id="footer-toast" class="toast">
-    Email copied to clipboard!
-  </div>
+  <div id="footer-toast" class="toast">Email copied to clipboard!</div>
 </footer>
 
 <script>

@@ -74,10 +74,7 @@ const projectNumber = String(index + 1).padStart(2, "0");
 
     <!-- Header -->
     <header class="project-header" data-project-header>
-      <time
-        class="project-date"
-        datetime={timeline.start.toISOString()}
-      >
+      <time class="project-date" datetime={timeline.start.toISOString()}>
         {
           `${formatDate(new Date(timeline.start))} — ${!timeline.end ? "Present" : formatDate(new Date(timeline.end))}`
         }
@@ -99,11 +96,7 @@ const projectNumber = String(index + 1).padStart(2, "0");
           optimizedImages.length > 0 && (
             <div class="project-images" data-project-images>
               {optimizedImages.map((image: ImageType, imgIndex: number) => (
-                <div
-                  class="image-frame"
-                  data-project-image-wrapper
-                  data-image-index={imgIndex}
-                >
+                <div class="image-frame" data-project-image-wrapper data-image-index={imgIndex}>
                   <img
                     src={typeof image.src === "string" ? image.src : ""}
                     alt={image.alt || `${name} screenshot ${imgIndex + 1}`}
@@ -181,7 +174,9 @@ const projectNumber = String(index + 1).padStart(2, "0");
 
         // On mobile, straighten card when in view
         if (isMobile && cardInner instanceof HTMLElement) {
-          const cardRotation = getComputedStyle(cardInner).getPropertyValue("--card-rotation").trim();
+          const cardRotation = getComputedStyle(cardInner)
+            .getPropertyValue("--card-rotation")
+            .trim();
           const rotationValue = parseFloat(cardRotation) || 0;
 
           ScrollTrigger.create({
@@ -228,7 +223,9 @@ const projectNumber = String(index + 1).padStart(2, "0");
       if (!isMobile) {
         const cardInner = item.querySelector(".card-inner") as HTMLElement;
         if (cardInner) {
-          const cardRotation = getComputedStyle(item as Element).getPropertyValue("--card-rotation").trim();
+          const cardRotation = getComputedStyle(item as Element)
+            .getPropertyValue("--card-rotation")
+            .trim();
           const rotationValue = parseFloat(cardRotation) || 0;
 
           cardInner.addEventListener("mouseenter", () => {
@@ -349,11 +346,7 @@ const projectNumber = String(index + 1).padStart(2, "0");
 
   .card-inner {
     position: relative;
-    background: linear-gradient(
-      175deg,
-      var(--wc-cream) 0%,
-      var(--wc-parchment) 100%
-    );
+    background: linear-gradient(175deg, var(--wc-cream) 0%, var(--wc-parchment) 100%);
     border: 1px solid var(--wc-sand);
     border-radius: var(--radius-lg);
     padding: var(--space-l);
@@ -402,11 +395,7 @@ const projectNumber = String(index + 1).padStart(2, "0");
     right: 0;
     width: 40px;
     height: 40px;
-    background: linear-gradient(
-      135deg,
-      transparent 50%,
-      var(--wc-sand) 50%
-    );
+    background: linear-gradient(135deg, transparent 50%, var(--wc-sand) 50%);
     border-radius: 0 0 var(--radius-lg) 0;
   }
 

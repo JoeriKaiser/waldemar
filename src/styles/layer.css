@@ -2,7 +2,7 @@
    WARM CRAFT - Tailwind Layers & Utilities
    ========================================================================== */
 
-@import "tailwindcss/theme";
+@import 'tailwindcss/theme';
 @plugin "@tailwindcss/typography";
 
 /* -------------------------------------------------------------------------
@@ -28,7 +28,7 @@
 
   /* Paper texture overlay */
   body::after {
-    content: "";
+    content: '';
     position: fixed;
     inset: 0;
     background-image: var(--texture-paper);
