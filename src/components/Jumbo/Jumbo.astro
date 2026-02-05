@@ -49,14 +49,14 @@ import overlay from "../../assets/images/overlay.png";
         <div class="tape tape-bottom" aria-hidden="true"></div>
 
         <div class="portrait-inner" data-portrait>
-          <!-- Real image (revealed) -->
+          <!-- Base image (always visible underneath) -->
           <Image
             src={base}
             alt="Portrait of Joeri"
             class="portrait-image portrait-real"
             loading="eager"
           />
-          <!-- Filtered overlay (scratched away) -->
+          <!-- Overlay image on canvas (scratched away) -->
           <canvas class="scratch-canvas" data-scratch-canvas></canvas>
         </div>
 
