@@ -13,24 +13,37 @@ const sortedProjects = activeProjects.sort((a, b) => a.data.order - b.data.order
 ---
 
 <BaseLayout title="Joeri Kaiser">
-  <main class="text-white">
+  <main>
     <section class="container-wide min-h-[calc(100svh-120px)] py-[var(--space-2xl)]">
       <div transition:name="hero-section">
         <Jumbo />
       </div>
     </section>
 
-    <section class="container-center">
-      <div class="flex items-center justify-between gap-4 mb-[var(--space-xl)]">
-        <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-[var(--gray-1)]">
-          Selected projects
-        </h2>
-        <a href="#projects-list-start" class="btn btn-ghost"> Jump to list </a>
-      </div>
+    <section class="projects-section container-center">
+      <header class="section-header">
+        <h2 class="section-title">Selected Work</h2>
+        <a href="#projects-list-start" class="btn btn-ghost">
+          Jump to list
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 5v14M19 12l-7 7-7-7"></path>
+          </svg>
+        </a>
+      </header>
 
       <a id="projects-list-start" class="sr-only">Projects list start</a>
-      <div class="flex flex-col gap-6">
-        {sortedProjects.map((project) => <Preview project={project} />)}
+
+      <div class="projects-list">
+        {sortedProjects.map((project, index) => <Preview project={project} index={index} />)}
       </div>
     </section>
   </main>
@@ -39,15 +52,55 @@ const sortedProjects = activeProjects.sort((a, b) => a.data.order - b.data.order
 <script>
   document.addEventListener("astro:page-load", () => {
     try {
-      const items = Array.from(document.querySelectorAll(".project-timeline-item")).map((el) => {
+      const items = Array.from(document.querySelectorAll("[data-project-item]")).map((el) => {
         const id = el.getAttribute("id") || "";
-        const title = el.querySelector(".project-title")?.textContent || "";
+        const title = el.querySelector("[data-project-title]")?.textContent || "";
         return { name: title.trim(), url: `/#${id}` };
       });
       window.__PROJECTS = items;
     } catch {}
   });
 </script>
+
+<style>
+  .projects-section {
+    padding-bottom: var(--space-3xl);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    margin-bottom: var(--space-xl);
+    flex-wrap: wrap;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    font-weight: 600;
+    color: var(--wc-ink);
+    position: relative;
+  }
+
+  .section-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 60px;
+    height: 3px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 4'%3E%3Cpath d='M0 2 Q5 0 10 2 T20 2' stroke='%23c4704b' stroke-width='2' fill='none'/%3E%3C/svg%3E")
+      repeat-x;
+    background-size: 20px 4px;
+  }
+
+  .projects-list {
+    display: flex;
+    flex-direction: column;
+  }
+</style>
 
 <style is:global>
   ::view-transition-old(hero-section),

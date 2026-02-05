@@ -5,6 +5,7 @@ import SkillChip from "../About/SkillChip.astro";
 
 interface Props {
   project: CollectionEntry<"project">;
+  index: number;
 }
 
 type ImageType = {
@@ -12,7 +13,7 @@ type ImageType = {
   alt?: string;
 };
 
-const { project } = Astro.props;
+const { project, index } = Astro.props;
 const { data } = project;
 const { name, img, timeline } = data;
 const { Content } = await render(project);
@@ -28,96 +29,85 @@ const techStackFromData = data.techStack || [];
 const techColorMap: Record<string, string> = {
   React: "#61DAFB",
   TypeScript: "#3178C6",
-  Astro: "#FF5D01",
-  GSAP: "#88CE02",
-  "Three.js": "#000000",
-  Vercel: "#000000",
+  Astro: "#c4704b",
+  GSAP: "#7d8471",
+  "Three.js": "#4a3c2a",
+  Vercel: "#4a3c2a",
   Docker: "#2496ED",
-  "PHP Symfony": "#000000",
-  Symfony: "#000000",
-  "Node.js": "#339933",
+  "PHP Symfony": "#4a3c2a",
+  Symfony: "#4a3c2a",
+  "Node.js": "#7d8471",
   TailwindCSS: "#06B6D4",
   MySQL: "#4479A1",
   PostgreSQL: "#4169E1",
-  Git: "#F05032",
+  Git: "#c4704b",
   Linux: "#FCC624",
-  GraphQL: "#E10098",
-  Tauri: "#000000",
+  GraphQL: "#c4704b",
+  Tauri: "#4a3c2a",
 };
 
 const techStack = techStackFromData.map((skill) => ({
   name: skill.name,
-  color: skill.color || techColorMap[skill.name] || "#6366F1",
+  color: skill.color || techColorMap[skill.name] || "#c4704b",
 }));
+
+// Alternate rotation for organic feel
+const rotations = [-1.5, 1, -0.5, 1.5, -1, 0.5];
+const rotation = rotations[index % rotations.length];
+const projectNumber = String(index + 1).padStart(2, "0");
 ---
 
 <article
   id={`project-${project.id}`}
-  class="project-item relative mb-32 last:mb-0"
+  class="project-card"
   data-project-item
+  style={`--card-rotation: ${rotation}deg;`}
 >
-  <div
-    class="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-white/20 via-white/10 to-transparent hidden md:block"
-    data-timeline-line
-  >
-  </div>
+  <div class="card-inner" tabindex="0">
+    <!-- Card decorations -->
+    <div class="card-tape card-tape-top" aria-hidden="true"></div>
 
-  <div
-    class="absolute left-[-4px] top-8 w-2 h-2 rounded-full bg-white/80 shadow-lg shadow-white/30 hidden md:block z-10"
-    data-timeline-dot
-  >
-  </div>
+    <!-- Project number -->
+    <div class="project-number" aria-hidden="true">
+      {projectNumber}.
+    </div>
 
-  <div class="md:pl-12">
-    <header class="mb-6" data-project-header>
-      <time
-        class="inline-flex items-center gap-2 text-sm font-medium text-white/60 mb-3"
-        datetime={timeline.start}
-      >
-        <span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
+    <!-- Header -->
+    <header class="project-header" data-project-header>
+      <time class="project-date" datetime={timeline.start.toISOString()}>
         {
           `${formatDate(new Date(timeline.start))} — ${!timeline.end ? "Present" : formatDate(new Date(timeline.end))}`
         }
       </time>
 
-      <h2 class="text-4xl md:text-5xl font-bold text-white tracking-tight mb-4" data-project-title>
+      <h2 class="project-title" data-project-title>
         {name}
       </h2>
     </header>
 
-    <div class="space-y-8">
-      <div class="prose prose-invert prose-lg max-w-none" data-project-description>
+    <!-- Content -->
+    <div class="project-content">
+      <div class="project-description prose-article" data-project-description>
         <Content />
       </div>
 
-      <div class="grid md:grid-cols-12 gap-8 md:gap-12 items-start">
+      <div class="project-grid">
         {
           optimizedImages.length > 0 && (
-            <div class="md:col-span-7" data-project-images>
-              <div class="space-y-6">
-                {optimizedImages.map((image: ImageType, index: number) => (
-                  <div
-                    class="relative rounded-2xl overflow-hidden p-4"
-                    data-project-image-wrapper
-                    data-image-index={index}
-                  >
-                    <div class="relative overflow-hidden">
-                      <img
-                        src={typeof image.src === "string" ? image.src : ""}
-                        alt={image.alt || `${name} screenshot ${index + 1}`}
-                        loading="lazy"
-                        decoding="async"
-                        class="w-full h-full object-cover"
-                        data-project-image
-                      />
-                      <div
-                        class="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/20 opacity-0 transition-opacity duration-500"
-                        data-image-overlay
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div class="project-images" data-project-images>
+              {optimizedImages.map((image: ImageType, imgIndex: number) => (
+                <div class="image-frame" data-project-image-wrapper data-image-index={imgIndex}>
+                  <img
+                    src={typeof image.src === "string" ? image.src : ""}
+                    alt={image.alt || `${name} screenshot ${imgIndex + 1}`}
+                    loading="lazy"
+                    decoding="async"
+                    class="project-image"
+                    data-project-image
+                  />
+                  <div class="image-overlay" data-image-overlay />
+                </div>
+              ))}
             </div>
           )
         }
@@ -125,20 +115,19 @@ const techStack = techStackFromData.map((skill) => ({
         {
           techStack.length > 0 && (
             <div
-              class={optimizedImages.length > 0 ? "md:col-span-5" : "md:col-span-12"}
+              class={`project-tech ${optimizedImages.length === 0 ? "full-width" : ""}`}
               data-tech-section
             >
-              <div class="md:sticky md:top-8">
-                <h3 class="text-sm font-semibold text-white/50 uppercase tracking-wider mb-4">
-                  Tech Stack
-                </h3>
-                <SkillChip skills={techStack} compact={true} />
-              </div>
+              <h3 class="tech-label">Built with</h3>
+              <SkillChip skills={techStack} compact={true} />
             </div>
           )
         }
       </div>
     </div>
+
+    <!-- Corner fold decoration -->
+    <div class="corner-fold" aria-hidden="true"></div>
   </div>
 </article>
 
@@ -160,45 +149,155 @@ const techStack = techStackFromData.map((skill) => ({
       const header = item.querySelector("[data-project-header]");
       const images = item.querySelectorAll("[data-project-image-wrapper]");
       const description = item.querySelector("[data-project-description]");
-      const timelineLine = item.querySelector("[data-timeline-line]");
-      const timelineDot = item.querySelector("[data-timeline-dot]");
+      const cardInner = item.querySelector(".card-inner");
+      const projectNumber = item.querySelector(".project-number");
+
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: item,
-          start: "top 80%",
+          start: "top 85%",
           end: "bottom 20%",
           toggleActions: "play none none reverse",
         },
       });
 
-      if (timelineLine) {
+      // Card entrance with bounce
+      if (cardInner) {
         tl.fromTo(
-          timelineLine,
-          { scaleY: 0, transformOrigin: "top" },
-          { scaleY: 1, duration: 1, ease: "power2.out" },
+          cardInner,
+          { opacity: 0, y: 40, scale: 0.97 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "back.out(1.4)" },
           0
         );
+
+        // On mobile, straighten card when in view
+        if (isMobile && cardInner instanceof HTMLElement) {
+          const cardRotation = getComputedStyle(cardInner)
+            .getPropertyValue("--card-rotation")
+            .trim();
+          const rotationValue = parseFloat(cardRotation) || 0;
+
+          ScrollTrigger.create({
+            trigger: item,
+            start: "top 70%",
+            end: "bottom 30%",
+            onEnter: () => {
+              gsap.to(cardInner, {
+                rotation: 0,
+                y: -4,
+                duration: 0.4,
+                ease: "power2.out",
+              });
+            },
+            onLeave: () => {
+              gsap.to(cardInner, {
+                rotation: rotationValue,
+                y: 0,
+                duration: 0.4,
+                ease: "power2.out",
+              });
+            },
+            onEnterBack: () => {
+              gsap.to(cardInner, {
+                rotation: 0,
+                y: -4,
+                duration: 0.4,
+                ease: "power2.out",
+              });
+            },
+            onLeaveBack: () => {
+              gsap.to(cardInner, {
+                rotation: rotationValue,
+                y: 0,
+                duration: 0.4,
+                ease: "power2.out",
+              });
+            },
+          });
+        }
       }
 
-      if (timelineDot) {
+      // Desktop: straighten on hover, rotate back on leave
+      if (!isMobile) {
+        const cardInner = item.querySelector(".card-inner") as HTMLElement;
+        if (cardInner) {
+          const cardRotation = getComputedStyle(item as Element)
+            .getPropertyValue("--card-rotation")
+            .trim();
+          const rotationValue = parseFloat(cardRotation) || 0;
+
+          cardInner.addEventListener("mouseenter", () => {
+            gsap.to(cardInner, {
+              rotation: 0,
+              y: -6,
+              duration: 0.35,
+              ease: "power2.out",
+            });
+          });
+
+          cardInner.addEventListener("mouseleave", () => {
+            gsap.to(cardInner, {
+              rotation: rotationValue,
+              y: 0,
+              duration: 0.35,
+              ease: "power2.out",
+            });
+          });
+
+          // Also straighten on focus for accessibility
+          cardInner.addEventListener("focusin", () => {
+            gsap.to(cardInner, {
+              rotation: 0,
+              y: -6,
+              duration: 0.35,
+              ease: "power2.out",
+            });
+          });
+
+          cardInner.addEventListener("focusout", () => {
+            gsap.to(cardInner, {
+              rotation: rotationValue,
+              y: 0,
+              duration: 0.35,
+              ease: "power2.out",
+            });
+          });
+        }
+      }
+
+      // Project number "stamps" in
+      if (projectNumber) {
         tl.fromTo(
-          timelineDot,
-          { scale: 0, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.7)" },
+          projectNumber,
+          { opacity: 0, scale: 1.4, rotation: -10 },
+          { opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2)" },
           0.3
         );
       }
 
+      // Header elements stagger in
       if (header) {
         tl.fromTo(
           header.children,
-          { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" },
-          0.2
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" },
+          0.4
         );
       }
 
+      // Description fades in
+      if (description) {
+        tl.fromTo(
+          description,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+          0.5
+        );
+      }
+
+      // Images slide up with stagger
       if (images.length > 0) {
         images.forEach((imgWrapper, imgIndex) => {
           const img = imgWrapper.querySelector("[data-project-image]");
@@ -206,123 +305,263 @@ const techStack = techStackFromData.map((skill) => ({
 
           tl.fromTo(
             imgWrapper,
-            { opacity: 0, y: 50, scale: 0.95 },
+            { opacity: 0, y: 30, rotation: imgIndex % 2 === 0 ? -2 : 2 },
             {
               opacity: 1,
               y: 0,
-              scale: 1,
-              duration: 1,
+              rotation: 0,
+              duration: 0.6,
               ease: "power3.out",
             },
-            0.4 + imgIndex * 0.15
+            0.6 + imgIndex * 0.1
           );
 
+          // Hover interactions
           if (img && overlay) {
             imgWrapper.addEventListener("mouseenter", () => {
-              gsap.to(img, { scale: 1.05, duration: 0.6, ease: "power2.out" });
-              gsap.to(overlay, { opacity: 1, duration: 0.4 });
+              gsap.to(img, { scale: 1.04, duration: 0.4, ease: "power2.out" });
+              gsap.to(overlay, { opacity: 1, duration: 0.3 });
             });
 
             imgWrapper.addEventListener("mouseleave", () => {
-              gsap.to(img, { scale: 1, duration: 0.6, ease: "power2.out" });
-              gsap.to(overlay, { opacity: 0, duration: 0.4 });
+              gsap.to(img, { scale: 1, duration: 0.4, ease: "power2.out" });
+              gsap.to(overlay, { opacity: 0, duration: 0.3 });
             });
           }
         });
       }
-
-      if (description) {
-        tl.fromTo(
-          description,
-          { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
-          0.6
-        );
-      }
-
-      if (images.length > 0) {
-        images.forEach((imgWrapper) => {
-          const img = imgWrapper.querySelector("[data-project-image]");
-          if (!img) return;
-
-          gsap.to(img, {
-            yPercent: 10,
-            ease: "none",
-            scrollTrigger: {
-              trigger: imgWrapper,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 1,
-            },
-          });
-        });
-      }
-    });
-
-    const timelineDots = document.querySelectorAll("[data-timeline-dot]");
-    timelineDots.forEach((dot) => {
-      dot.addEventListener("click", () => {
-        const projectItem = dot.closest("[data-project-item]");
-        if (projectItem) {
-          projectItem.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        }
-      });
     });
   });
 </script>
 
-<style is:global>
-  .project-item {
+<style>
+  .project-card {
+    margin-bottom: var(--space-2xl);
     scroll-margin-top: 2rem;
   }
 
-  .prose-invert {
-    --tw-prose-body: rgb(255 255 255 / 0.8);
-    --tw-prose-headings: rgb(255 255 255 / 0.95);
-    --tw-prose-links: rgb(255 255 255 / 0.9);
-    --tw-prose-bold: rgb(255 255 255 / 0.95);
-    --tw-prose-code: rgb(255 255 255 / 0.9);
-    --tw-prose-quotes: rgb(255 255 255 / 0.85);
+  .project-card:last-child {
+    margin-bottom: 0;
   }
 
-  .prose-invert a {
-    text-decoration: underline;
-    text-underline-offset: 2px;
+  .card-inner {
+    position: relative;
+    background: linear-gradient(175deg, var(--wc-cream) 0%, var(--wc-parchment) 100%);
+    border: 1px solid var(--wc-sand);
+    border-radius: var(--radius-lg);
+    padding: var(--space-l);
+    box-shadow:
+      var(--shadow-md),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transform: rotate(var(--card-rotation, 0deg));
+    transition: transform var(--duration-normal) var(--ease-bounce);
   }
-  s .prose-invert a:hover {
+
+  .card-inner:hover,
+  .card-inner:focus-visible {
+    transform: rotate(0deg) translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    outline: none;
+  }
+
+  @media (min-width: 768px) {
+    .card-inner:hover,
+    .card-inner:focus-visible {
+      transform: rotate(0deg) translateY(-6px);
+    }
+  }
+
+  /* Decorative tape */
+  .card-tape {
+    position: absolute;
+    width: 60px;
+    height: 22px;
+    border-radius: 2px;
+    z-index: 10;
+  }
+
+  .card-tape-top {
+    top: -10px;
+    left: 15%;
+    background: var(--wc-accent-muted);
     opacity: 0.8;
+    transform: rotate(-6deg);
   }
 
-  .prose p {
-    margin-bottom: 1.25em;
+  /* Corner fold */
+  .corner-fold {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, transparent 50%, var(--wc-sand) 50%);
+    border-radius: 0 0 var(--radius-lg) 0;
   }
 
-  .prose ul,
-  .prose ol {
-    margin-top: 1em;
-    margin-bottom: 1em;
-    padding-left: 1.5em;
+  /* Project number */
+  .project-number {
+    position: absolute;
+    top: var(--space-m);
+    right: var(--space-m);
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 600;
+    color: var(--wc-accent);
+    opacity: 0.3;
+    line-height: 1;
+    pointer-events: none;
   }
 
-  .prose li {
-    margin-bottom: 0.5em;
+  /* Header */
+  .project-header {
+    margin-bottom: var(--space-m);
   }
 
-  [data-project-image] {
+  .project-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--wc-bark);
+    margin-bottom: var(--space-xs);
+  }
+
+  .project-date::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--wc-olive);
+  }
+
+  .project-title {
+    font-family: var(--font-display);
+    font-size: var(--text-h1);
+    font-weight: 600;
+    color: var(--wc-ink);
+    line-height: var(--leading-heading);
+    margin: 0;
+  }
+
+  /* Content */
+  .project-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+  }
+
+  .project-description {
+    max-width: 65ch;
+  }
+
+  /* Grid layout */
+  .project-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-l);
+  }
+
+  @media (min-width: 768px) {
+    .project-grid {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+  }
+
+  /* Images */
+  .project-images {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+  }
+
+  .image-frame {
+    position: relative;
+    background: var(--wc-parchment);
+    border: 3px solid var(--wc-sand);
+    border-radius: var(--radius-md);
+    padding: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color var(--duration-normal) var(--ease-smooth);
+  }
+
+  .image-frame:hover {
+    border-color: var(--wc-accent-muted);
+  }
+
+  .project-image {
+    width: 100%;
+    height: auto;
+    border-radius: calc(var(--radius-md) - 4px);
+    display: block;
+    transition: transform var(--duration-normal) var(--ease-smooth);
     will-change: transform;
   }
 
-  [data-project-image-wrapper]:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.5);
+  .image-overlay {
+    position: absolute;
+    inset: 8px;
+    background: linear-gradient(
+      135deg,
+      transparent 30%,
+      color-mix(in oklab, var(--wc-accent) 15%, transparent) 100%
+    );
+    border-radius: calc(var(--radius-md) - 4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-normal) var(--ease-smooth);
+  }
+
+  /* Tech stack */
+  .project-tech {
+    padding: var(--space-m);
+    background: var(--wc-parchment);
+    border: 1px dashed var(--wc-sand);
+    border-radius: var(--radius-md);
+  }
+
+  .project-tech.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .tech-label {
+    font-family: var(--font-display);
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--wc-bark);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    margin-bottom: var(--space-s);
+  }
+
+  /* Focus states */
+  .image-frame:focus-visible {
+    outline: 2px solid var(--wc-accent);
     outline-offset: 2px;
   }
 
-  @media (max-width: 768px) {
-    .project-item {
-      scroll-margin-top: 1rem;
+  /* Mobile adjustments */
+  @media (max-width: 767px) {
+    .card-inner {
+      padding: var(--space-m);
+      /* Keep the rotation on mobile - will straighten on scroll */
+    }
+
+    .card-inner:hover {
+      transform: rotate(0deg) translateY(-2px);
+    }
+
+    .project-number {
+      font-size: 2rem;
+      top: var(--space-s);
+      right: var(--space-s);
+    }
+
+    .card-tape-top {
+      display: none;
     }
   }
 </style>

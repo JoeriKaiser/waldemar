@@ -8,28 +8,29 @@ interface Props {
 
 const { compact = false, categories = ["frontend", "backend", "devops"] } = Astro.props;
 
+// Updated colors to match Warm Craft palette
 const skillCategories = {
   frontend: {
     title: "Frontend",
     skills: [
       { name: "React/Nextjs", color: "#61DAFB" },
       { name: "React Native", color: "#61DAFB" },
-      { name: "Astro", color: "#FF5D01" },
+      { name: "Astro", color: "#c4704b" },
       { name: "TypeScript", color: "#3178C6" },
-      { name: "GSAP", color: "#88CE02" },
+      { name: "GSAP", color: "#7d8471" },
       { name: "Tailwind CSS", color: "#06B6D4" },
     ],
   },
   backend: {
     title: "Backend",
     skills: [
-      { name: "PHP Symfony", color: "#FFFFFF" },
+      { name: "PHP Symfony", color: "#4a3c2a" },
       { name: "Go", color: "#00ADD8" },
-      { name: "Node.js", color: "#339933" },
-      { name: "Kotlin", color: "#F18E33" },
+      { name: "Node.js", color: "#7d8471" },
+      { name: "Kotlin", color: "#c4704b" },
       { name: "PostgreSQL", color: "#4169E1" },
-      { name: "REST", color: "#FF6C37" },
-      { name: "GraphQL", color: "#E10098" },
+      { name: "REST", color: "#c4704b" },
+      { name: "GraphQL", color: "#c4704b" },
     ],
   },
   devops: {
@@ -38,13 +39,13 @@ const skillCategories = {
       { name: "Kubernetes", color: "#326CE5" },
       { name: "Docker", color: "#2496ED" },
       { name: "Google Cloud", color: "#4285F4" },
-      { name: "Terraform", color: "#7D9726" },
-      { name: "Expo", color: "#000000" },
-      { name: "Git", color: "#F05032" },
-      { name: "Shell", color: "#89E051" },
+      { name: "Terraform", color: "#7d8471" },
+      { name: "Expo", color: "#4a3c2a" },
+      { name: "Git", color: "#c4704b" },
+      { name: "Shell", color: "#7d8471" },
       { name: "Lua", color: "#2C39BD" },
-      { name: "GNU/Linux", color: "#000000" },
-      { name: "Github Actions", color: "#000000" },
+      { name: "GNU/Linux", color: "#4a3c2a" },
+      { name: "Github Actions", color: "#4a3c2a" },
     ],
   },
 };
@@ -55,16 +56,41 @@ const selectedCategories = categories.map((cat) => ({
 }));
 ---
 
-<div class="space-y-8" data-categorized-skills>
+<div class="skills-container" data-categorized-skills>
   {
     selectedCategories.map((category, index) => (
-      <div data-skill-category data-category-index={index}>
-        <h3 class="text-lg font-semibold text-white/70 mb-4">{category.title}</h3>
+      <div class="skill-category" data-skill-category data-category-index={index}>
+        <h3 class="category-title">{category.title}</h3>
         <SkillChip skills={category.skills} compact={compact} />
       </div>
     ))
   }
 </div>
+
+<style>
+  .skills-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+  }
+
+  .skill-category {
+    padding: var(--space-m);
+    background: var(--wc-cream);
+    border: 1px solid var(--wc-sand);
+    border-radius: var(--radius-lg);
+  }
+
+  .category-title {
+    font-family: var(--font-display);
+    font-size: var(--text-body);
+    font-weight: 600;
+    color: var(--wc-bark);
+    margin: 0 0 var(--space-s) 0;
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px dashed var(--wc-sand);
+  }
+</style>
 
 <script>
   import { gsap } from "gsap";
@@ -78,10 +104,11 @@ const selectedCategories = categories.map((cat) => ({
 
     if (prefersReduced || !categories.length) return;
 
-    categories.forEach((category) => {
+    categories.forEach((category, index) => {
       gsap.from(category, {
         opacity: 0,
         y: 20,
+        rotation: index % 2 === 0 ? -1 : 1,
         duration: 0.6,
         ease: "power2.out",
         scrollTrigger: {
