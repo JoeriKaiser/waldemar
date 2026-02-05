@@ -88,6 +88,10 @@ import overlay from "../../assets/images/overlay.png";
       window.dispatchEvent(new CustomEvent("open-command-palette"))
     );
 
+    // Preload overlay image for scratch effect
+    const overlayImage = new Image();
+    overlayImage.src = overlay.src;
+
     // Scratch reveal effect
     if (canvas && realImage && portrait) {
       const ctx = canvas.getContext("2d");
