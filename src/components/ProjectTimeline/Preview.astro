@@ -224,6 +224,52 @@ const projectNumber = String(index + 1).padStart(2, "0");
         }
       }
 
+      // Desktop: straighten on hover, rotate back on leave
+      if (!isMobile) {
+        const cardInner = item.querySelector(".card-inner") as HTMLElement;
+        if (cardInner) {
+          const cardRotation = getComputedStyle(item as Element).getPropertyValue("--card-rotation").trim();
+          const rotationValue = parseFloat(cardRotation) || 0;
+
+          cardInner.addEventListener("mouseenter", () => {
+            gsap.to(cardInner, {
+              rotation: 0,
+              y: -6,
+              duration: 0.35,
+              ease: "power2.out",
+            });
+          });
+
+          cardInner.addEventListener("mouseleave", () => {
+            gsap.to(cardInner, {
+              rotation: rotationValue,
+              y: 0,
+              duration: 0.35,
+              ease: "power2.out",
+            });
+          });
+
+          // Also straighten on focus for accessibility
+          cardInner.addEventListener("focusin", () => {
+            gsap.to(cardInner, {
+              rotation: 0,
+              y: -6,
+              duration: 0.35,
+              ease: "power2.out",
+            });
+          });
+
+          cardInner.addEventListener("focusout", () => {
+            gsap.to(cardInner, {
+              rotation: rotationValue,
+              y: 0,
+              duration: 0.35,
+              ease: "power2.out",
+            });
+          });
+        }
+      }
+
       // Project number "stamps" in
       if (projectNumber) {
         tl.fromTo(
