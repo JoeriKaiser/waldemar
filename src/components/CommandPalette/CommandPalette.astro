@@ -9,7 +9,7 @@
       <input
         id="cmdk-input"
         type="text"
-        placeholder="Search projects, pages…"
+        placeholder="Search projects, pages..."
         autocomplete="off"
         spellcheck="false"
         aria-label="Search"
@@ -25,72 +25,112 @@
     inset: 0;
     z-index: 1000;
   }
+
   #cmdk-backdrop {
     position: absolute;
     inset: 0;
-    background: rgb(0 0 0 / 0.5);
+    background: rgba(44, 36, 28, 0.4);
+    backdrop-filter: blur(4px);
     opacity: 0;
-    transition: opacity 160ms ease;
+    transition: opacity 180ms ease;
   }
+
   #cmdk-panel {
     position: absolute;
     left: 50%;
-    top: 12%;
-    transform: translateX(-50%) scale(0.98);
-    width: min(720px, calc(100% - 2rem));
-    border-radius: 12px;
-    border: 1px solid color-mix(in oklab, #fff 10%, transparent);
-    background: color-mix(in oklab, #000 25%, transparent);
-    backdrop-filter: blur(16px) saturate(140%);
-    color: var(--color-text);
-    box-shadow: 0 20px 50px rgb(0 0 0 / 0.35);
+    top: 15%;
+    transform: translateX(-50%) scale(0.96);
+    width: min(600px, calc(100% - 2rem));
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--wc-sand);
+    background: linear-gradient(
+      180deg,
+      var(--wc-cream) 0%,
+      var(--wc-parchment) 100%
+    );
+    color: var(--wc-ink);
+    box-shadow:
+      var(--shadow-xl),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
     opacity: 0;
     transition:
-      transform 160ms ease,
-      opacity 160ms ease;
+      transform 200ms var(--ease-bounce),
+      opacity 180ms ease;
   }
+
   .cmdk-header {
-    padding: 0.75rem 0.9rem;
-    border-bottom: 1px solid color-mix(in oklab, #fff 10%, transparent);
+    padding: 1rem;
+    border-bottom: 1px solid var(--wc-sand);
   }
+
   #cmdk-input {
     width: 100%;
-    padding: 0.7rem 0.9rem;
-    border-radius: 10px;
-    border: 1px solid color-mix(in oklab, #fff 12%, transparent);
-    background: color-mix(in oklab, #000 20%, transparent);
-    color: var(--color-text);
-    outline: none;
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--wc-sand);
+    background: var(--wc-parchment);
+    color: var(--wc-ink);
+    font-family: var(--font-body);
     font-size: 1rem;
+    outline: none;
+    transition:
+      border-color var(--duration-fast) var(--ease-smooth),
+      box-shadow var(--duration-fast) var(--ease-smooth);
   }
+
+  #cmdk-input:focus {
+    border-color: var(--wc-accent);
+    box-shadow: 0 0 0 3px var(--wc-accent-muted);
+  }
+
   #cmdk-input::placeholder {
-    color: color-mix(in oklab, #fff 50%, transparent);
+    color: var(--wc-bark);
+    opacity: 0.6;
   }
+
   #cmdk-list {
     list-style: none;
     margin: 0;
-    padding: 0.35rem;
-    max-height: min(50vh, 480px);
+    padding: 0.5rem;
+    max-height: min(50vh, 400px);
     overflow: auto;
   }
+
   #cmdk-list li {
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.6rem 0.7rem;
-    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    color: color-mix(in oklab, #fff 92%, transparent);
+    font-family: var(--font-body);
+    color: var(--wc-espresso);
+    transition:
+      background var(--duration-fast) var(--ease-smooth),
+      color var(--duration-fast) var(--ease-smooth);
   }
+
+  #cmdk-list li:hover {
+    background: var(--wc-sand);
+  }
+
   #cmdk-list li[aria-selected="true"] {
-    background: color-mix(in oklab, var(--accent) 18%, transparent);
-    color: var(--color-text);
+    background: var(--wc-accent-muted);
+    color: var(--wc-ink);
   }
+
   #cmdk-list .meta {
-    font-size: 0.85rem;
-    color: color-mix(in oklab, #fff 60%, transparent);
+    font-size: 0.8rem;
+    color: var(--wc-bark);
+    opacity: 0.7;
   }
+
+  #cmdk-list li[aria-selected="true"] .meta {
+    color: var(--wc-accent-deep);
+    opacity: 1;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     #cmdk-backdrop,
     #cmdk-panel {
@@ -109,7 +149,7 @@
 
     let openState = false;
     let selected = 0;
-    let items = [];
+    let items: Array<{ label: string; url: string; meta: string }> = [];
     let prevActive: HTMLElement | null = null;
 
     const staticItems = [
@@ -146,7 +186,7 @@
         li.setAttribute("role", "option");
         li.setAttribute("aria-selected", String(i === selected));
         li.dataset.url = row.url;
-        li.innerHTML = `<span>${row.label}</span>`;
+        li.innerHTML = `<span>${row.label}</span><span class="meta">${row.meta}</span>`;
         li.addEventListener("mousemove", () => {
           selected = i;
           updateSelection();
@@ -209,10 +249,10 @@
       openState = false;
       backdrop.style.opacity = "0";
       panel.style.opacity = "0";
-      panel.style.transform = "translateX(-50%) scale(0.98)";
+      panel.style.transform = "translateX(-50%) scale(0.96)";
       setTimeout(() => {
         overlay.hidden = true;
-      }, 160);
+      }, 200);
       if (prevActive && prevActive.focus) {
         prevActive.focus();
       }

@@ -35,7 +35,7 @@ const isActive = (itemUrl: string) => {
   <div class="container-wide">
     <nav
       id="nav"
-      class="glass rounded-2xl px-4 py-3 flex items-center justify-between gap-4 backdrop-blur-md transition-all duration-300"
+      class="nav-pill"
       data-nav
     >
       <div class="flex items-center">
@@ -56,19 +56,13 @@ const isActive = (itemUrl: string) => {
                   data-nav-link
                   data-hash={isHashLink ? u.hash.slice(1) : null}
                   aria-current={shouldBeActive ? "page" : undefined}
-                  class={`relative no-underline font-medium text-base transition-all duration-200 group outline-none px-4 py-2 rounded-lg hover:bg-white/5 ${
-                    shouldBeActive
-                      ? "text-white"
-                      : "text-white/60 hover:text-white focus-visible:text-white"
-                  }`}
+                  class:list={[
+                    "nav-link",
+                    { "is-active": shouldBeActive }
+                  ]}
                 >
                   {item.label}
-                  <span
-                    class={`absolute left-1/2 -translate-x-1/2 bottom-0 h-0.5 bg-white origin-center transition-all duration-300 ${
-                      shouldBeActive ? "w-3/4" : "w-0 group-hover:w-3/4"
-                    }`}
-                    data-nav-indicator
-                  />
+                  <span class="nav-underline" data-nav-indicator />
                 </a>
               </li>
             );
@@ -79,35 +73,29 @@ const isActive = (itemUrl: string) => {
       <div class="flex items-center gap-2">
         <button
           id="cmdk-button"
-          class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all duration-200"
+          class="search-btn"
           data-magnetic
         >
           <span>Search</span>
-          <kbd
-            id="cmdk-kbd"
-            class="px-2 py-0.5 text-xs font-semibold bg-white/10 border border-white/20 rounded"
-          >
-            K
-          </kbd>
+          <kbd class="kbd max-md:hidden">K</kbd>
         </button>
 
         <button
-          class="md:hidden flex flex-col justify-center items-center gap-1.5 p-2 rounded-lg hover:bg-white/5 transition-colors"
+          class="mobile-menu-btn"
           id="mobile-menu-btn"
           aria-label="Toggle menu"
           aria-expanded="false"
         >
-          <span class="w-5 h-0.5 bg-white transition-all duration-300 origin-center" data-bar-1
-          ></span>
-          <span class="w-5 h-0.5 bg-white transition-all duration-300" data-bar-2></span>
-          <span class="w-5 h-0.5 bg-white transition-all duration-300 origin-center" data-bar-3
-          ></span>
+          <span class="bar" data-bar-1></span>
+          <span class="bar" data-bar-2></span>
+          <span class="bar" data-bar-3></span>
         </button>
       </div>
     </nav>
 
+    <!-- Mobile Menu -->
     <div
-      class="md:hidden fixed inset-y-0 right-0 w-64 glass backdrop-blur-xl border-l border-white/10 p-6 transform translate-x-full transition-transform duration-300 z-40"
+      class="mobile-menu md:hidden"
       id="mobile-menu"
       aria-hidden="true"
     >
@@ -125,11 +113,10 @@ const isActive = (itemUrl: string) => {
                   data-nav-link-mobile
                   data-hash={isHashLink ? u.hash.slice(1) : null}
                   aria-current={shouldBeActive ? "page" : undefined}
-                  class={`block py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
-                    shouldBeActive
-                      ? "text-white bg-white/10 border border-white/20"
-                      : "text-white/60 hover:text-white hover:bg-white/5"
-                  }`}
+                  class:list={[
+                    "mobile-nav-link",
+                    { "is-active": shouldBeActive }
+                  ]}
                 >
                   {item.label}
                 </a>
@@ -142,7 +129,7 @@ const isActive = (itemUrl: string) => {
 
     <div
       id="mobile-menu-overlay"
-      class="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-30"
+      class="mobile-overlay md:hidden"
       aria-hidden="true"
     >
     </div>
@@ -176,29 +163,11 @@ const isActive = (itemUrl: string) => {
 
     window.addEventListener("keydown", onKey, { passive: false });
 
+    // Scroll effect - add shadow on scroll
     if (header && nav && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       const onScroll = () => {
         const scrolled = window.pageYOffset > 50;
-
-        if (scrolled) {
-          nav.classList.add(
-            "bg-black/70",
-            "backdrop-blur-xl",
-            "border",
-            "border-white/10",
-            "shadow-lg",
-            "shadow-black/20"
-          );
-        } else {
-          nav.classList.remove(
-            "bg-black/70",
-            "backdrop-blur-xl",
-            "border",
-            "border-white/10",
-            "shadow-lg",
-            "shadow-black/20"
-          );
-        }
+        nav.classList.toggle("is-scrolled", scrolled);
       };
 
       window.addEventListener("scroll", onScroll, { passive: true });
@@ -231,20 +200,13 @@ const isActive = (itemUrl: string) => {
 
         const href = link.getAttribute("href") || "";
         const active = computeActive(href);
-        const indicator = link.querySelector("[data-nav-indicator]");
 
         if (active) {
           link.setAttribute("aria-current", "page");
+          link.classList.add("is-active");
         } else {
           link.removeAttribute("aria-current");
-        }
-
-        link.classList.toggle("text-white", active);
-        link.classList.toggle("text-white/60", !active);
-
-        if (indicator) {
-          indicator.classList.toggle("w-3/4", active);
-          indicator.classList.toggle("w-0", !active);
+          link.classList.remove("is-active");
         }
       });
     };
@@ -282,6 +244,7 @@ const isActive = (itemUrl: string) => {
     window.addEventListener("scroll", onScrollForSections, { passive: true });
     updateActiveStates();
 
+    // Mobile menu toggle
     if (mobileBtn && mobileMenu && mobileOverlay) {
       let isOpen = false;
 
@@ -297,8 +260,8 @@ const isActive = (itemUrl: string) => {
         mobileOverlay.setAttribute("aria-hidden", (!isOpen).toString());
 
         if (isOpen) {
-          mobileMenu.classList.remove("translate-x-full");
-          mobileOverlay.classList.remove("opacity-0", "pointer-events-none");
+          mobileMenu.classList.add("is-open");
+          mobileOverlay.classList.add("is-open");
           document.body.style.overflow = "hidden";
 
           if (bar1 && bar2 && bar3) {
@@ -307,8 +270,8 @@ const isActive = (itemUrl: string) => {
             gsap.to(bar3, { rotation: -45, y: -6, duration: 0.3, ease: "power2.out" });
           }
         } else {
-          mobileMenu.classList.add("translate-x-full");
-          mobileOverlay.classList.add("opacity-0", "pointer-events-none");
+          mobileMenu.classList.remove("is-open");
+          mobileOverlay.classList.remove("is-open");
           document.body.style.overflow = "";
 
           if (bar1 && bar2 && bar3) {
@@ -332,6 +295,7 @@ const isActive = (itemUrl: string) => {
       });
     }
 
+    // Magnetic button effect
     const magneticButtons = document.querySelectorAll("[data-magnetic]");
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -373,20 +337,199 @@ const isActive = (itemUrl: string) => {
 </script>
 
 <style>
-  [data-nav-link],
-  [data-nav-link-mobile] {
+  /* Navigation pill container */
+  .nav-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--wc-cream);
+    border: 1px solid var(--wc-sand);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-sm);
+    transition:
+      box-shadow var(--duration-normal) var(--ease-smooth),
+      background var(--duration-normal) var(--ease-smooth);
+  }
+
+  .nav-pill.is-scrolled {
+    box-shadow: var(--shadow-md);
+    background: var(--wc-parchment);
+    backdrop-filter: blur(8px);
+  }
+
+  /* Navigation links */
+  .nav-link {
     position: relative;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: var(--text-small);
+    color: var(--wc-bark);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition:
+      color var(--duration-fast) var(--ease-smooth),
+      background var(--duration-fast) var(--ease-smooth);
   }
 
-  [data-nav-link]:focus-visible,
-  [data-nav-link-mobile]:focus-visible,
-  #cmdk-button:focus-visible,
-  #mobile-menu-btn:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.5);
+  .nav-link:hover {
+    color: var(--wc-accent);
+    background: var(--wc-sand);
+  }
+
+  .nav-link.is-active {
+    color: var(--wc-accent-deep);
+  }
+
+  /* Squiggle underline effect */
+  .nav-underline {
+    position: absolute;
+    left: 50%;
+    bottom: 4px;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 4'%3E%3Cpath d='M0 2 Q5 0 10 2 T20 2' stroke='%23c4704b' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") repeat-x;
+    background-size: 20px 4px;
+    transition: width var(--duration-normal) var(--ease-bounce);
+    transform-origin: center;
+  }
+
+  .nav-link:hover .nav-underline,
+  .nav-link.is-active .nav-underline {
+    width: 80%;
+  }
+
+  /* Search button */
+  .search-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-family: var(--font-body);
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--wc-bark);
+    background: transparent;
+    border: 1px solid var(--wc-sand);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition:
+      color var(--duration-fast) var(--ease-smooth),
+      background var(--duration-fast) var(--ease-smooth),
+      border-color var(--duration-fast) var(--ease-smooth);
+  }
+
+  .search-btn:hover {
+    color: var(--wc-accent);
+    background: var(--wc-cream);
+    border-color: var(--wc-clay);
+  }
+
+  /* Mobile menu button */
+  .mobile-menu-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-smooth);
+  }
+
+  @media (min-width: 768px) {
+    .mobile-menu-btn {
+      display: none;
+    }
+  }
+
+  .mobile-menu-btn:hover {
+    background: var(--wc-sand);
+  }
+
+  .mobile-menu-btn .bar {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--wc-bark);
+    border-radius: 1px;
+    transition: all var(--duration-normal) var(--ease-smooth);
+    transform-origin: center;
+  }
+
+  /* Mobile menu panel */
+  .mobile-menu {
+    position: fixed;
+    inset-block: 0;
+    right: 0;
+    width: 280px;
+    padding: 1.5rem;
+    background: var(--wc-cream);
+    border-left: 1px solid var(--wc-sand);
+    box-shadow: -10px 0 40px rgba(44, 36, 28, 0.15);
+    transform: translateX(100%);
+    transition: transform var(--duration-normal) var(--ease-out);
+    z-index: 40;
+  }
+
+  .mobile-menu.is-open {
+    transform: translateX(0);
+  }
+
+  .mobile-nav-link {
+    display: block;
+    padding: 0.875rem 1rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: var(--wc-bark);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition:
+      color var(--duration-fast) var(--ease-smooth),
+      background var(--duration-fast) var(--ease-smooth);
+  }
+
+  .mobile-nav-link:hover {
+    color: var(--wc-accent);
+    background: var(--wc-sand);
+  }
+
+  .mobile-nav-link.is-active {
+    color: var(--wc-accent-deep);
+    background: var(--wc-sand);
+    border-left: 3px solid var(--wc-accent);
+  }
+
+  /* Mobile overlay */
+  .mobile-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(44, 36, 28, 0.3);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-normal) var(--ease-smooth);
+    z-index: 30;
+  }
+
+  .mobile-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Focus states */
+  .nav-link:focus-visible,
+  .mobile-nav-link:focus-visible,
+  .search-btn:focus-visible,
+  .mobile-menu-btn:focus-visible {
+    outline: 2px solid var(--wc-accent);
     outline-offset: 2px;
-  }
-
-  #mobile-menu {
-    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
   }
 </style>

@@ -17,144 +17,117 @@ const socialLinks = [
 const email = "joeri.waldemar@gmail.com";
 ---
 
-<footer class="mt-32 border-t border-white/10" data-footer>
-  <div class="container-center py-12">
-    <div class="grid md:grid-cols-3 gap-12 mb-12">
-      <div>
-        <h3 class="text-lg font-semibold text-white mb-4">Connect</h3>
-        <ul class="list-none p-0 m-0 flex flex-col gap-3">
-          {
-            socialLinks.map((link) => (
-              <li>
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors duration-200 group"
-                  data-social-link
-                >
-                  <svg
-                    class="w-5 h-5 fill-current transition-transform duration-200 group-hover:scale-110"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
+<footer class="footer" data-footer>
+  <div class="footer-inner">
+    <div class="container-center">
+      <div class="footer-grid">
+        <!-- Connect Section -->
+        <div class="footer-section">
+          <h3 class="footer-heading">Connect</h3>
+          <ul class="social-list">
+            {
+              socialLinks.map((link) => (
+                <li>
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="social-link"
+                    data-social-link
                   >
-                    <path d={link.icon} />
-                  </svg>
-                  <span class="relative">
-                    {link.name}
-                    <span class="absolute left-0 -bottom-0.5 w-0 h-px bg-white transition-all duration-200 group-hover:w-full" />
-                  </span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
+                    <span class="social-icon">
+                      <svg
+                        class="icon"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path d={link.icon} />
+                      </svg>
+                    </span>
+                    <span class="social-name">{link.name}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
 
-      <div>
-        <h3 class="text-lg font-semibold text-white mb-4">Contact</h3>
-        <div class="flex flex-col gap-2">
-          <a
-            href={`mailto:${email}`}
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/80 hover:text-white border border-white/10 hover:border-white/20 transition-all duration-200 w-fit"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              ></path>
-            </svg>
-            Email me
-          </a>
-          <button
-            id="copy-email"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/80 hover:text-white border border-white/10 hover:border-white/20 transition-all duration-200 w-fit"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-              ></path>
-            </svg>
-            Copy email
-          </button>
+        <!-- Contact Section -->
+        <div class="footer-section">
+          <h3 class="footer-heading">Get in Touch</h3>
+          <div class="contact-buttons">
+            <a
+              href={`mailto:${email}`}
+              class="contact-btn"
+            >
+              <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                ></path>
+              </svg>
+              Email me
+            </a>
+            <button
+              id="copy-email"
+              class="contact-btn"
+            >
+              <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                ></path>
+              </svg>
+              Copy email
+            </button>
+          </div>
+        </div>
+
+        <!-- Navigation Section -->
+        <div class="footer-section">
+          <h3 class="footer-heading">Navigation</h3>
+          <ul class="nav-list">
+            <li><a href="/" class="nav-link">Home</a></li>
+            <li><a href="/#projects-list-start" class="nav-link">Projects</a></li>
+            <li><a href="/about" class="nav-link">About</a></li>
+            <li>
+              <button id="back-to-top" class="nav-link back-to-top">
+                Back to top
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 19V5M5 12l7-7 7 7"/>
+                </svg>
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
 
-      <div>
-        <h3 class="text-lg font-semibold text-white mb-4">Navigation</h3>
-        <ul class="list-none p-0 m-0 flex flex-col gap-2">
-          <li>
-            <a
-              href="/"
-              class="text-white/60 hover:text-white transition-colors duration-200 inline-block"
-              >Home</a
-            >
-          </li>
-          <li>
-            <a
-              href="/#projects-list-start"
-              class="text-white/60 hover:text-white transition-colors duration-200 inline-block"
-              >Projects</a
-            >
-          </li>
-          <li>
-            <a
-              href="/about"
-              class="text-white/60 hover:text-white transition-colors duration-200 inline-block"
-              >About</a
-            >
-          </li>
-          <li>
-            <button
-              id="back-to-top"
-              class="text-white/60 hover:text-white transition-colors duration-200"
-              >Back to top ↑</button
-            >
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="pt-8 border-t border-white/10">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-        <p class="text-white/60 text-sm">
-          &copy; {currentYear} Joeri Kaiser. All rights reserved.
+      <!-- Bottom bar -->
+      <div class="footer-bottom">
+        <p class="copyright">
+          Made with care by Joeri Kaiser &copy; {currentYear}
         </p>
 
-        <div class="flex items-center gap-2 text-sm text-white/60">
-          <span>Built with</span>
+        <div class="built-with">
+          <span>Crafted with</span>
           <span
-            class="inline-block font-semibold text-white relative overflow-hidden h-5 w-24"
+            class="tech-rotator"
             data-tech-rotator
           >
-            <span
-              class="absolute inset-0 flex items-center justify-center transition-all duration-700 ease-in-out"
-              data-tech-current
-            >
-              Astro
-            </span>
-            <span
-              class="absolute inset-0 flex items-center justify-center transition-all duration-700 ease-in-out translate-y-full opacity-0"
-              data-tech-next
-            >
-              TypeScript
-            </span>
+            <span class="tech-current" data-tech-current>Astro</span>
+            <span class="tech-next" data-tech-next>GSAP</span>
           </span>
-          <span>& ❤️</span>
         </div>
       </div>
     </div>
   </div>
 
-  <div
-    id="footer-toast"
-    class="fixed left-1/2 -translate-x-1/2 bottom-6 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm opacity-0 pointer-events-none transition-opacity duration-300"
-  >
+  <!-- Toast notification -->
+  <div id="footer-toast" class="toast">
     Email copied to clipboard!
   </div>
 </footer>
@@ -170,12 +143,10 @@ const email = "joeri.waldemar@gmail.com";
 
     const showToast = () => {
       if (!toast) return;
-      toast.style.opacity = "1";
-      toast.style.pointerEvents = "auto";
+      toast.classList.add("is-visible");
 
       setTimeout(() => {
-        toast.style.opacity = "0";
-        toast.style.pointerEvents = "none";
+        toast.classList.remove("is-visible");
       }, 2000);
     };
 
@@ -195,13 +166,14 @@ const email = "joeri.waldemar@gmail.com";
       });
     });
 
+    // Tech rotator animation
     if (!prefersReduced) {
       const rotator = document.querySelector("[data-tech-rotator]");
       const currentSpan = document.querySelector("[data-tech-current]");
       const nextSpan = document.querySelector("[data-tech-next]");
 
       if (rotator && currentSpan && nextSpan) {
-        const techs = ["Astro", "GSAP", "Tailwind"];
+        const techs = ["Astro", "GSAP", "Tailwind", "care"];
         let currentIndex = 0;
 
         const rotateTech = () => {
@@ -210,35 +182,35 @@ const email = "joeri.waldemar@gmail.com";
           nextSpan.textContent = techs[nextIndex];
 
           gsap.to(currentSpan, {
-            y: -20,
+            y: -16,
             opacity: 0,
-            duration: 0.7,
+            duration: 0.5,
             ease: "power2.inOut",
           });
 
           gsap.fromTo(
             nextSpan,
-            { y: 20, opacity: 0 },
+            { y: 16, opacity: 0 },
             {
               y: 0,
               opacity: 1,
-              duration: 0.7,
+              duration: 0.5,
               ease: "power2.inOut",
               onComplete: () => {
-                // Swap content and reset positions
                 currentSpan.textContent = techs[nextIndex];
                 gsap.set(currentSpan, { y: 0, opacity: 1 });
-                gsap.set(nextSpan, { y: 20, opacity: 0 });
+                gsap.set(nextSpan, { y: 16, opacity: 0 });
                 currentIndex = nextIndex;
               },
             }
           );
         };
 
-        setInterval(rotateTech, 4000);
+        setInterval(rotateTech, 3500);
       }
     }
 
+    // Social link hover animation
     if (!prefersReduced) {
       const socialLinks = document.querySelectorAll("[data-social-link]");
 
@@ -248,7 +220,7 @@ const email = "joeri.waldemar@gmail.com";
         link.addEventListener("mouseenter", () => {
           gsap.to(link, {
             x: 4,
-            duration: 0.3,
+            duration: 0.25,
             ease: "power2.out",
           });
         });
@@ -256,7 +228,7 @@ const email = "joeri.waldemar@gmail.com";
         link.addEventListener("mouseleave", () => {
           gsap.to(link, {
             x: 0,
-            duration: 0.3,
+            duration: 0.25,
             ease: "power2.out",
           });
         });
@@ -266,15 +238,251 @@ const email = "joeri.waldemar@gmail.com";
 </script>
 
 <style>
-  [data-tech-rotator] {
-    position: relative;
-    display: inline-block;
+  .footer {
+    margin-top: var(--space-3xl);
   }
 
+  .footer-inner {
+    background: var(--wc-sand);
+    border-top: 1px solid var(--wc-clay);
+    padding: var(--space-xl) 0 var(--space-l);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-l);
+    margin-bottom: var(--space-xl);
+  }
+
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .footer-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-s);
+  }
+
+  .footer-heading {
+    font-family: var(--font-display);
+    font-size: var(--text-body);
+    font-weight: 600;
+    color: var(--wc-ink);
+    margin: 0 0 var(--space-xs) 0;
+  }
+
+  /* Social links */
+  .social-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    color: var(--wc-bark);
+    text-decoration: none;
+    font-size: var(--text-small);
+    transition:
+      color var(--duration-fast) var(--ease-smooth),
+      transform var(--duration-fast) var(--ease-smooth);
+  }
+
+  .social-link:hover {
+    color: var(--wc-accent);
+  }
+
+  .social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--wc-parchment);
+    border: 1px solid var(--wc-clay);
+    border-radius: var(--radius-sm);
+    transition:
+      border-color var(--duration-fast) var(--ease-smooth),
+      background var(--duration-fast) var(--ease-smooth);
+  }
+
+  .social-link:hover .social-icon {
+    border-color: var(--wc-accent);
+    background: var(--wc-cream);
+  }
+
+  .icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+
+  /* Contact buttons */
+  .contact-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    font-family: var(--font-body);
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--wc-bark);
+    background: var(--wc-parchment);
+    border: 1px solid var(--wc-clay);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-decoration: none;
+    width: fit-content;
+    transition:
+      color var(--duration-fast) var(--ease-smooth),
+      background var(--duration-fast) var(--ease-smooth),
+      border-color var(--duration-fast) var(--ease-smooth);
+  }
+
+  .contact-btn:hover {
+    color: var(--wc-accent-deep);
+    background: var(--wc-cream);
+    border-color: var(--wc-accent-muted);
+  }
+
+  .btn-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Navigation */
+  .nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--wc-bark);
+    text-decoration: none;
+    font-size: var(--text-small);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: color var(--duration-fast) var(--ease-smooth);
+  }
+
+  .nav-link:hover {
+    color: var(--wc-accent);
+  }
+
+  .back-to-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  /* Bottom section */
+  .footer-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    padding-top: var(--space-m);
+    border-top: 1px dashed var(--wc-clay);
+  }
+
+  @media (min-width: 640px) {
+    .footer-bottom {
+      flex-direction: row;
+    }
+  }
+
+  .copyright {
+    font-size: var(--text-small);
+    color: var(--wc-bark);
+    margin: 0;
+  }
+
+  .built-with {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: var(--text-small);
+    color: var(--wc-bark);
+  }
+
+  .tech-rotator {
+    position: relative;
+    display: inline-block;
+    width: 70px;
+    height: 20px;
+    overflow: hidden;
+  }
+
+  .tech-current,
+  .tech-next {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: var(--wc-accent);
+  }
+
+  .tech-next {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: var(--space-l);
+    padding: 0.75rem 1.25rem;
+    background: var(--wc-cream);
+    border: 1px solid var(--wc-accent);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    font-size: var(--text-small);
+    color: var(--wc-ink);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-normal) var(--ease-smooth);
+    z-index: 100;
+  }
+
+  .toast.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Focus states */
   button:focus-visible,
   a:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline: 2px solid var(--wc-accent);
     outline-offset: 2px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
   }
 </style>
