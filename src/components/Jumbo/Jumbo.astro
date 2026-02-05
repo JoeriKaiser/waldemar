@@ -140,11 +140,11 @@ import overlay from "../../assets/images/overlay.png";
 
         ctx.globalCompositeOperation = "destination-out";
         ctx.beginPath();
-        ctx.arc(canvasX, canvasY, 25, 0, Math.PI * 2);
+        ctx.arc(canvasX, canvasY, 30, 0, Math.PI * 2); // Slightly larger brush
         ctx.fill();
         ctx.globalCompositeOperation = "source-over";
 
-        scratchedPixels += Math.PI * 25 * 25;
+        scratchedPixels += Math.PI * 30 * 30;
         const totalPixels = rect.width * rect.height;
 
         if (scratchedPixels / totalPixels > revealThreshold) {
@@ -152,24 +152,39 @@ import overlay from "../../assets/images/overlay.png";
         }
       };
 
-      const onStart = (e: PointerEvent) => {
+      const onStart = (e: PointerEvent | TouchEvent) => {
         isDrawing = true;
-        scratch(e.clientX, e.clientY);
+        if (e instanceof PointerEvent) {
+          scratch(e.clientX, e.clientY);
+        } else if (e.touches && e.touches[0]) {
+          scratch(e.touches[0].clientX, e.touches[0].clientY);
+        }
       };
 
-      const onMove = (e: PointerEvent) => {
+      const onMove = (e: PointerEvent | TouchEvent) => {
         if (!isDrawing) return;
-        scratch(e.clientX, e.clientY);
+        if (e instanceof PointerEvent) {
+          scratch(e.clientX, e.clientY);
+        } else if (e.touches && e.touches[0]) {
+          scratch(e.touches[0].clientX, e.touches[0].clientY);
+        }
       };
 
       const onEnd = () => {
         isDrawing = false;
       };
 
-      canvas.addEventListener("pointerdown", onStart);
-      canvas.addEventListener("pointermove", onMove);
+      // Pointer events for mouse/touch unified handling
+      canvas.addEventListener("pointerdown", onStart as EventListener);
+      canvas.addEventListener("pointermove", onMove as EventListener);
       canvas.addEventListener("pointerup", onEnd);
       canvas.addEventListener("pointerleave", onEnd);
+      
+      // Fallback touch events for mobile
+      canvas.addEventListener("touchstart", onStart as EventListener, { passive: false });
+      canvas.addEventListener("touchmove", onMove as EventListener, { passive: false });
+      canvas.addEventListener("touchend", onEnd);
+      canvas.addEventListener("touchcancel", onEnd);
 
       // Reset on window resize
       let resizeTimeout: ReturnType<typeof setTimeout>;
