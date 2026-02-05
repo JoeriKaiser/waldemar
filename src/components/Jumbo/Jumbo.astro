@@ -1,7 +1,6 @@
 ---
 import { Image } from "astro:assets";
 import base from "../../assets/images/base.png";
-import overlay from "../../assets/images/overlay.png";
 ---
 
 <section class="jumbo" data-jumbo-root>
@@ -10,7 +9,7 @@ import overlay from "../../assets/images/overlay.png";
     <div class="jumbo-content">
       <div class="intro-stamps">
         <span class="stamp" data-stamp>Dev since 2022</span>
-        <span class="stamp stamp-olive" data-stamp>NL → FR</span>
+        <span class="stamp stamp-olive" data-stamp>{`NL -> FR`}</span>
       </div>
 
       <h1 class="jumbo-title" data-hero-text>
@@ -449,7 +448,7 @@ import overlay from "../../assets/images/overlay.png";
 
   .portrait-frame:hover {
     transform: rotate(0deg) scale(1.02);
-    box-shadow: var(--shadow-xl)
+    box-shadow: var(--shadow-xl);
   }
 
   .portrait-tilt-wrapper {
