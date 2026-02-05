@@ -66,8 +66,8 @@ import overlay from "../../assets/images/overlay.png";
             loading="eager"
           />
           <!-- Overlay image on canvas (scratched away) -->
-          <canvas class="scratch-canvas" data-scratch-canvas data-overlay-src={overlay.src}
-          ></canvas>
+          <!-- <canvas class="scratch-canvas" data-scratch-canvas data-overlay-src={overlay.src}
+          ></canvas> -->
         </div>
 
         <!-- Corner decorations -->
@@ -112,7 +112,7 @@ import overlay from "../../assets/images/overlay.png";
 
       let isDrawing = false;
       let scratchedPixels = 0;
-      const revealThreshold = 0.25; // Reveal fully after 25% scratched
+      const revealThreshold = 0.25;
 
       const setupCanvas = () => {
         const rect = canvas.getBoundingClientRect();
@@ -121,11 +121,9 @@ import overlay from "../../assets/images/overlay.png";
         canvas.height = rect.height * dpr;
         ctx.scale(dpr, dpr);
 
-        // Draw the overlay image (this gets scratched away)
         ctx.drawImage(overlayImage, 0, 0, rect.width, rect.height);
       };
 
-      // Wait for both images to load
       let imagesLoaded = 0;
       const onImageLoad = () => {
         imagesLoaded++;
@@ -153,7 +151,7 @@ import overlay from "../../assets/images/overlay.png";
 
         ctx.globalCompositeOperation = "destination-out";
         ctx.beginPath();
-        ctx.arc(canvasX, canvasY, 30, 0, Math.PI * 2); // Slightly larger brush
+        ctx.arc(canvasX, canvasY, 30, 0, Math.PI * 2);
         ctx.fill();
         ctx.globalCompositeOperation = "source-over";
 
@@ -187,19 +185,16 @@ import overlay from "../../assets/images/overlay.png";
         isDrawing = false;
       };
 
-      // Pointer events for mouse/touch unified handling
       canvas.addEventListener("pointerdown", onStart as EventListener);
       canvas.addEventListener("pointermove", onMove as EventListener);
       canvas.addEventListener("pointerup", onEnd);
       canvas.addEventListener("pointerleave", onEnd);
 
-      // Fallback touch events for mobile
       canvas.addEventListener("touchstart", onStart as EventListener, { passive: false });
       canvas.addEventListener("touchmove", onMove as EventListener, { passive: false });
       canvas.addEventListener("touchend", onEnd);
       canvas.addEventListener("touchcancel", onEnd);
 
-      // Reset on window resize
       let resizeTimeout: ReturnType<typeof setTimeout>;
       window.addEventListener("resize", () => {
         clearTimeout(resizeTimeout);
@@ -214,14 +209,12 @@ import overlay from "../../assets/images/overlay.png";
     if (!prefersReduced) {
       const { gsap } = await import("gsap");
 
-      // Entrance animations
       const stamps = root.querySelectorAll("[data-stamp]");
       const heroText = root.querySelectorAll("[data-hero-text]");
       const portraitFrame = root.querySelector(".portrait-frame");
 
       const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
-      // Portrait grows in with slight rotation
       if (portraitFrame) {
         tl.from(portraitFrame, {
           scale: 0.9,
@@ -231,7 +224,6 @@ import overlay from "../../assets/images/overlay.png";
         });
       }
 
-      // Stamps animate in with "stamp" effect
       if (stamps.length) {
         tl.from(
           stamps,
@@ -247,7 +239,6 @@ import overlay from "../../assets/images/overlay.png";
         );
       }
 
-      // Text staggers in
       if (heroText.length) {
         tl.from(
           heroText,
@@ -261,7 +252,6 @@ import overlay from "../../assets/images/overlay.png";
         );
       }
 
-      // Subtle tilt effect on portrait
       if (tiltContainer instanceof HTMLElement && portrait instanceof HTMLElement) {
         let rx = 0,
           ry = 0,
@@ -279,7 +269,7 @@ import overlay from "../../assets/images/overlay.png";
 
           const x = (e.clientX - cx) / (r.width / 2);
           const y = (e.clientY - cy) / (r.height / 2);
-          const max = 6; // Subtle tilt
+          const max = 6;
 
           ry = x * max;
           rx = -y * max;
@@ -299,7 +289,6 @@ import overlay from "../../assets/images/overlay.png";
       }
     }
 
-    // Magnetic buttons
     const magneticButtons = root.querySelectorAll("[data-magnetic]");
     if (!prefersReduced && magneticButtons.length) {
       const { gsap } = await import("gsap");
@@ -347,7 +336,6 @@ import overlay from "../../assets/images/overlay.png";
     }
   }
 
-  /* Content Section */
   .jumbo-content {
     display: flex;
     flex-direction: column;
@@ -431,7 +419,6 @@ import overlay from "../../assets/images/overlay.png";
     padding-top: var(--space-xs);
   }
 
-  /* Portrait Section */
   .jumbo-portrait {
     display: flex;
     flex-direction: column;
@@ -450,7 +437,6 @@ import overlay from "../../assets/images/overlay.png";
     position: relative;
     width: clamp(260px, 50vw, 340px);
     aspect-ratio: 1;
-    background: var(--wc-cream);
     border: 3px solid var(--wc-olive);
     border-radius: var(--radius-lg);
     padding: 12px;
@@ -463,10 +449,9 @@ import overlay from "../../assets/images/overlay.png";
 
   .portrait-frame:hover {
     transform: rotate(0deg) scale(1.02);
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--shadow-xl)
   }
 
-  /* Separate container for 3D tilt effect */
   .portrait-tilt-wrapper {
     width: 100%;
     height: 100%;
@@ -480,9 +465,10 @@ import overlay from "../../assets/images/overlay.png";
     height: 100%;
     border-radius: var(--radius-md);
     overflow: hidden;
-    background: var(--wc-sand);
+    background: var(--wc-espresso, #b4b4b4);
     transform-style: preserve-3d;
     will-change: transform;
+    box-shadow: inset 0 0 12px 2px rgba(161, 161, 161, 0.15);
   }
 
   .portrait-image {
@@ -511,7 +497,6 @@ import overlay from "../../assets/images/overlay.png";
     transition: opacity 0.5s ease-out;
   }
 
-  /* Decorative tape */
   .tape {
     position: absolute;
     width: 50px;
@@ -536,7 +521,6 @@ import overlay from "../../assets/images/overlay.png";
     background: var(--wc-olive-soft);
   }
 
-  /* Corner decorations */
   .corner-deco {
     position: absolute;
     width: 24px;
@@ -573,7 +557,6 @@ import overlay from "../../assets/images/overlay.png";
     opacity: 0.7;
   }
 
-  /* Responsive adjustments */
   @media (max-width: 767px) {
     .jumbo {
       padding-top: var(--space-l);
