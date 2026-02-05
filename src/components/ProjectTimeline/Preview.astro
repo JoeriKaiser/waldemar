@@ -63,7 +63,7 @@ const projectNumber = String(index + 1).padStart(2, "0");
   data-project-item
   style={`--card-rotation: ${rotation}deg;`}
 >
-  <div class="card-inner">
+  <div class="card-inner" tabindex="0">
     <!-- Card decorations -->
     <div class="card-tape card-tape-top" aria-hidden="true"></div>
 
@@ -364,9 +364,18 @@ const projectNumber = String(index + 1).padStart(2, "0");
     transition: transform var(--duration-normal) var(--ease-bounce);
   }
 
-  .card-inner:hover {
+  .card-inner:hover,
+  .card-inner:focus-visible {
     transform: rotate(0deg) translateY(-4px);
     box-shadow: var(--shadow-lg);
+    outline: none;
+  }
+
+  @media (min-width: 768px) {
+    .card-inner:hover,
+    .card-inner:focus-visible {
+      transform: rotate(0deg) translateY(-6px);
+    }
   }
 
   /* Decorative tape */
