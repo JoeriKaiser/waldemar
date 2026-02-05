@@ -108,23 +108,29 @@ import overlay from "../../assets/images/overlay.png";
         canvas.height = rect.height * dpr;
         ctx.scale(dpr, dpr);
 
-        // Draw the filtered version of the image
-        ctx.filter = "sepia(0.08) saturate(0.95)";
-        ctx.drawImage(realImage, 0, 0, rect.width, rect.height);
-        ctx.filter = "none";
-
-        // Add slight paper texture overlay
-        ctx.globalCompositeOperation = "overlay";
-        ctx.fillStyle = "rgba(250, 246, 241, 0.15)";
-        ctx.fillRect(0, 0, rect.width, rect.height);
-        ctx.globalCompositeOperation = "source-over";
+        // Draw the overlay image (this gets scratched away)
+        ctx.drawImage(overlayImage, 0, 0, rect.width, rect.height);
       };
 
-      // Wait for image to load
+      // Wait for both images to load
+      let imagesLoaded = 0;
+      const onImageLoad = () => {
+        imagesLoaded++;
+        if (imagesLoaded >= 2) {
+          setupCanvas();
+        }
+      };
+
       if (realImage.complete) {
-        setupCanvas();
+        onImageLoad();
       } else {
-        realImage.addEventListener("load", setupCanvas);
+        realImage.addEventListener("load", onImageLoad);
+      }
+
+      if (overlayImage.complete) {
+        onImageLoad();
+      } else {
+        overlayImage.addEventListener("load", onImageLoad);
       }
 
       const scratch = (x: number, y: number) => {
