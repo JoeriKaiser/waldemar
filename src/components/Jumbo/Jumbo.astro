@@ -57,7 +57,7 @@ import overlay from "../../assets/images/overlay.png";
             loading="eager"
           />
           <!-- Overlay image on canvas (scratched away) -->
-          <canvas class="scratch-canvas" data-scratch-canvas></canvas>
+          <canvas class="scratch-canvas" data-scratch-canvas data-overlay-src={overlay.src}></canvas>
         </div>
 
         <!-- Corner decorations -->
@@ -90,7 +90,10 @@ import overlay from "../../assets/images/overlay.png";
 
     // Preload overlay image for scratch effect
     const overlayImage = new Image();
-    overlayImage.src = overlay.src;
+    const overlaySrc = canvas?.dataset.overlaySrc;
+    if (overlaySrc) {
+      overlayImage.src = overlaySrc;
+    }
 
     // Scratch reveal effect
     if (canvas && realImage && portrait) {
