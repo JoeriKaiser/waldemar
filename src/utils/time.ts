@@ -1,5 +1,9 @@
-import { DateTime } from "luxon";
+const formatter = new Intl.DateTimeFormat("en-US", {
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
 
 export function formatDate(date: Date) {
-  return DateTime.fromJSDate(date).toFormat("MMMM yyyy");
+  return formatter.format(date);
 }

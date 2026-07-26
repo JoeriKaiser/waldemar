@@ -24,7 +24,7 @@ const isActive = (itemUrl: string) => {
   }
 
   if (itemPath === "/") {
-    return currentPath === "/";
+    return currentPath === "/" && !Astro.url.hash;
   }
 
   return currentPath === itemPath || currentPath.startsWith(itemPath + "/");
@@ -114,201 +114,145 @@ const isActive = (itemUrl: string) => {
 </header>
 
 <script>
-  import { gsap } from "gsap";
+  import { attachMagnetic } from "../../utils/magnetic";
+
+  const sectionSelector = "[data-project-item], #projects-list-start";
+  let sections: HTMLElement[] = [];
+  let sectionTicking = false;
 
   document.addEventListener("astro:page-load", () => {
-    const btn = document.getElementById("cmdk-button");
-    const header = document.querySelector("[data-header]");
-    const nav = document.querySelector("[data-nav]");
-    const mobileBtn = document.getElementById("mobile-menu-btn");
-    const mobileMenu = document.getElementById("mobile-menu");
-    const mobileOverlay = document.getElementById("mobile-menu-overlay");
+    const header = document.querySelector<HTMLElement>("[data-header]");
+    const nav = document.querySelector<HTMLElement>("[data-nav]");
+    if (!header || !nav) return;
+
+    const normalizePath = (path: string) => {
+      if (!path) return "/";
+      return path !== "/" && path.endsWith("/") ? path.slice(0, -1) : path;
+    };
+
+    const computeActive = (href: string) => {
+      const url = new URL(href, window.location.origin);
+      const currentPath = normalizePath(window.location.pathname);
+      const itemPath = normalizePath(url.pathname);
+
+      if (url.hash) {
+        const isProjectsHash = url.hash === "#projects-list-start";
+        return (
+          currentPath === "/" &&
+          (window.location.hash === url.hash ||
+            (isProjectsHash && window.location.hash.startsWith("#project-")))
+        );
+      }
+
+      if (itemPath === "/") return currentPath === "/" && !window.location.hash;
+      return currentPath === itemPath || currentPath.startsWith(itemPath + "/");
+    };
+
+    const updateActiveStates = () => {
+      document
+        .querySelectorAll<HTMLAnchorElement>("[data-nav-link], [data-nav-link-mobile]")
+        .forEach((link) => {
+          const active = computeActive(link.getAttribute("href") || "");
+          if (active) {
+            link.setAttribute("aria-current", "page");
+          } else {
+            link.removeAttribute("aria-current");
+          }
+          link.classList.toggle("is-active", active);
+        });
+    };
+
+    const refreshSections = () => {
+      sections = Array.from(document.querySelectorAll<HTMLElement>(sectionSelector));
+    };
+
+    const updateSections = () => {
+      if (sectionTicking || !sections.length) return;
+      sectionTicking = true;
+      requestAnimationFrame(() => {
+        const scrollPos = window.scrollY + 100;
+
+        for (const section of sections) {
+          const id = section.id;
+          if (
+            id &&
+            scrollPos >= section.offsetTop &&
+            scrollPos < section.offsetTop + section.offsetHeight
+          ) {
+            const newHash = `#${id}`;
+            if (window.location.hash !== newHash) {
+              history.replaceState(null, "", newHash);
+              updateActiveStates();
+            }
+            break;
+          }
+        }
+
+        sectionTicking = false;
+      });
+    };
+
+    refreshSections();
+    updateActiveStates();
+
+    // Header/footer are persisted across Astro navigations. Initialize their
+    // global listeners once, while refreshing page-specific sections above.
+    if (header.dataset.initialized === "true") return;
+    header.dataset.initialized = "true";
 
     const open = () => {
       window.dispatchEvent(new CustomEvent("open-command-palette"));
     };
 
-    btn?.addEventListener("click", open);
+    document.getElementById("cmdk-button")?.addEventListener("click", open);
 
-    const onKey = (e: KeyboardEvent) => {
-      const hasKey = e.key?.toLowerCase() === "k";
-      if ((e.metaKey && hasKey) || (e.ctrlKey && hasKey)) {
-        e.preventDefault();
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
         open();
       }
     };
-
     window.addEventListener("keydown", onKey, { passive: false });
 
-    // Scroll effect - add shadow on scroll
-    if (header && nav && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      const onScroll = () => {
-        const scrolled = window.pageYOffset > 50;
-        nav.classList.toggle("is-scrolled", scrolled);
-      };
-
-      window.addEventListener("scroll", onScroll, { passive: true });
-      onScroll();
-    }
-
-    const normalizePath = (p: string) => {
-      if (!p) return "/";
-      return p !== "/" && p.endsWith("/") ? p.slice(0, -1) : p;
+    const onScroll = () => {
+      nav.classList.toggle("is-scrolled", window.scrollY > 50);
+      updateSections();
     };
-
-    const computeActive = (href: string) => {
-      const u = new URL(href, window.location.origin);
-      const currentPath = normalizePath(window.location.pathname);
-      const itemPath = normalizePath(u.pathname);
-      const hasHash = !!u.hash;
-
-      if (hasHash) {
-        return currentPath === "/" && window.location.hash === u.hash;
-      }
-
-      if (itemPath === "/") return currentPath === "/";
-      return currentPath === itemPath || currentPath.startsWith(itemPath + "/");
-    };
-
-    const updateActiveStates = () => {
-      const links = document.querySelectorAll("[data-nav-link], [data-nav-link-mobile]");
-      links.forEach((link) => {
-        if (!(link instanceof HTMLElement)) return;
-
-        const href = link.getAttribute("href") || "";
-        const active = computeActive(href);
-
-        if (active) {
-          link.setAttribute("aria-current", "page");
-          link.classList.add("is-active");
-        } else {
-          link.removeAttribute("aria-current");
-          link.classList.remove("is-active");
-        }
-      });
-    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
 
     window.addEventListener("hashchange", updateActiveStates);
+    document.addEventListener("astro:after-swap", refreshSections);
 
-    let ticking = false;
-    const onScrollForSections = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const sections = document.querySelectorAll("[id]");
-          const scrollPos = window.pageYOffset + 100;
+    const mobileBtn = document.getElementById("mobile-menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const mobileOverlay = document.getElementById("mobile-menu-overlay");
 
-          sections.forEach((section) => {
-            const top = (section as HTMLElement).offsetTop;
-            const height = (section as HTMLElement).offsetHeight;
-            const id = section.getAttribute("id");
-
-            if (scrollPos >= top && scrollPos < top + height) {
-              const newHash = `#${id}`;
-              if (window.location.hash !== newHash) {
-                history.replaceState(null, "", newHash);
-                updateActiveStates();
-              }
-            }
-          });
-
-          ticking = false;
-        });
-
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("scroll", onScrollForSections, { passive: true });
-    updateActiveStates();
-
-    // Mobile menu toggle
     if (mobileBtn && mobileMenu && mobileOverlay) {
       let isOpen = false;
-
-      const bar1 = mobileBtn.querySelector("[data-bar-1]");
-      const bar2 = mobileBtn.querySelector("[data-bar-2]");
-      const bar3 = mobileBtn.querySelector("[data-bar-3]");
-
       const toggleMenu = () => {
         isOpen = !isOpen;
-
-        mobileBtn.setAttribute("aria-expanded", isOpen.toString());
-        mobileMenu.setAttribute("aria-hidden", (!isOpen).toString());
-        mobileOverlay.setAttribute("aria-hidden", (!isOpen).toString());
-
-        if (isOpen) {
-          mobileMenu.classList.add("is-open");
-          mobileOverlay.classList.add("is-open");
-          document.body.style.overflow = "hidden";
-
-          if (bar1 && bar2 && bar3) {
-            gsap.to(bar1, { rotation: 45, y: 6, duration: 0.3, ease: "power2.out" });
-            gsap.to(bar2, { opacity: 0, duration: 0.2 });
-            gsap.to(bar3, { rotation: -45, y: -6, duration: 0.3, ease: "power2.out" });
-          }
-        } else {
-          mobileMenu.classList.remove("is-open");
-          mobileOverlay.classList.remove("is-open");
-          document.body.style.overflow = "";
-
-          if (bar1 && bar2 && bar3) {
-            gsap.to(bar1, { rotation: 0, y: 0, duration: 0.3, ease: "power2.out" });
-            gsap.to(bar2, { opacity: 1, duration: 0.2 });
-            gsap.to(bar3, { rotation: 0, y: 0, duration: 0.3, ease: "power2.out" });
-          }
-        }
+        mobileBtn.setAttribute("aria-expanded", String(isOpen));
+        mobileMenu.setAttribute("aria-hidden", String(!isOpen));
+        mobileOverlay.setAttribute("aria-hidden", String(!isOpen));
+        mobileBtn.classList.toggle("is-open", isOpen);
+        mobileMenu.classList.toggle("is-open", isOpen);
+        mobileOverlay.classList.toggle("is-open", isOpen);
+        document.body.style.overflow = isOpen ? "hidden" : "";
       };
 
       mobileBtn.addEventListener("click", toggleMenu);
       mobileOverlay.addEventListener("click", toggleMenu);
-
-      const mobileLinks = mobileMenu.querySelectorAll("a");
-      mobileLinks.forEach((link) => {
+      mobileMenu.querySelectorAll("a").forEach((link) => {
         link.addEventListener("click", () => {
-          if (isOpen) {
-            toggleMenu();
-          }
+          if (isOpen) toggleMenu();
         });
       });
     }
 
-    // Magnetic button effect
-    const magneticButtons = document.querySelectorAll("[data-magnetic]");
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (!prefersReduced) {
-      magneticButtons.forEach((btn) => {
-        if (!(btn instanceof HTMLElement)) return;
-
-        btn.addEventListener("mouseenter", () => {
-          gsap.to(btn, { scale: 1.05, duration: 0.3, ease: "power2.out" });
-        });
-
-        btn.addEventListener("mousemove", (e: MouseEvent) => {
-          const rect = btn.getBoundingClientRect();
-          const cx = rect.left + rect.width / 2;
-          const cy = rect.top + rect.height / 2;
-          const x = (e.clientX - cx) / 8;
-          const y = (e.clientY - cy) / 8;
-
-          gsap.to(btn, {
-            x: x,
-            y: y,
-            duration: 0.3,
-            ease: "power2.out",
-          });
-        });
-
-        btn.addEventListener("mouseleave", () => {
-          gsap.to(btn, {
-            x: 0,
-            y: 0,
-            scale: 1,
-            duration: 0.4,
-            ease: "power2.out",
-          });
-        });
-      });
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // Scope this to the header so Jumbo's buttons are not initialized twice.
+      attachMagnetic(header, 8);
     }
   });
 </script>
@@ -333,7 +277,6 @@ const isActive = (itemUrl: string) => {
   .nav-pill.is-scrolled {
     box-shadow: var(--shadow-md);
     background: var(--wc-parchment);
-    backdrop-filter: blur(8px);
   }
 
   /* Navigation links */
@@ -398,7 +341,8 @@ const isActive = (itemUrl: string) => {
     transition:
       color var(--duration-fast) var(--ease-smooth),
       background var(--duration-fast) var(--ease-smooth),
-      border-color var(--duration-fast) var(--ease-smooth);
+      border-color var(--duration-fast) var(--ease-smooth),
+      transform var(--duration-fast) var(--ease-smooth);
   }
 
   .search-btn:hover {
@@ -438,8 +382,20 @@ const isActive = (itemUrl: string) => {
     height: 2px;
     background: var(--wc-bark);
     border-radius: 1px;
-    transition: all var(--duration-normal) var(--ease-smooth);
+    transition:
+      transform var(--duration-normal) var(--ease-smooth),
+      opacity var(--duration-normal) var(--ease-smooth);
     transform-origin: center;
+  }
+
+  .mobile-menu-btn.is-open .bar[data-bar-1] {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .mobile-menu-btn.is-open .bar[data-bar-2] {
+    opacity: 0;
+  }
+  .mobile-menu-btn.is-open .bar[data-bar-3] {
+    transform: translateY(-7px) rotate(-45deg);
   }
 
   /* Mobile menu panel */
@@ -490,7 +446,6 @@ const isActive = (itemUrl: string) => {
     position: fixed;
     inset: 0;
     background: rgba(44, 36, 28, 0.3);
-    backdrop-filter: blur(4px);
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--duration-normal) var(--ease-smooth);

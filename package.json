@@ -7,7 +7,6 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "start:prod": "node ./dist/server/entry.mjs",
     "astro": "astro",
     "lint": "eslint . --ext .js,.ts,.astro",
     "lint:fix": "eslint . --ext .js,.ts,.astro --fix",
@@ -19,30 +18,19 @@
   "dependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/mdx": "^5.0.4",
-    "@astrojs/node": "^10.0.6",
     "@tailwindcss/vite": "^4.2.4",
     "astro": "^6.1.10",
-    "gsap": "^3.15.0",
-    "luxon": "^3.7.2",
     "typescript": "^6.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@tailwindcss/postcss": "^4.2.4",
-    "@tailwindcss/typography": "^0.5.19",
-    "@types/luxon": "^3.7.1",
     "@typescript-eslint/eslint-plugin": "^8.59.1",
     "@typescript-eslint/parser": "^8.59.1",
     "astro-eslint-parser": "^1.4.0",
-    "autoprefixer": "^10.5.0",
     "eslint": "^10.2.1",
     "eslint-plugin-astro": "^1.7.0",
-    "postcss": "^8.5.12",
-    "postcss-html": "^1.8.1",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
-    "sass-embedded": "^1.99.0",
-    "stylelint-config-html": "^1.1.0",
     "tailwindcss": "^4.2.4"
   },
   "overrides": {

@@ -17,11 +17,11 @@ const { skills, compact = false } = Astro.props;
   ]}
 >
   {
-    skills.map((s) => (
+    skills.map((s, i) => (
       <div
         data-chip
         title={s.name}
-        style={`--c:${s.color}`}
+        style={`--c:${s.color};--i:${i}`}
         class:list={["skill-chip", compact ? "skill-chip--compact" : ""]}
       >
         <span class="skill-dot" aria-hidden="true" />
@@ -113,6 +113,36 @@ const { skills, compact = false } = Astro.props;
     pointer-events: none;
   }
 
+  /* Entrance stagger + hover sheen, pure CSS (replaces dynamic GSAP import) */
+  @media (prefers-reduced-motion: no-preference) {
+    .skill-chip {
+      animation: chip-in 0.4s var(--ease-out) backwards;
+      animation-delay: calc(var(--i, 0) * 60ms);
+    }
+    .skill-chip:hover .skill-sheen {
+      animation: sheen-sweep 0.5s var(--ease-out);
+    }
+    @keyframes chip-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+    }
+    @keyframes sheen-sweep {
+      from {
+        transform: translateX(-120%) skewX(-20deg);
+        opacity: 0;
+      }
+      40% {
+        opacity: 1;
+      }
+      to {
+        transform: translateX(320%) skewX(-20deg);
+        opacity: 0;
+      }
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     [data-skill-chips] * {
       animation: none !important;
@@ -120,49 +150,3 @@ const { skills, compact = false } = Astro.props;
     }
   }
 </style>
-
-<script>
-  document.addEventListener("astro:page-load", async () => {
-    const roots = document.querySelectorAll("[data-skill-chips]");
-    if (!roots.length) return;
-
-    const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
-
-    const { gsap } = await import("gsap");
-
-    roots.forEach((root) => {
-      const chips = Array.from(root.querySelectorAll("[data-chip]")) as Array<HTMLElement>;
-
-      gsap.from(chips, {
-        y: 8,
-        opacity: 0,
-        duration: 0.4,
-        stagger: 0.06,
-        ease: "power2.out",
-      });
-
-      chips.forEach((chip) => {
-        const sheen = chip.querySelector(".skill-sheen");
-
-        chip.addEventListener("mouseenter", () => {
-          if (sheen) {
-            gsap.fromTo(
-              sheen,
-              { x: "-50%", opacity: 0 },
-              {
-                x: "150%",
-                opacity: 1,
-                duration: 0.5,
-                ease: "power2.out",
-                onComplete: () => {
-                  gsap.to(sheen, { opacity: 0, duration: 0.15 });
-                },
-              }
-            );
-          }
-        });
-      });
-    });
-  });
-</script>

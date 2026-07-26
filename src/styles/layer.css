@@ -2,9 +2,6 @@
    WARM CRAFT - Tailwind Layers & Utilities
    ========================================================================== */
 
-@import 'tailwindcss/theme';
-@plugin "@tailwindcss/typography";
-
 /* -------------------------------------------------------------------------
    BASE LAYER
    ------------------------------------------------------------------------- */
@@ -16,26 +13,34 @@
   }
 
   body {
-    @apply min-h-[95vh] m-0 flex flex-col overflow-y-scroll;
-    background: var(--color-bg);
+    min-height: 95vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    background:
+      radial-gradient(
+        600px 600px at 15% 20%,
+        color-mix(in oklab, var(--wc-accent-muted) 15%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        500px 500px at 85% 15%,
+        color-mix(in oklab, var(--wc-olive-soft) 11%, transparent),
+        transparent 55%
+      ),
+      radial-gradient(
+        700px 700px at 50% 95%,
+        color-mix(in oklab, var(--wc-sand) 18%, transparent),
+        transparent 60%
+      ),
+      var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-body);
     font-size: var(--text-body);
     line-height: var(--leading-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Paper texture overlay */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: var(--texture-paper);
-    opacity: var(--texture-opacity);
-    pointer-events: none;
-    z-index: 9999;
-    mix-blend-mode: multiply;
   }
 
   h1,
@@ -135,51 +140,6 @@
   }
 
   /* -------------------------------------------------------------------------
-     CARD STYLES - Notebook / Index Card Aesthetic
-     ------------------------------------------------------------------------- */
-
-  .card {
-    background: var(--wc-cream);
-    border: 1px solid var(--wc-sand);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    position: relative;
-  }
-
-  .card-paper {
-    background: linear-gradient(
-      180deg,
-      var(--wc-cream) 0%,
-      var(--wc-parchment) 100%
-    );
-    border: 1px solid var(--wc-sand);
-    border-radius: var(--radius-lg);
-    box-shadow:
-      var(--shadow-md),
-      inset 0 1px 0 rgba(255, 255, 255, 0.5);
-    position: relative;
-  }
-
-  /* Slightly rotated cards for that handmade feel */
-  .card-tilted {
-    transform: rotate(-1deg);
-    transition: transform var(--duration-normal) var(--ease-bounce);
-  }
-  .card-tilted:hover {
-    transform: rotate(0deg) translateY(-4px);
-  }
-
-  .card-hover {
-    transition:
-      transform var(--duration-normal) var(--ease-bounce),
-      box-shadow var(--duration-normal) var(--ease-smooth);
-  }
-  .card-hover:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow-lift);
-  }
-
-  /* -------------------------------------------------------------------------
      BUTTON STYLES
      ------------------------------------------------------------------------- */
 
@@ -220,17 +180,6 @@
     transform: translateY(-2px);
   }
 
-  .btn-secondary {
-    background: var(--wc-olive);
-    color: var(--wc-parchment);
-    border-color: var(--wc-olive-deep);
-    box-shadow: var(--shadow-sm);
-  }
-  .btn-secondary:hover {
-    background: var(--wc-olive-deep);
-    transform: translateY(-2px);
-  }
-
   .btn-ghost {
     background: transparent;
     color: var(--wc-bark);
@@ -239,16 +188,6 @@
   .btn-ghost:hover {
     background: var(--wc-cream);
     border-color: var(--wc-clay);
-  }
-
-  .btn-outline {
-    background: transparent;
-    color: var(--wc-accent);
-    border-color: var(--wc-accent);
-  }
-  .btn-outline:hover {
-    background: var(--wc-accent);
-    color: var(--wc-parchment);
   }
 
   /* -------------------------------------------------------------------------
@@ -275,57 +214,6 @@
   .stamp-olive {
     color: var(--wc-olive-deep);
     border-color: var(--wc-olive);
-  }
-
-  .washi-tape {
-    position: absolute;
-    width: 60px;
-    height: 20px;
-    background: var(--wc-accent-muted);
-    opacity: 0.7;
-    transform: rotate(-12deg);
-  }
-
-  .washi-tape-olive {
-    background: var(--wc-olive-soft);
-  }
-
-  /* -------------------------------------------------------------------------
-     LINK STYLES
-     ------------------------------------------------------------------------- */
-
-  .link-underline {
-    text-decoration: underline;
-    text-decoration-style: wavy;
-    text-decoration-color: var(--wc-accent-muted);
-    text-underline-offset: 4px;
-    color: var(--wc-bark);
-    transition:
-      color var(--duration-fast) var(--ease-smooth),
-      text-decoration-color var(--duration-fast) var(--ease-smooth);
-  }
-  .link-underline:hover {
-    color: var(--wc-accent);
-    text-decoration-color: var(--wc-accent);
-  }
-
-  .link-subtle {
-    text-decoration: none;
-    color: var(--wc-bark);
-    transition: color var(--duration-fast) var(--ease-smooth);
-  }
-  .link-subtle:hover {
-    color: var(--wc-accent);
-  }
-
-  /* -------------------------------------------------------------------------
-     GLASS / FROSTED EFFECT (warm-tinted)
-     ------------------------------------------------------------------------- */
-
-  .glass {
-    backdrop-filter: saturate(120%) blur(12px);
-    background: color-mix(in oklab, var(--wc-parchment) 85%, transparent);
-    border: 1px solid color-mix(in oklab, var(--wc-sand) 60%, transparent);
   }
 
   /* -------------------------------------------------------------------------
@@ -362,104 +250,6 @@
     white-space: nowrap;
     border-width: 0;
   }
-
-  /* -------------------------------------------------------------------------
-     TYPOGRAPHY UTILITIES
-     ------------------------------------------------------------------------- */
-
-  .font-display {
-    font-family: var(--font-display);
-  }
-
-  .font-body {
-    font-family: var(--font-body);
-  }
-
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  /* Handwritten-style number */
-  .number-handwritten {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 1.5em;
-    color: var(--wc-accent);
-    line-height: 1;
-  }
-
-  /* -------------------------------------------------------------------------
-     ANIMATION UTILITIES
-     ------------------------------------------------------------------------- */
-
-  .animate-wiggle {
-    animation: wiggle 3s ease-in-out infinite;
-  }
-
-  .animate-float {
-    animation: float 4s ease-in-out infinite;
-  }
-}
-
-/* -------------------------------------------------------------------------
-   KEYFRAME ANIMATIONS
-   ------------------------------------------------------------------------- */
-
-@keyframes wiggle {
-  0%,
-  100% {
-    transform: rotate(-1deg);
-  }
-  50% {
-    transform: rotate(1deg);
-  }
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-@keyframes grow-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95) translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes stamp-in {
-  0% {
-    transform: scale(1.3) rotate(-5deg);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(0.95) rotate(2deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1) rotate(-2deg);
-    opacity: 1;
-  }
-}
-
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* -------------------------------------------------------------------------
@@ -467,22 +257,87 @@
    ------------------------------------------------------------------------- */
 
 @layer components {
+  /* Deliberately small article surface instead of shipping the full
+     Tailwind Typography plugin for a handful of project descriptions. */
   .prose-article {
-    @apply prose max-w-none;
-    --tw-prose-body: var(--wc-ink);
-    --tw-prose-headings: var(--wc-ink);
-    --tw-prose-links: var(--wc-accent);
-    --tw-prose-bold: var(--wc-espresso);
-    --tw-prose-counters: var(--wc-bark);
-    --tw-prose-bullets: var(--wc-accent);
-    --tw-prose-hr: var(--wc-sand);
-    --tw-prose-quotes: var(--wc-bark);
-    --tw-prose-quote-borders: var(--wc-accent);
-    --tw-prose-captions: var(--wc-bark);
-    --tw-prose-code: var(--wc-espresso);
-    --tw-prose-pre-code: var(--wc-cream);
-    --tw-prose-pre-bg: var(--wc-ink);
-    --tw-prose-th-borders: var(--wc-sand);
-    --tw-prose-td-borders: var(--wc-sand);
+    max-width: none;
+    color: var(--wc-ink);
+    line-height: var(--leading-body);
+  }
+
+  .prose-article p {
+    margin: 1.25em 0;
+  }
+
+  .prose-article a {
+    color: var(--wc-accent);
+    font-weight: 500;
+    text-decoration: underline;
+  }
+
+  .prose-article strong {
+    color: var(--wc-espresso);
+    font-weight: 600;
+  }
+
+  .prose-article ul,
+  .prose-article ol {
+    margin: 1.25em 0;
+    padding-inline-start: 1.625em;
+  }
+
+  .prose-article ul {
+    list-style: disc;
+  }
+
+  .prose-article ol {
+    list-style: decimal;
+  }
+
+  .prose-article li {
+    margin: 0.5em 0;
+    padding-inline-start: 0.375em;
+  }
+
+  .prose-article li::marker {
+    color: var(--wc-accent);
+  }
+
+  .prose-article h2,
+  .prose-article h3,
+  .prose-article h4 {
+    color: var(--wc-ink);
+    margin-top: 1.6em;
+    margin-bottom: 0.6em;
+  }
+
+  .prose-article blockquote {
+    color: var(--wc-bark);
+    border-inline-start: 0.25rem solid var(--wc-accent);
+    margin: 1.6em 0;
+    padding-inline-start: 1em;
+    font-style: italic;
+  }
+
+  .prose-article code {
+    color: var(--wc-espresso);
+    font-size: 0.875em;
+    font-weight: 600;
+  }
+
+  .prose-article pre {
+    color: var(--wc-cream);
+    background: var(--wc-ink);
+    padding: 0.857em 1.142em;
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+    font-size: 0.875em;
+    line-height: 1.714;
+  }
+
+  .prose-article pre code {
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
   }
 }

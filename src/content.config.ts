@@ -31,16 +31,6 @@ const projectCollection = defineCollection({
   }),
 });
 
-const pagesCollection = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/pages" }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string().optional(),
-    slug: z.string(),
-  }),
-});
-
 export const collections = {
   project: projectCollection,
-  pages: pagesCollection,
 };

@@ -1,5 +1,7 @@
 ---
 import { type CollectionEntry, render } from "astro:content";
+import type { ImageMetadata } from "astro";
+import { Picture } from "astro:assets";
 import { formatDate } from "../../utils/time";
 import SkillChip from "../About/SkillChip.astro";
 
@@ -18,11 +20,29 @@ const { data } = project;
 const { name, img, timeline } = data;
 const { Content } = await render(project);
 
-const optimizedImages =
-  img?.map((image: ImageType) => {
-    const needsSlash = typeof image.src === "string" && !image.src.startsWith("/");
-    return { ...image, src: needsSlash ? `/${image.src}` : image.src };
-  }) || [];
+// Raster images live in src/assets so Astro can optimize them (AVIF/WebP +
+// responsive srcset). Frontmatter references them as "/images/<project>/<file>".
+const projectImages = import.meta.glob("../../assets/images/projects/**/*.{png,jpg,jpeg,webp}", {
+  eager: true,
+  import: "default",
+}) as Record<string, ImageMetadata>;
+
+const imageMap = new Map<string, ImageMetadata>();
+for (const [key, meta] of Object.entries(projectImages)) {
+  imageMap.set(key.split("projects/")[1], meta);
+}
+
+type ResolvedImage = { alt: string; asset?: ImageMetadata; url?: string };
+
+const resolvedImages: ResolvedImage[] = (img ?? []).map((image: ImageType, i: number) => {
+  const src = image.src.startsWith("/") ? image.src : `/${image.src}`;
+  const asset = imageMap.get(src.replace(/^\/images\//, ""));
+  return {
+    alt: image.alt || `${name} screenshot ${i + 1}`,
+    asset,
+    url: asset ? undefined : src,
+  };
+});
 
 const techStackFromData = data.techStack || [];
 
@@ -93,18 +113,33 @@ const projectNumber = String(index + 1).padStart(2, "0");
 
       <div class="project-grid">
         {
-          optimizedImages.length > 0 && (
+          resolvedImages.length > 0 && (
             <div class="project-images" data-project-images>
-              {optimizedImages.map((image: ImageType, imgIndex: number) => (
+              {resolvedImages.map((image, imgIndex) => (
                 <div class="image-frame" data-project-image-wrapper data-image-index={imgIndex}>
-                  <img
-                    src={typeof image.src === "string" ? image.src : ""}
-                    alt={image.alt || `${name} screenshot ${imgIndex + 1}`}
-                    loading="lazy"
-                    decoding="async"
-                    class="project-image"
-                    data-project-image
-                  />
+                  {image.asset ? (
+                    <Picture
+                      src={image.asset}
+                      widths={[320, 640, 960]}
+                      sizes="(min-width: 768px) 480px, calc(100vw - 3rem)"
+                      formats={["avif"]}
+                      fallbackFormat="webp"
+                      alt={image.alt}
+                      loading="lazy"
+                      decoding="async"
+                      class="project-image"
+                      data-project-image
+                    />
+                  ) : (
+                    <img
+                      src={image.url}
+                      alt={image.alt}
+                      loading="lazy"
+                      decoding="async"
+                      class="project-image"
+                      data-project-image
+                    />
+                  )}
                   <div class="image-overlay" data-image-overlay />
                 </div>
               ))}
@@ -115,7 +150,7 @@ const projectNumber = String(index + 1).padStart(2, "0");
         {
           techStack.length > 0 && (
             <div
-              class={`project-tech ${optimizedImages.length === 0 ? "full-width" : ""}`}
+              class={`project-tech ${resolvedImages.length === 0 ? "full-width" : ""}`}
               data-tech-section
             >
               <h3 class="tech-label">Built with</h3>
@@ -132,205 +167,10 @@ const projectNumber = String(index + 1).padStart(2, "0");
 </article>
 
 <script>
-  import { gsap } from "gsap";
-  import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-  gsap.registerPlugin(ScrollTrigger);
+  import { observeReveal } from "../../utils/reveal";
 
   document.addEventListener("astro:page-load", () => {
-    const projectItems = document.querySelectorAll("[data-project-item]");
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (prefersReducedMotion) {
-      return;
-    }
-
-    projectItems.forEach((item) => {
-      const header = item.querySelector("[data-project-header]");
-      const images = item.querySelectorAll("[data-project-image-wrapper]");
-      const description = item.querySelector("[data-project-description]");
-      const cardInner = item.querySelector(".card-inner");
-      const projectNumber = item.querySelector(".project-number");
-
-      const isMobile = window.matchMedia("(max-width: 767px)").matches;
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: item,
-          start: "top 85%",
-          end: "bottom 20%",
-          toggleActions: "play none none reverse",
-        },
-      });
-
-      // Card entrance with bounce
-      if (cardInner) {
-        tl.fromTo(
-          cardInner,
-          { opacity: 0, y: 40, scale: 0.97 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "back.out(1.4)" },
-          0
-        );
-
-        // On mobile, straighten card when in view
-        if (isMobile && cardInner instanceof HTMLElement) {
-          const cardRotation = getComputedStyle(cardInner)
-            .getPropertyValue("--card-rotation")
-            .trim();
-          const rotationValue = parseFloat(cardRotation) || 0;
-
-          ScrollTrigger.create({
-            trigger: item,
-            start: "top 70%",
-            end: "bottom 30%",
-            onEnter: () => {
-              gsap.to(cardInner, {
-                rotation: 0,
-                y: -4,
-                duration: 0.4,
-                ease: "power2.out",
-              });
-            },
-            onLeave: () => {
-              gsap.to(cardInner, {
-                rotation: rotationValue,
-                y: 0,
-                duration: 0.4,
-                ease: "power2.out",
-              });
-            },
-            onEnterBack: () => {
-              gsap.to(cardInner, {
-                rotation: 0,
-                y: -4,
-                duration: 0.4,
-                ease: "power2.out",
-              });
-            },
-            onLeaveBack: () => {
-              gsap.to(cardInner, {
-                rotation: rotationValue,
-                y: 0,
-                duration: 0.4,
-                ease: "power2.out",
-              });
-            },
-          });
-        }
-      }
-
-      // Desktop: straighten on hover, rotate back on leave
-      if (!isMobile) {
-        const cardInner = item.querySelector(".card-inner") as HTMLElement;
-        if (cardInner) {
-          const cardRotation = getComputedStyle(item as Element)
-            .getPropertyValue("--card-rotation")
-            .trim();
-          const rotationValue = parseFloat(cardRotation) || 0;
-
-          cardInner.addEventListener("mouseenter", () => {
-            gsap.to(cardInner, {
-              rotation: 0,
-              y: -6,
-              duration: 0.35,
-              ease: "power2.out",
-            });
-          });
-
-          cardInner.addEventListener("mouseleave", () => {
-            gsap.to(cardInner, {
-              rotation: rotationValue,
-              y: 0,
-              duration: 0.35,
-              ease: "power2.out",
-            });
-          });
-
-          // Also straighten on focus for accessibility
-          cardInner.addEventListener("focusin", () => {
-            gsap.to(cardInner, {
-              rotation: 0,
-              y: -6,
-              duration: 0.35,
-              ease: "power2.out",
-            });
-          });
-
-          cardInner.addEventListener("focusout", () => {
-            gsap.to(cardInner, {
-              rotation: rotationValue,
-              y: 0,
-              duration: 0.35,
-              ease: "power2.out",
-            });
-          });
-        }
-      }
-
-      // Project number "stamps" in
-      if (projectNumber) {
-        tl.fromTo(
-          projectNumber,
-          { opacity: 0, scale: 1.4, rotation: -10 },
-          { opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2)" },
-          0.3
-        );
-      }
-
-      // Header elements stagger in
-      if (header) {
-        tl.fromTo(
-          header.children,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" },
-          0.4
-        );
-      }
-
-      // Description fades in
-      if (description) {
-        tl.fromTo(
-          description,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
-          0.5
-        );
-      }
-
-      // Images slide up with stagger
-      if (images.length > 0) {
-        images.forEach((imgWrapper, imgIndex) => {
-          const img = imgWrapper.querySelector("[data-project-image]");
-          const overlay = imgWrapper.querySelector("[data-image-overlay]");
-
-          tl.fromTo(
-            imgWrapper,
-            { opacity: 0, y: 30, rotation: imgIndex % 2 === 0 ? -2 : 2 },
-            {
-              opacity: 1,
-              y: 0,
-              rotation: 0,
-              duration: 0.6,
-              ease: "power3.out",
-            },
-            0.6 + imgIndex * 0.1
-          );
-
-          // Hover interactions
-          if (img && overlay) {
-            imgWrapper.addEventListener("mouseenter", () => {
-              gsap.to(img, { scale: 1.04, duration: 0.4, ease: "power2.out" });
-              gsap.to(overlay, { opacity: 1, duration: 0.3 });
-            });
-
-            imgWrapper.addEventListener("mouseleave", () => {
-              gsap.to(img, { scale: 1, duration: 0.4, ease: "power2.out" });
-              gsap.to(overlay, { opacity: 0, duration: 0.3 });
-            });
-          }
-        });
-      }
-    });
+    observeReveal("[data-project-item]");
   });
 </script>
 
@@ -492,6 +332,14 @@ const projectNumber = String(index + 1).padStart(2, "0");
     border-color: var(--wc-accent-muted);
   }
 
+  .image-frame:hover .project-image {
+    transform: scale(1.04);
+  }
+
+  .image-frame:hover .image-overlay {
+    opacity: 1;
+  }
+
   .project-image {
     width: 100%;
     height: auto;
@@ -547,7 +395,6 @@ const projectNumber = String(index + 1).padStart(2, "0");
   @media (max-width: 767px) {
     .card-inner {
       padding: var(--space-m);
-      /* Keep the rotation on mobile - will straighten on scroll */
     }
 
     .card-inner:hover {
@@ -562,6 +409,72 @@ const projectNumber = String(index + 1).padStart(2, "0");
 
     .card-tape-top {
       display: none;
+    }
+  }
+
+  /* Scroll-reveal animations via CSS + IntersectionObserver. The card
+     wrapper animates so inner rotation and hover transforms are never locked
+     by a finished animation. */
+  @media (prefers-reduced-motion: no-preference) {
+    .project-card,
+    .project-card .project-number,
+    .project-card .project-header,
+    .project-card .project-description,
+    .project-card .image-frame {
+      opacity: 0;
+    }
+
+    .project-card.in-view {
+      animation: card-rise 0.7s var(--ease-out) forwards;
+    }
+    .project-card.in-view .project-number {
+      animation: number-stamp 0.5s var(--ease-bounce) 0.3s forwards;
+    }
+    .project-card.in-view .project-header {
+      animation: reveal-up 0.6s var(--ease-out) 0.4s forwards;
+    }
+    .project-card.in-view .project-description {
+      animation: reveal-up 0.6s var(--ease-out) 0.5s forwards;
+    }
+    .project-card.in-view .image-frame {
+      animation: reveal-up 0.6s var(--ease-out) 0.6s forwards;
+    }
+    .project-card.in-view .image-frame:nth-child(2) {
+      animation-delay: 0.7s;
+    }
+    .project-card.in-view .image-frame:nth-child(3) {
+      animation-delay: 0.8s;
+    }
+
+    @keyframes card-rise {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+    @keyframes number-stamp {
+      from {
+        opacity: 0;
+        transform: scale(1.4) rotate(-10deg);
+      }
+      to {
+        opacity: 0.3;
+        transform: none;
+      }
+    }
+    @keyframes reveal-up {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
     }
   }
 </style>

@@ -113,9 +113,14 @@ const email = "joeri.waldemar@gmail.com";
 
         <div class="built-with">
           <span>Crafted with</span>
-          <span class="tech-rotator" data-tech-rotator>
-            <span class="tech-current" data-tech-current>Astro</span>
-            <span class="tech-next" data-tech-next>GSAP</span>
+          <span class="tech-rotator">
+            <span class="tech-track">
+              <span>Astro</span>
+              <span>TypeScript</span>
+              <span>Tailwind</span>
+              <span>care</span>
+              <span>Astro</span>
+            </span>
           </span>
         </div>
       </div>
@@ -127,9 +132,11 @@ const email = "joeri.waldemar@gmail.com";
 </footer>
 
 <script>
-  import { gsap } from "gsap";
-
   document.addEventListener("astro:page-load", () => {
+    const footer = document.querySelector<HTMLElement>("[data-footer]");
+    if (!footer || footer.dataset.initialized === "true") return;
+    footer.dataset.initialized = "true";
+
     const copyBtn = document.getElementById("copy-email");
     const backBtn = document.getElementById("back-to-top");
     const toast = document.getElementById("footer-toast");
@@ -159,75 +166,6 @@ const email = "joeri.waldemar@gmail.com";
         behavior: prefersReduced ? "auto" : "smooth",
       });
     });
-
-    // Tech rotator animation
-    if (!prefersReduced) {
-      const rotator = document.querySelector("[data-tech-rotator]");
-      const currentSpan = document.querySelector("[data-tech-current]");
-      const nextSpan = document.querySelector("[data-tech-next]");
-
-      if (rotator && currentSpan && nextSpan) {
-        const techs = ["Astro", "GSAP", "Tailwind", "care"];
-        let currentIndex = 0;
-
-        const rotateTech = () => {
-          const nextIndex = (currentIndex + 1) % techs.length;
-
-          nextSpan.textContent = techs[nextIndex];
-
-          gsap.to(currentSpan, {
-            y: -16,
-            opacity: 0,
-            duration: 0.5,
-            ease: "power2.inOut",
-          });
-
-          gsap.fromTo(
-            nextSpan,
-            { y: 16, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.5,
-              ease: "power2.inOut",
-              onComplete: () => {
-                currentSpan.textContent = techs[nextIndex];
-                gsap.set(currentSpan, { y: 0, opacity: 1 });
-                gsap.set(nextSpan, { y: 16, opacity: 0 });
-                currentIndex = nextIndex;
-              },
-            }
-          );
-        };
-
-        setInterval(rotateTech, 3500);
-      }
-    }
-
-    // Social link hover animation
-    if (!prefersReduced) {
-      const socialLinks = document.querySelectorAll("[data-social-link]");
-
-      socialLinks.forEach((link) => {
-        if (!(link instanceof HTMLElement)) return;
-
-        link.addEventListener("mouseenter", () => {
-          gsap.to(link, {
-            x: 4,
-            duration: 0.25,
-            ease: "power2.out",
-          });
-        });
-
-        link.addEventListener("mouseleave", () => {
-          gsap.to(link, {
-            x: 0,
-            duration: 0.25,
-            ease: "power2.out",
-          });
-        });
-      });
-    }
   });
 </script>
 
@@ -293,6 +231,7 @@ const email = "joeri.waldemar@gmail.com";
 
   .social-link:hover {
     color: var(--wc-accent);
+    transform: translateX(4px);
   }
 
   .social-icon {
@@ -428,24 +367,51 @@ const email = "joeri.waldemar@gmail.com";
   .tech-rotator {
     position: relative;
     display: inline-block;
-    width: 70px;
+    width: 5.6em;
     height: 20px;
     overflow: hidden;
   }
 
-  .tech-current,
-  .tech-next {
-    position: absolute;
-    inset: 0;
+  .tech-track {
+    display: flex;
+    flex-direction: column;
+    animation: tech-rotate 14s var(--ease-in-out) infinite;
+  }
+
+  .tech-track span {
+    height: 20px;
     display: flex;
     align-items: center;
     font-weight: 600;
     color: var(--wc-accent);
   }
 
-  .tech-next {
-    transform: translateY(16px);
-    opacity: 0;
+  @keyframes tech-rotate {
+    0%,
+    21% {
+      transform: translateY(0);
+    }
+    25%,
+    46% {
+      transform: translateY(-20px);
+    }
+    50%,
+    71% {
+      transform: translateY(-40px);
+    }
+    75%,
+    96% {
+      transform: translateY(-60px);
+    }
+    100% {
+      transform: translateY(-80px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tech-track {
+      animation: none;
+    }
   }
 
   /* Toast */
