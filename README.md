@@ -7,6 +7,6 @@ I'm Joeri (Waldemar), a web developer. The site showcases my projects, skills, a
 
 ## Technologies Used
 
-- [Astro](https://astro.build/): A modern static site builder
-- SCSS: For advanced styling
-- JavaScript (as little as possible): For interactive elements
+- [Astro](https://astro.build/): Static site generation
+- Tailwind CSS and plain CSS: Styling and design tokens
+- Native browser APIs: Lightweight interactions and animations

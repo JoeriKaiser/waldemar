@@ -49,19 +49,6 @@ const sortedProjects = activeProjects.sort((a, b) => a.data.order - b.data.order
   </main>
 </BaseLayout>
 
-<script>
-  document.addEventListener("astro:page-load", () => {
-    try {
-      const items = Array.from(document.querySelectorAll("[data-project-item]")).map((el) => {
-        const id = el.getAttribute("id") || "";
-        const title = el.querySelector("[data-project-title]")?.textContent || "";
-        return { name: title.trim(), url: `/#${id}` };
-      });
-      window.__PROJECTS = items;
-    } catch {}
-  });
-</script>
-
 <style>
   .projects-section {
     padding-bottom: var(--space-3xl);

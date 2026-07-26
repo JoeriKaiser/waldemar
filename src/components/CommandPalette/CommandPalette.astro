@@ -2,7 +2,7 @@
 
 ---
 
-<div id="cmdk-overlay" hidden>
+<div id="cmdk-overlay" hidden transition:persist="command-palette">
   <div id="cmdk-backdrop"></div>
   <div id="cmdk-panel" role="dialog" aria-modal="true">
     <div class="cmdk-header">
@@ -30,7 +30,6 @@
     position: absolute;
     inset: 0;
     background: rgba(44, 36, 28, 0.4);
-    backdrop-filter: blur(4px);
     opacity: 0;
     transition: opacity 180ms ease;
   }
@@ -136,86 +135,122 @@
 </style>
 
 <script>
+  type Item = { label: string; url: string; meta: string };
+
+  const staticItems: Item[] = [
+    { label: "Home", url: "/", meta: "Page" },
+    { label: "Projects", url: "/#projects-list-start", meta: "Page" },
+    { label: "About", url: "/about", meta: "Page" },
+    { label: "GitHub", url: "https://github.com/JoeriKaiser", meta: "External" },
+    { label: "LinkedIn", url: "https://www.linkedin.com/in/joeri-kaiser", meta: "External" },
+  ];
+
   document.addEventListener("astro:page-load", () => {
     const overlay = document.getElementById("cmdk-overlay");
     const backdrop = document.getElementById("cmdk-backdrop");
     const panel = document.getElementById("cmdk-panel");
-    const input = document.getElementById("cmdk-input") as HTMLInputElement;
+    const input = document.getElementById("cmdk-input") as HTMLInputElement | null;
     const list = document.getElementById("cmdk-list");
+
+    if (
+      !(overlay instanceof HTMLElement) ||
+      !(backdrop instanceof HTMLElement) ||
+      !(panel instanceof HTMLElement) ||
+      !input ||
+      !(list instanceof HTMLUListElement)
+    ) {
+      return;
+    }
+
+    const overlayElement = overlay;
+    const backdropElement = backdrop;
+    const panelElement = panel;
+
+    // The palette is persisted across Astro navigations; do not attach a
+    // second set of window/document listeners when page-load fires again.
+    if (overlayElement.dataset.initialized === "true") return;
+    overlayElement.dataset.initialized = "true";
 
     let openState = false;
     let selected = 0;
-    let items: Array<{ label: string; url: string; meta: string }> = [];
-    let prevActive: HTMLElement | null = null;
+    let items: Item[] = [];
+    let previousActive: HTMLElement | null = null;
+    let closeTimer: number | undefined;
 
-    const staticItems = [
-      { label: "Home", url: "/", meta: "Page" },
-      { label: "Projects", url: "/#projects-list-start", meta: "Page" },
-      { label: "About", url: "/about", meta: "Page" },
-      {
-        label: "GitHub",
-        url: "https://github.com/JoeriKaiser",
-        meta: "External",
-      },
-      {
-        label: "LinkedIn",
-        url: "https://www.linkedin.com/in/joeri-kaiser",
-        meta: "External",
-      },
-    ];
+    const getItems = () => {
+      const projects = Array.from(
+        document.querySelectorAll<HTMLElement>("[data-project-item]")
+      ).map((project) => ({
+        label: project.querySelector("[data-project-title]")?.textContent?.trim() || "Project",
+        url: `/#${project.id}`,
+        meta: "Project",
+      }));
+      return [...projects, ...staticItems];
+    };
 
-    const projects =
-      (window.__PROJECTS && Array.isArray(window.__PROJECTS) && window.__PROJECTS) || [];
-    const projectItems = projects.map((p) => ({
-      label: p.name,
-      url: p.url,
-      meta: "Project",
-    }));
-
-    items = [...projectItems, ...staticItems];
-
-    const render = (rows: Array<{ label: string; url: string; meta: string }>) => {
-      if (!list) return;
-      list.innerHTML = "";
-      rows.forEach((row, i) => {
-        const li = document.createElement("li");
-        li.setAttribute("role", "option");
-        li.setAttribute("aria-selected", String(i === selected));
-        li.dataset.url = row.url;
-        li.innerHTML = `<span>${row.label}</span><span class="meta">${row.meta}</span>`;
-        li.addEventListener("mousemove", () => {
-          selected = i;
-          updateSelection();
-        });
-        li.addEventListener("click", () => {
-          navigate(row.url);
-        });
-        list.appendChild(li);
-      });
+    const getRow = (target: EventTarget | null) => {
+      if (!(target instanceof Element)) return null;
+      const row = target.closest<HTMLLIElement>("#cmdk-list > li");
+      return row && list.contains(row) ? row : null;
     };
 
     const updateSelection = () => {
-      const children = Array.from(list?.children ?? []);
-      children.forEach((el, i) => {
-        el.setAttribute("aria-selected", String(i === selected));
-        if (i === selected) {
-          el.scrollIntoView({ block: "nearest" });
-        }
+      const rows = Array.from(list.children);
+      if (!rows.length) {
+        selected = 0;
+        return;
+      }
+      selected = Math.max(0, Math.min(selected, rows.length - 1));
+      rows.forEach((row, index) => {
+        row.setAttribute("aria-selected", String(index === selected));
+      });
+      rows[selected]?.scrollIntoView({ block: "nearest" });
+    };
+
+    const render = (rows: Item[]) => {
+      list.replaceChildren();
+      rows.forEach((row, index) => {
+        const item = document.createElement("li");
+        item.setAttribute("role", "option");
+        item.setAttribute("aria-selected", String(index === selected));
+        item.dataset.index = String(index);
+        item.dataset.url = row.url;
+
+        const label = document.createElement("span");
+        label.textContent = row.label;
+        const meta = document.createElement("span");
+        meta.className = "meta";
+        meta.textContent = row.meta;
+        item.append(label, meta);
+        list.appendChild(item);
       });
     };
 
-    const normalize = (s: string) => s.toLowerCase();
-    const filter = (q: string) => {
-      const n = normalize(q);
-      if (!n) {
-        return items.slice(0, 30);
-      }
-      return items.filter((it) => normalize(it.label).includes(n)).slice(0, 30);
+    const filter = (query: string) => {
+      const normalized = query.trim().toLocaleLowerCase();
+      return (
+        normalized
+          ? items.filter((item) => item.label.toLocaleLowerCase().includes(normalized))
+          : items
+      ).slice(0, 30);
     };
+
+    function close() {
+      if (!openState) return;
+      openState = false;
+      backdropElement.style.opacity = "0";
+      panelElement.style.opacity = "0";
+      panelElement.style.transform = "translateX(-50%) scale(0.96)";
+      if (closeTimer !== undefined) window.clearTimeout(closeTimer);
+      closeTimer = window.setTimeout(() => {
+        overlayElement.hidden = true;
+      }, 200);
+      if (previousActive?.isConnected) previousActive.focus();
+    }
 
     const navigate = (url: string) => {
       close();
-      if (url.startsWith("http")) {
+      if (/^https?:\/\//.test(url)) {
         window.open(url, "_blank", "noopener,noreferrer");
       } else {
         window.location.href = url;
@@ -224,69 +259,70 @@
 
     const open = () => {
       if (openState) return;
-      if (!overlay || !backdrop || !panel || !input) return;
       openState = true;
-      prevActive = document.activeElement as HTMLElement;
-      overlay.hidden = false;
-      requestAnimationFrame(() => {
-        backdrop.style.opacity = "1";
-        panel.style.opacity = "1";
-        panel.style.transform = "translateX(-50%) scale(1)";
-        input.focus();
-      });
-      const q = input.value || "";
+      previousActive = document.activeElement as HTMLElement | null;
+      items = getItems();
       selected = 0;
-      render(filter(q));
+      render(filter(input.value));
+      overlayElement.hidden = false;
+      if (closeTimer !== undefined) window.clearTimeout(closeTimer);
+
+      requestAnimationFrame(() => {
+        backdropElement.style.opacity = "1";
+        panelElement.style.opacity = "1";
+        panelElement.style.transform = "translateX(-50%) scale(1)";
+        input.focus({ preventScroll: true });
+      });
     };
 
-    const close = () => {
-      if (!openState) return;
-      if (!overlay || !backdrop || !panel) return;
-      openState = false;
-      backdrop.style.opacity = "0";
-      panel.style.opacity = "0";
-      panel.style.transform = "translateX(-50%) scale(0.96)";
-      setTimeout(() => {
-        overlay.hidden = true;
-      }, 200);
-      if (prevActive && prevActive.focus) {
-        prevActive.focus();
+    const onGlobalKeydown = (event: KeyboardEvent) => {
+      if (openState && event.key === "Escape") {
+        event.preventDefault();
+        close();
       }
     };
 
     window.addEventListener("open-command-palette", open);
-    backdrop?.addEventListener("click", close);
-    window.addEventListener("keydown", (e) => {
-      if (!openState && (e.key === "Escape" || e.key === "Esc")) return;
-      if (openState && e.key === "Escape") {
-        e.preventDefault();
-        close();
+    window.addEventListener("keydown", onGlobalKeydown);
+    document.addEventListener("astro:before-preparation", close);
+    backdropElement.addEventListener("click", close);
+
+    list.addEventListener("mousemove", (event) => {
+      const row = getRow(event.target);
+      if (!row) return;
+      const index = Number(row.dataset.index);
+      if (Number.isInteger(index) && index !== selected) {
+        selected = index;
+        updateSelection();
       }
     });
 
-    input.addEventListener("input", () => {
-      const q = input.value;
-      selected = 0;
-      render(filter(q));
+    list.addEventListener("click", (event) => {
+      const row = getRow(event.target);
+      if (row) navigate(row.dataset.url || "/");
     });
 
-    input.addEventListener("keydown", (e) => {
-      const rows = Array.from(list?.children ?? []);
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        selected = Math.min(rows.length - 1, selected + 1);
+    input.addEventListener("input", () => {
+      selected = 0;
+      render(filter(input.value));
+    });
+
+    input.addEventListener("keydown", (event) => {
+      const rowCount = list.children.length;
+      if (!rowCount) return;
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        selected = Math.min(rowCount - 1, selected + 1);
         updateSelection();
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
         selected = Math.max(0, selected - 1);
         updateSelection();
-      } else if (e.key === "Enter") {
-        e.preventDefault();
-        const el = rows[selected] as HTMLElement;
-        if (el) {
-          const url = el.dataset.url || "/";
-          navigate(url);
-        }
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        const row = list.children[selected] as HTMLElement | undefined;
+        if (row) navigate(row.dataset.url || "/");
       }
     });
   });

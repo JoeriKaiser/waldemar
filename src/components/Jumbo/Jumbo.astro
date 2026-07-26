@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import base from "../../assets/images/base.png";
 ---
 
@@ -58,15 +58,17 @@ import base from "../../assets/images/base.png";
 
         <div class="portrait-inner" data-portrait>
           <!-- Base image (always visible underneath) -->
-          <Image
+          <Picture
             src={base}
+            widths={[320, 640]}
+            sizes="(min-width: 768px) 340px, 260px"
+            formats={["avif"]}
+            fallbackFormat="webp"
             alt="Portrait of Joeri"
             class="portrait-image portrait-real"
             loading="eager"
+            fetchpriority="high"
           />
-          <!-- Overlay image on canvas (scratched away) -->
-          <!-- <canvas class="scratch-canvas" data-scratch-canvas data-overlay-src={overlay.src}
-          ></canvas> -->
         </div>
 
         <!-- Corner decorations -->
@@ -82,7 +84,9 @@ import base from "../../assets/images/base.png";
 </section>
 
 <script>
-  document.addEventListener("astro:page-load", async () => {
+  import { attachMagnetic } from "../../utils/magnetic";
+
+  document.addEventListener("astro:page-load", () => {
     const root = document.querySelector("[data-jumbo-root]");
     if (!root) return;
 
@@ -90,222 +94,54 @@ import base from "../../assets/images/base.png";
     const tiltContainer = root.querySelector("[data-tilt-container]");
     const portrait = root.querySelector("[data-portrait]");
     const cmdk = root.querySelector("#open-cmdk");
-    const canvas = root.querySelector("[data-scratch-canvas]") as HTMLCanvasElement | null;
-    const realImage = root.querySelector(".portrait-real") as HTMLImageElement | null;
 
     cmdk?.addEventListener("click", () =>
       window.dispatchEvent(new CustomEvent("open-command-palette"))
     );
 
-    // Preload overlay image for scratch effect
-    const overlayImage = new Image();
-    const overlaySrc = canvas?.dataset.overlaySrc;
-    if (overlaySrc) {
-      overlayImage.src = overlaySrc;
-    }
-
-    // Scratch reveal effect
-    if (canvas && realImage && portrait) {
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
-      let isDrawing = false;
-      let scratchedPixels = 0;
-      const revealThreshold = 0.25;
-
-      const setupCanvas = () => {
-        const rect = canvas.getBoundingClientRect();
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-        ctx.scale(dpr, dpr);
-
-        ctx.drawImage(overlayImage, 0, 0, rect.width, rect.height);
-      };
-
-      let imagesLoaded = 0;
-      const onImageLoad = () => {
-        imagesLoaded++;
-        if (imagesLoaded >= 2) {
-          setupCanvas();
-        }
-      };
-
-      if (realImage.complete) {
-        onImageLoad();
-      } else {
-        realImage.addEventListener("load", onImageLoad);
-      }
-
-      if (overlayImage.complete) {
-        onImageLoad();
-      } else {
-        overlayImage.addEventListener("load", onImageLoad);
-      }
-
-      const scratch = (x: number, y: number) => {
-        const rect = canvas.getBoundingClientRect();
-        const canvasX = x - rect.left;
-        const canvasY = y - rect.top;
-
-        ctx.globalCompositeOperation = "destination-out";
-        ctx.beginPath();
-        ctx.arc(canvasX, canvasY, 30, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalCompositeOperation = "source-over";
-
-        scratchedPixels += Math.PI * 30 * 30;
-        const totalPixels = rect.width * rect.height;
-
-        if (scratchedPixels / totalPixels > revealThreshold) {
-          portrait.classList.add("revealed");
-        }
-      };
-
-      const onStart = (e: PointerEvent | TouchEvent) => {
-        isDrawing = true;
-        if (e instanceof PointerEvent) {
-          scratch(e.clientX, e.clientY);
-        } else if (e.touches && e.touches[0]) {
-          scratch(e.touches[0].clientX, e.touches[0].clientY);
-        }
-      };
-
-      const onMove = (e: PointerEvent | TouchEvent) => {
-        if (!isDrawing) return;
-        if (e instanceof PointerEvent) {
-          scratch(e.clientX, e.clientY);
-        } else if (e.touches && e.touches[0]) {
-          scratch(e.touches[0].clientX, e.touches[0].clientY);
-        }
-      };
-
-      const onEnd = () => {
-        isDrawing = false;
-      };
-
-      canvas.addEventListener("pointerdown", onStart as EventListener);
-      canvas.addEventListener("pointermove", onMove as EventListener);
-      canvas.addEventListener("pointerup", onEnd);
-      canvas.addEventListener("pointerleave", onEnd);
-
-      canvas.addEventListener("touchstart", onStart as EventListener, { passive: false });
-      canvas.addEventListener("touchmove", onMove as EventListener, { passive: false });
-      canvas.addEventListener("touchend", onEnd);
-      canvas.addEventListener("touchcancel", onEnd);
-
-      let resizeTimeout: ReturnType<typeof setTimeout>;
-      window.addEventListener("resize", () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          scratchedPixels = 0;
-          portrait.classList.remove("revealed");
-          setupCanvas();
-        }, 200);
-      });
-    }
-
     if (!prefersReduced) {
-      const { gsap } = await import("gsap");
-
-      const stamps = root.querySelectorAll("[data-stamp]");
-      const heroText = root.querySelectorAll("[data-hero-text]");
-      const portraitFrame = root.querySelector(".portrait-frame");
-
-      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
-
-      if (portraitFrame) {
-        tl.from(portraitFrame, {
-          scale: 0.9,
-          rotation: -5,
-          opacity: 0,
-          duration: 0.7,
-        });
-      }
-
-      if (stamps.length) {
-        tl.from(
-          stamps,
-          {
-            scale: 1.3,
-            rotation: -8,
-            opacity: 0,
-            duration: 0.4,
-            stagger: 0.15,
-            ease: "back.out(1.7)",
-          },
-          "-=0.3"
-        );
-      }
-
-      if (heroText.length) {
-        tl.from(
-          heroText,
-          {
-            y: 20,
-            opacity: 0,
-            stagger: 0.1,
-            duration: 0.5,
-          },
-          "-=0.2"
-        );
-      }
-
-      if (tiltContainer instanceof HTMLElement && portrait instanceof HTMLElement) {
-        let rx = 0,
-          ry = 0,
-          raf = 0;
-
-        const apply = () => {
-          raf = 0;
-          portrait.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
-        };
-
-        const onMove = (e: PointerEvent) => {
-          const r = tiltContainer.getBoundingClientRect();
-          const cx = r.left + r.width / 2;
-          const cy = r.top + r.height / 2;
-
-          const x = (e.clientX - cx) / (r.width / 2);
-          const y = (e.clientY - cy) / (r.height / 2);
-          const max = 6;
-
-          ry = x * max;
-          rx = -y * max;
-          if (!raf) raf = requestAnimationFrame(apply);
-        };
-
-        const onLeave = () => {
-          rx = 0;
-          ry = 0;
-          portrait.style.transition = "transform 300ms ease-out";
-          portrait.style.transform = "rotateX(0deg) rotateY(0deg) translateZ(0)";
-          setTimeout(() => (portrait.style.transition = ""), 320);
-        };
-
-        tiltContainer.addEventListener("pointermove", onMove);
-        tiltContainer.addEventListener("pointerleave", onLeave);
-      }
+      attachMagnetic(root, 12);
     }
 
-    const magneticButtons = root.querySelectorAll("[data-magnetic]");
-    if (!prefersReduced && magneticButtons.length) {
-      const { gsap } = await import("gsap");
-      magneticButtons.forEach((btn) => {
-        if (!(btn instanceof HTMLElement)) return;
-        btn.addEventListener("mouseenter", () =>
-          gsap.to(btn, { scale: 1.03, duration: 0.25, ease: "power2.out" })
-        );
-        btn.addEventListener("mouseleave", () =>
-          gsap.to(btn, { scale: 1, x: 0, y: 0, duration: 0.25, ease: "power2.out" })
-        );
-        btn.addEventListener("mousemove", (e) => {
-          const r = btn.getBoundingClientRect();
-          const x = (e.clientX - (r.left + r.width / 2)) / 12;
-          const y = (e.clientY - (r.top + r.height / 2)) / 12;
-          gsap.to(btn, { x, y, duration: 0.3, ease: "power2.out" });
-        });
-      });
+    // Pointer tilt on the portrait frame (transform-only, rAF-throttled)
+    if (
+      !prefersReduced &&
+      tiltContainer instanceof HTMLElement &&
+      portrait instanceof HTMLElement
+    ) {
+      let rx = 0,
+        ry = 0,
+        raf = 0;
+
+      const apply = () => {
+        raf = 0;
+        portrait.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+      };
+
+      const onMove = (e: PointerEvent) => {
+        const r = tiltContainer.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+
+        const x = (e.clientX - cx) / (r.width / 2);
+        const y = (e.clientY - cy) / (r.height / 2);
+        const max = 6;
+
+        ry = x * max;
+        rx = -y * max;
+        if (!raf) raf = requestAnimationFrame(apply);
+      };
+
+      const onLeave = () => {
+        rx = 0;
+        ry = 0;
+        portrait.style.transition = "transform 300ms ease-out";
+        portrait.style.transform = "rotateX(0deg) rotateY(0deg) translateZ(0)";
+        setTimeout(() => (portrait.style.transition = ""), 320);
+      };
+
+      tiltContainer.addEventListener("pointermove", onMove);
+      tiltContainer.addEventListener("pointerleave", onLeave);
     }
   });
 </script>
@@ -470,30 +306,25 @@ import base from "../../assets/images/base.png";
     box-shadow: inset 0 0 12px 2px rgba(161, 161, 161, 0.15);
   }
 
+  .portrait-inner picture,
   .portrait-image {
     width: 100%;
     height: 100%;
+  }
+
+  .portrait-inner picture {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+
+  .portrait-image {
     object-fit: cover;
   }
 
   .portrait-real {
     position: absolute;
     inset: 0;
-  }
-
-  .scratch-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    cursor: crosshair;
-    touch-action: none;
-  }
-
-  .portrait-inner.revealed .scratch-canvas {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.5s ease-out;
   }
 
   .tape {
@@ -577,6 +408,58 @@ import base from "../../assets/images/base.png";
 
     .intro-stamps {
       justify-content: center;
+    }
+  }
+
+  /* Entrance animations (CSS replaces the former GSAP timeline).
+     `backwards` fill keeps the hidden start state during the delay but
+     releases the transform afterwards so hover effects still work. */
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes portrait-in {
+      from {
+        opacity: 0;
+        transform: scale(0.9) rotate(-5deg);
+      }
+    }
+    @keyframes stamp-pop {
+      from {
+        opacity: 0;
+        transform: scale(1.3) rotate(-8deg);
+      }
+    }
+    @keyframes rise-in {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+    }
+
+    .portrait-frame {
+      animation: portrait-in 0.7s var(--ease-out) backwards;
+    }
+    .intro-stamps .stamp {
+      animation: stamp-pop 0.4s var(--ease-bounce) backwards;
+    }
+    .intro-stamps .stamp:nth-child(1) {
+      animation-delay: 0.4s;
+    }
+    .intro-stamps .stamp:nth-child(2) {
+      animation-delay: 0.55s;
+    }
+    [data-hero-text] {
+      animation: rise-in 0.5s var(--ease-out) backwards;
+    }
+    .jumbo-title {
+      animation-delay: 0.65s;
+    }
+    .jumbo-tagline {
+      animation-delay: 0.75s;
+    }
+    .jumbo-description {
+      animation-delay: 0.85s;
+    }
+    .jumbo-actions {
+      animation-delay: 0.95s;
     }
   }
 </style>

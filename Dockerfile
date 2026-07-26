@@ -1,30 +1,14 @@
-FROM oven/bun:1-alpine AS base
-
-FROM base AS deps
+FROM oven/bun:1-alpine AS builder
 WORKDIR /app
 
 COPY package.json bun.lockb* ./
 RUN bun install --frozen-lockfile
 
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
 RUN bun run build
 
-FROM base AS runner
-WORKDIR /app
-
-ENV NODE_ENV=production
-ENV HOST=0.0.0.0
-ENV PORT=3000
-
-COPY package.json ./
-RUN bun install --production --frozen-lockfile
-
-COPY --from=builder /app/dist ./dist
-
-EXPOSE 3000
-
-CMD ["bun", "run", "./dist/server/entry.mjs"]
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

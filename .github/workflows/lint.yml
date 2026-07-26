@@ -64,13 +64,6 @@ jobs:
             echo "| ESLint | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
           fi
 
-          # Check Stylelint
-          if bun run lint:style --quiet; then
-            echo "| Stylelint | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Stylelint | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
-          fi
-
           # Check Prettier
           if bun run format:check; then
             echo "| Prettier | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
