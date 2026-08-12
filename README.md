@@ -24,7 +24,7 @@ docker run -p 8080:8080 waldemar
 3. Remove any custom nginx configuration: the config is baked into the image.
 4. Domains → add your domain, Proxy (Traefik), SSL on.
 
-Served sizes: 11 KB identity, 4.0 KB gzip, 3.3 KB brotli.
+Served sizes: 11 KB identity, 4.1 KB gzip, 3.4 KB brotli.
 
 ## Checks
 
