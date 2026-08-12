@@ -45,7 +45,7 @@
       html {
         color-scheme: light dark;
         scroll-behavior: smooth;
-        scroll-padding-top: 1rem;
+        scroll-padding-top: 4rem;
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -115,12 +115,15 @@
       }
 
       .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
         display: flex;
         flex-wrap: wrap;
         align-items: baseline;
-        justify-content: space-between;
-        gap: 0.5rem 1.5rem;
-        padding-block: 1.5rem 1.25rem;
+        gap: 0.5rem 1.25rem;
+        padding-block: 0.75rem;
+        background: var(--paper);
         border-bottom: 1px solid var(--rule);
       }
 
@@ -327,12 +330,12 @@
           font-size: 11pt;
         }
 
-        .site-header nav,
-        .colophon {
+        .site-header nav {
           display: none;
         }
 
         .site-header {
+          position: static;
           border-bottom: none;
           padding-block: 0;
         }
@@ -517,7 +520,6 @@
     </main>
 
     <footer class="site-footer">
-      <p class="colophon">This page is one HTML file. No scripts, no build step, no web fonts.</p>
       <p>&copy; 2026 Joeri Kaiser</p>
     </footer>
   </body>
