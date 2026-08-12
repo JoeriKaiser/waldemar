@@ -1,12 +1,19 @@
-# Waldemar - Personal Portfolio
+# Joeri Kaiser, Portfolio
 
-## Overview
+One self-contained `index.html`. No framework, no build step, no scripts, no web fonts.
 
-This is the repository for my portfolio site.
-I'm Joeri (Waldemar), a web developer. The site showcases my projects, skills, and professional journey.
+## View it
 
-## Technologies Used
+Open `index.html` in a browser, or serve the directory with any static file server.
 
-- [Astro](https://astro.build/): Static site generation
-- Tailwind CSS and plain CSS: Styling and design tokens
-- Native browser APIs: Lightweight interactions and animations
+## Deploy
+
+Static hosting only. The single file is deployed to a VPS with Coolify.
+
+## Checks
+
+HTML validity is checked in CI with [html-validate](https://html-validate.org):
+
+```sh
+npx html-validate index.html
+```
