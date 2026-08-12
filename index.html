@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf7f1">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#262119">
+    <meta name="author" content="Joeri Kaiser">
+    <meta
+      name="description"
+      content="Portfolio of Joeri Kaiser, a full-stack developer. Experience, projects, skills, and contact."
+    >
+    <title>Joeri Kaiser, Full-stack Developer</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%232b261d'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' fill='%23faf7f1' text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E"
+    >
+    <style>
+      :root {
+        --paper: oklch(98.5% 0.006 80);
+        --ink: oklch(23% 0.015 70);
+        --ink-soft: oklch(43% 0.02 70);
+        --ink-faint: oklch(58% 0.02 75);
+        --rule: color-mix(in oklab, var(--ink) 14%, transparent);
+        --serif: "Charter", "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+        --sans:
+          system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        --measure: 68ch;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --paper: oklch(19% 0.012 70);
+          --ink: oklch(91% 0.01 80);
+          --ink-soft: oklch(74% 0.012 75);
+          --ink-faint: oklch(62% 0.015 75);
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        color-scheme: light dark;
+        scroll-behavior: smooth;
+        scroll-padding-top: 1rem;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+
+      body {
+        max-width: 46rem;
+        margin-inline: auto;
+        padding-inline: clamp(1.25rem, 6vw, 2.5rem);
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 1.0625rem;
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      ::selection {
+        background: var(--ink);
+        color: var(--paper);
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--ink);
+        outline-offset: 3px;
+        border-radius: 2px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: var(--serif);
+        font-weight: 600;
+        text-wrap: balance;
+      }
+
+      p {
+        max-width: var(--measure);
+        margin-block: 0.75rem;
+        text-wrap: pretty;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-decoration-color: var(--ink-faint);
+        text-underline-offset: 3px;
+        transition: text-decoration-color 120ms ease-out;
+      }
+
+      a:hover {
+        text-decoration-color: var(--ink);
+        text-decoration-thickness: 1.5px;
+      }
+
+      a[href^="http"]::after {
+        content: "\2197";
+        font-size: 0.7em;
+        vertical-align: 0.25em;
+        margin-inline-start: 0.2em;
+        color: var(--ink-faint);
+        text-decoration: none;
+      }
+
+      .site-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 0.5rem 1.5rem;
+        padding-block: 1.5rem 1.25rem;
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .wordmark {
+        font-family: var(--serif);
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .site-header nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 1.5rem;
+        font-size: 0.9rem;
+      }
+
+      .site-header nav a {
+        color: var(--ink-soft);
+        text-decoration: none;
+      }
+
+      .site-header nav a:hover {
+        color: var(--ink);
+        text-decoration: underline;
+        text-decoration-color: var(--ink);
+        text-underline-offset: 4px;
+      }
+
+      .intro {
+        padding-block: clamp(3rem, 8vw, 5rem) 0;
+      }
+
+      .intro h1 {
+        font-size: clamp(2.5rem, 5vw + 1rem, 3.75rem);
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        margin: 0;
+      }
+
+      .tagline {
+        font-family: var(--serif);
+        font-size: clamp(1.15rem, 1vw + 0.9rem, 1.4rem);
+        line-height: 1.45;
+        color: var(--ink-soft);
+        max-width: 30ch;
+        margin-block-start: 1.25rem;
+      }
+
+      .contact {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0;
+        margin-block: 1.5rem 0;
+        font-size: 0.95rem;
+      }
+
+      .contact li + li::before {
+        content: "\00b7";
+        margin-inline: 0.65rem;
+        color: var(--ink-faint);
+      }
+
+      section {
+        margin-block-start: clamp(3.5rem, 8vw, 5.5rem);
+      }
+
+      section > h2 {
+        font-size: clamp(1.45rem, 1.5vw + 1rem, 1.85rem);
+        line-height: 1.2;
+        margin: 0;
+        padding-block-start: 1.25rem;
+        border-top: 1px solid var(--rule);
+      }
+
+      .entry {
+        margin-block-start: 2.75rem;
+      }
+
+      .entry-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 0.25rem 1.5rem;
+      }
+
+      .entry-head h3 {
+        font-size: 1.25rem;
+        line-height: 1.3;
+        margin: 0;
+      }
+
+      .entry-head h3 a {
+        text-decoration: none;
+      }
+
+      .entry-head h3 a:hover {
+        text-decoration: underline;
+      }
+
+      .dates {
+        font-size: 0.85rem;
+        color: var(--ink-faint);
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+        margin: 0;
+      }
+
+      .role {
+        font-size: 0.9rem;
+        letter-spacing: 0.03em;
+        color: var(--ink-soft);
+        margin-block: 0.35rem 0.5rem;
+      }
+
+      .entry-links {
+        font-size: 0.9rem;
+        color: var(--ink-soft);
+        margin-block-start: 0.9rem;
+      }
+
+      .entry-links .label {
+        color: var(--ink-faint);
+        margin-inline-end: 0.4rem;
+      }
+
+      .entry-links a + a::before {
+        content: "\00b7";
+        margin-inline: 0.55rem;
+        color: var(--ink-faint);
+        text-decoration: none;
+      }
+
+      .about-text {
+        margin-block-start: 1.5rem;
+      }
+
+      .skills {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 1rem 2.5rem;
+        margin-block: 2rem 0;
+      }
+
+      .skills dt {
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+        padding-block-start: 0.3rem;
+      }
+
+      .skills dd {
+        margin: 0;
+        max-width: var(--measure);
+      }
+
+      @media (max-width: 640px) {
+        .skills {
+          grid-template-columns: 1fr;
+          gap: 0.25rem;
+        }
+
+        .skills dt {
+          margin-block-start: 1rem;
+          padding-block-start: 0;
+        }
+
+        .skills dt:first-of-type {
+          margin-block-start: 0;
+        }
+      }
+
+      .site-footer {
+        margin-block-start: clamp(4rem, 9vw, 6rem);
+        padding-block: 1.75rem 3rem;
+        border-top: 1px solid var(--rule);
+        font-size: 0.85rem;
+        color: var(--ink-faint);
+      }
+
+      .site-footer p {
+        margin-block: 0.25rem;
+      }
+
+      @media print {
+        :root {
+          --paper: oklch(99% 0.004 80);
+          --ink: oklch(20% 0.01 70);
+          --ink-soft: oklch(40% 0.02 70);
+          --ink-faint: oklch(55% 0.02 75);
+        }
+
+        html {
+          scroll-behavior: auto;
+        }
+
+        body {
+          max-width: none;
+          padding-inline: 0;
+          font-size: 11pt;
+        }
+
+        .site-header nav,
+        .colophon {
+          display: none;
+        }
+
+        .site-header {
+          border-bottom: none;
+          padding-block: 0;
+        }
+
+        section {
+          margin-block-start: 1.75rem;
+        }
+
+        .entry {
+          break-inside: avoid;
+        }
+
+        a {
+          text-decoration: none;
+        }
+
+        a[href^="http"]::after {
+          content: " (" attr(href) ")";
+          font-size: 0.75em;
+          vertical-align: baseline;
+          color: var(--ink-soft);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="#top">Joeri Kaiser</a>
+      <nav aria-label="Primary">
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="intro" aria-labelledby="intro-title">
+        <h1 id="intro-title">Joeri Kaiser</h1>
+        <p class="tagline">
+          Full-stack developer building applications that work reliably and feel great.
+        </p>
+        <p>Web developer since 2022. Born in the Netherlands, raised in France. Former bartender, always curious.</p>
+        <ul class="contact">
+          <li><a href="mailto:joeri.waldemar@gmail.com">joeri.waldemar@gmail.com</a></li>
+          <li><a href="https://github.com/JoeriKaiser">GitHub</a></li>
+          <li><a href="https://www.linkedin.com/in/joeri-kaiser">LinkedIn</a></li>
+        </ul>
+      </section>
+
+      <section id="experience" aria-labelledby="experience-title">
+        <h2 id="experience-title">Experience</h2>
+        <article class="entry">
+          <div class="entry-head">
+            <h3><a href="https://medelse.com">Medelse</a></h3>
+            <p class="dates"><time datetime="2022-09">September 2022</time> to <time datetime="2024-11">November 2024</time></p>
+          </div>
+          <p class="role">Web Developer</p>
+          <p>
+            Started as an intern and was hired full-time a year later. Worked across the stack:
+            the mobile app in React Native, the frontend sites in React, and major contributions
+            to the admin panel and backend in PHP Symfony, on PostgreSQL and GraphQL.
+          </p>
+        </article>
+      </section>
+
+      <section id="projects" aria-labelledby="projects-title">
+        <h2 id="projects-title">Projects</h2>
+
+        <article class="entry">
+          <div class="entry-head">
+            <h3>fzf-scope</h3>
+            <p class="dates"><time datetime="2026-02">February 2026</time></p>
+          </div>
+          <p>
+            A fish shell plugin that logs command history with directory context, so you can search
+            history scoped to the current project. Designed to complement
+            <a href="https://github.com/PatrickF1/fzf.fish">fzf.fish</a>.
+          </p>
+          <p class="entry-links">
+            <span class="label">Source</span>
+            <a href="https://github.com/JoeriKaiser/fzf-scope">github.com/JoeriKaiser/fzf-scope</a>
+          </p>
+        </article>
+
+        <article class="entry">
+          <div class="entry-head">
+            <h3>Invar</h3>
+            <p class="dates"><time datetime="2026-02">February 2026</time></p>
+          </div>
+          <p>
+            A terminal task manager in Go with a
+            <a href="https://charm.sh">Charmbracelet</a> interface built on Bubble Tea and
+            Lipgloss. Task creation, editing, completion, and filtering, all keyboard-driven.
+          </p>
+          <p class="entry-links">
+            <span class="label">Source</span>
+            <a href="https://github.com/JoeriKaiser/invar">github.com/JoeriKaiser/invar</a>
+          </p>
+        </article>
+
+        <article class="entry">
+          <div class="entry-head">
+            <h3>FBench</h3>
+            <p class="dates"><time datetime="2025-12">December 2025</time> to Present</p>
+          </div>
+          <p>
+            A lightweight database explorer written in Rust with egui. Schema browser with row
+            estimates, a syntax-highlighted query editor with autocomplete, and export to CSV,
+            JSON, and XML, for both PostgreSQL and MySQL. SQLx on a Tokio runtime keeps the
+            interface responsive while heavy queries run in the background.
+          </p>
+          <p class="entry-links">
+            <span class="label">Source</span>
+            <a href="https://github.com/JoeriKaiser/fbench">github.com/JoeriKaiser/fbench</a>
+          </p>
+        </article>
+
+        <article class="entry">
+          <div class="entry-head">
+            <h3>Jin</h3>
+            <p class="dates"><time datetime="2024-12">December 2024</time></p>
+          </div>
+          <p>
+            A clone of T3 Chat built in ten days for
+            <a href="https://t3.gg">Theo Browne's</a> Cloneathon. SolidJS and TypeScript on the
+            frontend, Go with Gin and PostgreSQL on the backend, and WebSockets for real-time sync
+            between clients. Everything containerized with Docker. The theme is based on my cat,
+            Jin.
+          </p>
+          <p class="entry-links">
+            <span class="label">Links</span>
+            <a href="https://github.com/JoeriKaiser/kchat">Frontend</a>
+            <a href="https://github.com/JoeriKaiser/kapi">Backend</a>
+            <a href="https://jin-olive.vercel.app">Demo</a>
+          </p>
+        </article>
+
+        <article class="entry">
+          <div class="entry-head">
+            <h3>Fast Mahjong</h3>
+            <p class="dates"><time datetime="2024-11">November 2024</time></p>
+          </div>
+          <p>
+            My take on the classic tile game, built with Tauri and React, with 3D visuals in
+            Three.js. The core game is ready, with more on the roadmap.
+          </p>
+          <p class="entry-links">
+            <span class="label">Links</span>
+            <a href="https://github.com/JoeriKaiser/fmahjongg">Source</a>
+            <a href="https://fmahjongg.vercel.app">Web demo</a>
+          </p>
+        </article>
+      </section>
+
+      <section id="about" aria-labelledby="about-title">
+        <h2 id="about-title">About</h2>
+        <div class="about-text">
+          <p>
+            My path into tech was not a straight line. I followed family tradition into catering
+            school and spent years in hospitality, ending up behind the bar, where I learned
+            adaptability and working under pressure. Coding was always the side passion: WordPress
+            sites for acquaintances, Minecraft plugins, any excuse to boot up the PC.
+          </p>
+          <p>
+            When the pandemic hit, I made the switch for good. Udemy courses first, then a coding
+            bootcamp, then a first internship as a web developer in 2022, and a full-time offer
+            from the same company a year later. I have been building for the web ever since.
+          </p>
+        </div>
+        <dl class="skills">
+          <dt>Frontend</dt>
+          <dd>React, Next.js, React Native, Astro, TypeScript, GSAP, Tailwind CSS</dd>
+          <dt>Backend</dt>
+          <dd>PHP Symfony, Rust, Go, Node.js, Kotlin, PostgreSQL, REST, GraphQL</dd>
+          <dt>DevOps &amp; Tools</dt>
+          <dd>
+            Kubernetes, Docker, Google Cloud, Terraform, Expo, Git, Shell, Lua, GNU/Linux, GitHub
+            Actions
+          </dd>
+        </dl>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p class="colophon">This page is one HTML file. No scripts, no build step, no web fonts.</p>
+      <p>&copy; 2026 Joeri Kaiser</p>
+    </footer>
+  </body>
+</html>
