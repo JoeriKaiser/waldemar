@@ -20,4 +20,30 @@ jobs:
           node-version: 22
 
       - name: Run html-validate
-        run: npx --yes html-validate@11 index.html
+        run: npx --yes html-validate@11.6.2 index.html
+
+  docker:
+    name: Build and smoke-test image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t waldemar .
+
+      - name: Run container
+        run: docker run -d --name site -p 8080:8080 waldemar
+
+      - name: Smoke test
+        run: |
+          for i in $(seq 1 10); do
+            curl -sf http://localhost:8080/ > /dev/null && break
+            sleep 1
+          done
+          curl -sf http://localhost:8080/ | grep -q "Joeri Kaiser"
+          curl -sf -o /dev/null http://localhost:8080/og.png
+          curl -sfI -H "Accept-Encoding: br" http://localhost:8080/ | grep -qi "content-encoding: br"
+          size=$(docker exec site stat -c %s /usr/share/nginx/html/index.html.br)
+          echo "index.html.br: $size bytes"
+          test "$size" -lt 6144
