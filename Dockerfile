@@ -6,7 +6,7 @@ RUN npx --yes html-validate@11.6.2 index.html \
   && html-minifier-terser index.html --collapse-whitespace --remove-comments --minify-css --output index.html \
   && node -e 'const z=require("zlib"),f=require("fs");const s=f.readFileSync("index.html");f.writeFileSync("index.html.br",z.brotliCompressSync(s,{params:{[z.constants.BROTLI_PARAM_QUALITY]:11}}));f.writeFileSync("index.html.gz",z.gzipSync(s,{level:9}));console.log("html:",s.length,"B br:",f.statSync("index.html.br").size,"B gz:",f.statSync("index.html.gz").size,"B");'
 
-FROM fholzer/nginx-brotli:latest@sha256:1982def7c54f70db5186b30fa2e4a1fdf6116f42b45d95627594bd872a75cf6e
+FROM fholzer/nginx-brotli:latest@sha256:ca57b1f13431d5bc6dc1f231af231d33f03cce1e23a50ac1c5054d27dea177e6
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY og.png /usr/share/nginx/html/og.png
 COPY --from=build /build/index.html /build/index.html.br /build/index.html.gz /usr/share/nginx/html/
