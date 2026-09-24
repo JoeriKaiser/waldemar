@@ -1,15 +1,17 @@
 FROM node:26-alpine@sha256:2d984a15c9b54fd0aeb608b8e0d0d83529eb34d2966db27a1fb4f1edc3d298a3 AS build
 WORKDIR /build
-COPY .htmlvalidate.json index.html ./
+COPY .htmlvalidate.json index.html index.md robots.txt sitemap.xml llms.txt favicon.svg ./
 RUN npx --yes html-validate@11.6.2 index.html \
   && npm install -g html-minifier-terser@7.2.0 --no-audit --no-fund \
   && html-minifier-terser index.html --collapse-whitespace --remove-comments --minify-css --output index.html \
-  && node -e 'const z=require("zlib"),f=require("fs");const s=f.readFileSync("index.html");f.writeFileSync("index.html.br",z.brotliCompressSync(s,{params:{[z.constants.BROTLI_PARAM_QUALITY]:11}}));f.writeFileSync("index.html.gz",z.gzipSync(s,{level:9}));console.log("html:",s.length,"B br:",f.statSync("index.html.br").size,"B gz:",f.statSync("index.html.gz").size,"B");'
+  && node -e 'const z=require("zlib"),f=require("fs");for(const file of ["index.html","index.md","favicon.svg"]){const s=f.readFileSync(file);f.writeFileSync(file+".br",z.brotliCompressSync(s,{params:{[z.constants.BROTLI_PARAM_QUALITY]:11}}));f.writeFileSync(file+".gz",z.gzipSync(s,{level:9}));console.log(file,":",s.length,"B br:",f.statSync(file+".br").size,"B gz:",f.statSync(file+".gz").size,"B");}'
 
 FROM fholzer/nginx-brotli:latest@sha256:ca57b1f13431d5bc6dc1f231af231d33f03cce1e23a50ac1c5054d27dea177e6
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY og.png /usr/share/nginx/html/og.png
 COPY --from=build /build/index.html /build/index.html.br /build/index.html.gz /usr/share/nginx/html/
+COPY --from=build /build/index.md /build/index.md.br /build/index.md.gz /usr/share/nginx/html/
+COPY --from=build /build/robots.txt /build/sitemap.xml /build/llms.txt /build/favicon.svg /build/favicon.svg.br /build/favicon.svg.gz /usr/share/nginx/html/
 RUN mkdir -p /tmp/nginx && chown -R nginx:nginx /tmp/nginx
 USER nginx
 EXPOSE 8080

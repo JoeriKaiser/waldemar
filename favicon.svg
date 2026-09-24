@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    rect { fill: #2b261d; }
+    text { fill: #faf7f1; }
+    @media (prefers-color-scheme: dark) {
+      rect { fill: #faf7f1; }
+      text { fill: #2b261d; }
+    }
+  </style>
+  <rect width="64" height="64" rx="12"/>
+  <text x="32" y="45" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="38" text-anchor="middle">J</text>
+</svg>

@@ -1,0 +1,9 @@
+# Joeri Kaiser
+
+> Forward deployed and product engineer. I work directly with users to solve operational bottlenecks and build privacy-first software.
+
+- [Full Portfolio (Markdown)](https://waldemar.site/index.md): Complete background, experience, projects, and skills
+- [Website (HTML)](https://waldemar.site/): Web version of the portfolio
+- [GitHub](https://github.com/JoeriKaiser): Source code and open-source contributions
+- [LinkedIn](https://www.linkedin.com/in/joeri-kaiser): Professional background and network
+- [Email](mailto:joeri.waldemar@gmail.com): Direct contact

@@ -45,10 +45,20 @@ jobs:
           done
           curl -sf http://localhost:8080/ | grep -q "Joeri Kaiser"
           curl -sf -o /dev/null http://localhost:8080/og.png
+          curl -sf http://localhost:8080/favicon.svg | grep -q "<svg"
+          curl -sI http://localhost:8080/index.html | grep -q "301"
+          curl -sI http://localhost:8080/ | grep -qi "cross-origin-opener-policy: same-origin"
+          curl -sI http://localhost:8080/ | grep -qi "permissions-policy"
           curl -sfI -H "Accept-Encoding: br" http://localhost:8080/ | grep -qi "content-encoding: br"
           size=$(docker exec site stat -c %s /usr/share/nginx/html/index.html.br)
           echo "index.html.br: $size bytes"
           test "$size" -lt 6144
+          curl -sf http://localhost:8080/robots.txt | grep -q "Sitemap:"
+          curl -sf http://localhost:8080/sitemap.xml | grep -q "urlset"
+          curl -sf http://localhost:8080/llms.txt | grep -q "Joeri Kaiser"
+          curl -sf -H "Accept: text/markdown" http://localhost:8080/ | grep -q "# Joeri Kaiser"
+          curl -sfI -H "Accept: text/markdown" http://localhost:8080/ | grep -qi "text/markdown"
+          curl -sfI http://localhost:8080/ | grep -qi "rel=\"alternate\""
 
   links:
     name: Check links
@@ -65,4 +75,4 @@ jobs:
             --no-progress
             --exclude-mail
             --exclude linkedin\.com
-            index.html README.md
+            index.html index.md README.md
