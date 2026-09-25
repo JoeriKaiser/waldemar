@@ -6,7 +6,7 @@ RUN npx --yes html-validate@11.6.2 index.html \
   && html-minifier-terser index.html --collapse-whitespace --remove-comments --minify-css --output index.html \
   && node -e 'const z=require("zlib"),f=require("fs");for(const file of ["index.html","index.md","favicon.svg"]){const s=f.readFileSync(file);f.writeFileSync(file+".br",z.brotliCompressSync(s,{params:{[z.constants.BROTLI_PARAM_QUALITY]:11}}));f.writeFileSync(file+".gz",z.gzipSync(s,{level:9}));console.log(file,":",s.length,"B br:",f.statSync(file+".br").size,"B gz:",f.statSync(file+".gz").size,"B");}'
 
-FROM fholzer/nginx-brotli:latest@sha256:ca57b1f13431d5bc6dc1f231af231d33f03cce1e23a50ac1c5054d27dea177e6
+FROM fholzer/nginx-brotli:latest@sha256:badd11084e3e39ce951107ae5ce3f59311f2dd457720d2dc332b614a1c7231fd
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY og.png /usr/share/nginx/html/og.png
 COPY --from=build /build/index.html /build/index.html.br /build/index.html.gz /usr/share/nginx/html/
