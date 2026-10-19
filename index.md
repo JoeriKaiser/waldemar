@@ -1,6 +1,6 @@
 # Joeri Kaiser
 
-Forward deployed and product engineer. I work directly with users to solve operational bottlenecks and build privacy-first software.
+Forward deployed software engineer. I work directly with users to solve operational bottlenecks and build privacy-first software.
 
 Former bartender. Reading people, active listening, and working under pressure turned out to be engineering skills.
 

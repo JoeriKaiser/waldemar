@@ -1,6 +1,6 @@
 # Joeri Kaiser
 
-> Forward deployed and product engineer. I work directly with users to solve operational bottlenecks and build privacy-first software.
+> Forward deployed software engineer. I work directly with users to solve operational bottlenecks and build privacy-first software.
 
 - [Full Portfolio (Markdown)](https://waldemar.site/index.md): Complete background, experience, projects, and skills
 - [Website (HTML)](https://waldemar.site/): Web version of the portfolio
