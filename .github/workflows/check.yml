@@ -73,6 +73,5 @@ jobs:
         with:
           args: >-
             --no-progress
-            --exclude-mail
             --exclude linkedin\.com
             index.html index.md README.md
