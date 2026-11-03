@@ -16,7 +16,7 @@ Former bartender. I left the late closes behind and kept the habits: reading peo
 Role: Full-stack Engineer  
 Link: https://www.cozynergy.com
 
-I sit with the operations and support teams and build the internal software they rely on.
+I sit with teams across the company and build the internal software they run on.
 
 - Replaced more than 100 spreadsheets, some over 30,000 rows, that a four-person operations team maintained by hand. The data now lives in an in-app tool that validates every entry, so the rest of the product can use it directly.
 - Indexed internal documentation with the customer support leads and built a grounded RAG pipeline for the support chatbot.
