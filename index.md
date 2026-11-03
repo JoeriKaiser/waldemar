@@ -2,32 +2,26 @@
 
 Forward deployed software engineer. I work directly with users to solve operational bottlenecks and build privacy-first software.
 
-Former bartender. Reading people, active listening, and working under pressure turned out to be engineering skills.
+Former bartender. I left the late closes behind and kept the habits: reading people, listening, staying calm when it's busy.
 
 - Email: joeri.waldemar@gmail.com
 - GitHub: https://github.com/JoeriKaiser
 - LinkedIn: https://www.linkedin.com/in/joeri-kaiser
 - Location: France (open to remote)
-- Languages: French (native), English (fluent)
+- Languages: French (native), English (fluent), Dutch, German
 
 ## Experience
 
-### Rama (2026-06 – present)
-Role: Open-source Contributor  
-Link: https://github.com/rama-io
-
-Contributor to Rama, an organization building privacy-first Android software. I work directly from community feedback and bug reports to ship features across the app suite, focusing on offline utility, performance, and accessibility.
-
 ### Cozynergy (2025-01 – present)
-Role: Forward Deployed Software Engineer  
+Role: Full-stack Engineer  
 Link: https://www.cozynergy.com
 
-I build internal software by working directly with the operational teams that rely on it.
+I sit with teams across the company and build the internal software they run on.
 
-- Mapped daily workflows directly with operations leads, replacing a company-critical Google Sheets dependency with a custom in-app tool.
-- Worked alongside customer support leads to index internal documentation and build a grounded RAG pipeline for the support chatbot.
+- Replaced more than 100 spreadsheets, some over 30,000 rows, that a four-person operations team maintained by hand. The data now lives in an in-app tool that validates every entry, so the rest of the product can use it directly.
+- Indexed internal documentation with the customer support leads and built a grounded RAG pipeline for the support chatbot.
 - Built an image-processing service that extracts field photo data to generate renovation proposals for technical advisors.
-- Currently consolidating several legacy internal tools into one unified platform based on direct user interviews.
+- Currently consolidating several legacy internal tools into one platform, scoped through interviews with the people who use them.
 
 ### Medelse (2022-09 – 2024-11)
 Role: Software Engineer  
@@ -41,25 +35,25 @@ Built and maintained the staffing platform connecting medical facilities with he
 Stack: Kotlin, Go  
 Links: https://github.com/JoeriKaiser/luteal | https://f-droid.org/en/packages/fr.luteal.app/ | https://github.com/JoeriKaiser/folicular
 
-Built after researching cycle biology with my partner and finding commercial apps filled with trackers, ads, and opaque predictions. Designed around one rule: physical observations and algorithmic estimates are never presented as the same data. French-first, offline by default, with zero telemetry and optional end-to-end encrypted sync to a custom Go backend. Available on F-Droid.
+Built after researching cycle biology with my partner and finding commercial apps filled with trackers, ads, and opaque predictions. Designed around one rule: physical observations and algorithmic estimates are never presented as the same data. French-first, offline by default, and zero telemetry. An account is a random code with no email or phone number, sync is end-to-end encrypted, and the Go backend can be self-hosted on a VPS or a Raspberry Pi.
 
 ### eurtisan
-Stack: TypeScript (launching 2026)  
+Stack: TypeScript (beta)  
 Link: https://github.com/JoeriKaiser/eurtisan
 
-A European-centered marketplace for creatives, artisans, and makers, built solo: TanStack Start with SSR, PostgreSQL 16, Meilisearch, Mollie payments, Sendcloud shipping, GDPR-conscious architecture, and Grafana observability.
+A marketplace for European creatives, artisans, and makers, built solo and now in beta. The hard part was EU law for a multi-seller platform: DSA notices with statements of reasons, DAC7 seller tax reporting, the 14-day right of withdrawal, and explicit trader declarations. Translated into all 24 official EU languages. TanStack Start, PostgreSQL, Meilisearch, Mollie, and Sendcloud.
 
 ### mako
 Stack: Kotlin (200+ stars)  
 Link: https://github.com/rama-io/mako
 
-Rama's privacy-first Android launcher. My contributions include multi-column layouts for wide screens, PWA pinned shortcuts, backup and restore, a recycler-view refactor, Android 17 accessibility, and French translations.
+Rama's privacy-first Android launcher. I've contributed since June 2026, working from community feedback and bug reports: multi-column layouts for wide screens, PWA pinned shortcuts, backup and restore, a recycler-view refactor, Android 17 accessibility, and French translations.
 
 ### pin
 Stack: Rust  
 Link: https://github.com/JoeriKaiser/pin
 
-A zero-dependency, local-first work ledger for developers and coding agents, written in Rust. Bridges human project planning with autonomous agent tool loops without cloud dependencies. Checksum-verified binaries for Linux, macOS, and Windows.
+A CLI work ledger in Rust for developers and coding agents. Tasks, bugs, and decisions are Markdown files with YAML front matter in a local vault. Agents claim items on a one-hour lease, write handoffs, and must attach evidence to complete them. Ships a local browser viewer and checksum-verified binaries for Linux, macOS, and Windows.
 
 ### FBench
 Stack: Rust  
@@ -67,23 +61,20 @@ Link: https://github.com/JoeriKaiser/fbench
 
 A lightweight database explorer in Rust and egui: schema browser with row estimates, a syntax-highlighted query editor with autocomplete, and CSV, JSON, and XML export for PostgreSQL and MySQL. SQLx on Tokio keeps the UI responsive while heavy queries run.
 
-### Invar
-Stack: Go  
-Link: https://github.com/JoeriKaiser/invar
-
-A terminal task manager in Go, built on Bubble Tea and Lipgloss. Create, edit, complete, and filter tasks, all keyboard-driven.
-
 ### Also
+- Invar: keyboard-driven terminal task manager in Go (https://github.com/JoeriKaiser/invar)
 - Jin (kchat): T3 Chat clone built in ten days and themed after my cat (https://github.com/JoeriKaiser/kchat)
 - fzf-scope: fish history plugin (https://github.com/JoeriKaiser/fzf-scope)
 
 ## About
 
-I spent years behind the bar in hospitality before switching to software during the pandemic. In hospitality, you succeed by observing people, listening closely, and resolving friction quickly under pressure. Those same habits shape how I build software. I talk to the people doing the work, figure out where systems break down, and build direct solutions.
+I want to work where engineers sit with the people using the software: forward deployed, solutions, or internal product roles, on teams small enough that a conversation on Monday can ship by Friday.
 
-Since January 2025, I have been building internal products as a forward deployed engineer at Cozynergy, alongside contributing to privacy-first Android apps and systems tools in Rust and Go.
+Privacy is the default in my own projects: no telemetry, no accounts tied to an identity, and data that stays on the device unless you choose to sync it.
+
+I speak French (native), English (fluent), Dutch, and German, so I can sit with users in most of Western Europe without a translator.
 
 ## Technical Skills
 
 - Confident: TypeScript, React, PHP Symfony, Kotlin (Android), Go, Rust
-- Also: Node.js, Next.js, React Native, Zig, PostgreSQL, GraphQL, Docker, Shell
+- Also: Node.js, Next.js, React Native, PostgreSQL, GraphQL, Docker, Shell

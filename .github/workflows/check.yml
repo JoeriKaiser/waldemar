@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 26
 
       - name: Run html-validate
         run: npx --yes html-validate@11.6.2 index.html
@@ -73,6 +73,5 @@ jobs:
         with:
           args: >-
             --no-progress
-            --exclude-mail
             --exclude linkedin\.com
             index.html index.md README.md
